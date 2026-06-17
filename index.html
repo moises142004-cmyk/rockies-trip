@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Jime & Moi — Las Rockies</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --abyss:#0A0F18; --slate:#111A28; --panel:rgba(15,23,37,.74); --panel-solid:#0F1725;
+  --frost:#EDF2F8; --mist:#93A4BC; --mist-dim:#64748B;
+  --hair:rgba(255,255,255,.09); --hair-2:rgba(255,255,255,.06);
+  --amber:#F5A623; --glacier:#5FD0D6;
+  --d1:#F5A623; --d2:#5FD0D6; --d3:#EC8C76; --d4:#93A7EC; --d5:#82C08A; --d6:#C58CEC; --d7:#E3C56A;
+  --disp:'Space Grotesk',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif; --mono:'Space Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--abyss);color:var(--frost);font-family:var(--body);-webkit-font-smoothing:antialiased}
+#map{position:fixed;inset:0;width:100%;height:100%;background:var(--abyss);z-index:0}
+
+/* cinematic vignette + top gradient */
+.atmos{position:fixed;inset:0;z-index:400;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 30%,transparent 55%,rgba(5,8,14,.55) 100%),
+             linear-gradient(180deg,rgba(7,11,18,.75) 0%,transparent 18%,transparent 82%,rgba(7,11,18,.55) 100%)}
+
+/* ---------- HEADER ---------- */
+.hdr{position:fixed;top:0;left:0;right:0;height:60px;z-index:1000;display:flex;align-items:center;
+  justify-content:space-between;padding:0 18px;background:linear-gradient(180deg,rgba(10,15,24,.92),rgba(10,15,24,.5) 70%,transparent);
+  backdrop-filter:blur(2px)}
+.brand{display:flex;align-items:baseline;gap:12px;min-width:0}
+.brand .mark{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:-.01em;color:var(--frost);white-space:nowrap}
+.brand .mark em{color:var(--amber);font-style:normal}
+.brand .dot{width:5px;height:5px;border-radius:50%;background:var(--glacier);flex:none;transform:translateY(-3px)}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:var(--mist);text-transform:uppercase;white-space:nowrap}
+.hdr-right{display:flex;align-items:center;gap:14px}
+.dates{font-family:var(--mono);font-size:11px;color:var(--mist);letter-spacing:.04em;text-align:right;line-height:1.5}
+.dates b{color:var(--frost);font-weight:700}
+
+/* segmented view toggle */
+.seg{display:flex;background:var(--panel);border:1px solid var(--hair);border-radius:999px;padding:3px;backdrop-filter:blur(16px) saturate(1.2)}
+.seg button{appearance:none;border:0;background:transparent;color:var(--mist);font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;padding:7px 13px;border-radius:999px;cursor:pointer;transition:.18s;white-space:nowrap}
+.seg button:hover{color:var(--frost)}
+.seg button.on{background:var(--frost);color:var(--abyss);font-weight:700}
+
+.menu-btn{display:none;appearance:none;border:1px solid var(--hair);background:var(--panel);color:var(--frost);
+  width:40px;height:40px;border-radius:12px;font-size:17px;cursor:pointer;backdrop-filter:blur(14px)}
+
+/* ---------- FILTER CHIPS ---------- */
+.filters{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:900;display:flex;gap:7px;
+  padding:7px;background:var(--panel);border:1px solid var(--hair);border-radius:14px;backdrop-filter:blur(18px) saturate(1.3);
+  box-shadow:0 12px 40px rgba(0,0,0,.4);max-width:calc(100vw - 32px);overflow-x:auto;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.chip{appearance:none;border:0;background:transparent;color:var(--mist);font-family:var(--body);font-size:12.5px;font-weight:500;
+  padding:7px 13px;border-radius:9px;cursor:pointer;transition:.16s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.chip:hover{color:var(--frost);background:var(--hair-2)}
+.chip.on{background:var(--amber);color:#241500;font-weight:600}
+.chip .i{font-size:13px;line-height:1}
+
+/* ---------- ITINERARY RAIL ---------- */
+.rail{position:fixed;top:72px;left:16px;bottom:16px;width:332px;z-index:850;display:flex;flex-direction:column;
+  background:var(--panel);border:1px solid var(--hair);border-radius:18px;backdrop-filter:blur(22px) saturate(1.3);
+  box-shadow:0 24px 60px rgba(0,0,0,.5);overflow:hidden}
+.rail-head{padding:18px 18px 14px;border-bottom:1px solid var(--hair-2);flex:none}
+.rail-head .eyebrow{font-family:var(--mono);font-size:9.5px;letter-spacing:.34em;color:var(--glacier);text-transform:uppercase}
+.rail-head h1{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.02em;margin:6px 0 2px;line-height:1.05}
+.rail-head h1 em{font-style:italic;font-weight:500;color:var(--amber)}
+.rail-stats{display:flex;gap:16px;margin-top:12px}
+.stat .n{font-family:var(--disp);font-size:18px;font-weight:600;color:var(--frost);line-height:1}
+.stat .l{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--mist);text-transform:uppercase;margin-top:3px}
+
+.rail-scroll{overflow-y:auto;padding:10px 12px 12px;flex:1;scrollbar-width:thin;scrollbar-color:var(--hair) transparent}
+.rail-scroll::-webkit-scrollbar{width:6px}
+.rail-scroll::-webkit-scrollbar-thumb{background:var(--hair);border-radius:3px}
+
+/* the trail: vertical connective line behind nodes */
+.trail{position:relative}
+.trail::before{content:"";position:absolute;left:28px;top:24px;bottom:24px;width:2px;
+  background:linear-gradient(180deg,var(--d1),var(--d2),var(--d3),var(--d4),var(--d5),var(--d6),var(--d7));opacity:.5;border-radius:2px}
+
+.day{position:relative;padding:9px 8px 9px 0;cursor:pointer}
+.day-row{display:flex;gap:14px;align-items:flex-start;padding:8px;border-radius:13px;transition:background .16s}
+.day:hover .day-row{background:var(--hair-2)}
+.day.open .day-row{background:rgba(255,255,255,.05)}
+.node{width:34px;height:34px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--disp);font-weight:700;font-size:15px;color:var(--abyss);background:var(--dc);position:relative;z-index:2;
+  box-shadow:0 0 0 4px var(--panel-solid),0 0 16px -2px var(--dc);transition:transform .16s}
+.day:hover .node,.day.open .node{transform:scale(1.08)}
+.day-meta{flex:1;min-width:0;padding-top:1px}
+.day-meta .dtag{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--dc);text-transform:uppercase}
+.day-meta .dttl{font-family:var(--disp);font-size:15.5px;font-weight:600;letter-spacing:-.01em;margin:2px 0 3px;line-height:1.15}
+.day-meta .ddate{font-family:var(--mono);font-size:10px;color:var(--mist);letter-spacing:.04em}
+.day-meta .dtrans{font-size:11.5px;color:var(--mist);margin-top:5px;display:flex;align-items:center;gap:5px}
+
+.sites{max-height:0;overflow:hidden;transition:max-height .32s ease;margin-left:48px}
+.day.open .sites{max-height:520px}
+.site{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--hair-2);cursor:pointer}
+.site:first-child{border-top:0}
+.site:hover .s-name{color:var(--amber)}
+.site .s-time{font-family:var(--mono);font-size:9.5px;color:var(--mist-dim);width:54px;flex:none;padding-top:2px;letter-spacing:.02em}
+.site .s-ico{font-size:14px;line-height:1.3;flex:none}
+.site .s-name{font-size:12.5px;font-weight:500;color:var(--frost);line-height:1.35;transition:color .14s}
+
+.rail-foot{flex:none;padding:12px;border-top:1px solid var(--hair-2)}
+.btn-all{width:100%;appearance:none;border:1px solid var(--hair);background:transparent;color:var(--frost);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;padding:11px;border-radius:11px;cursor:pointer;transition:.16s}
+.btn-all:hover{background:var(--frost);color:var(--abyss);border-color:var(--frost)}
+
+/* ---------- NOW-VIEWING CHIP ---------- */
+.now{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:800;
+  background:var(--panel);border:1px solid var(--hair);border-radius:999px;padding:9px 18px;backdrop-filter:blur(18px);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--mist);box-shadow:0 10px 30px rgba(0,0,0,.4);
+  display:flex;align-items:center;gap:9px;text-transform:uppercase;white-space:nowrap;max-width:calc(100vw - 32px)}
+.now .pip{width:8px;height:8px;border-radius:50%;background:var(--glacier);flex:none;box-shadow:0 0 10px var(--glacier)}
+.now b{color:var(--frost);font-weight:700}
+
+/* ---------- MARKERS ---------- */
+.mk{width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transform-origin:center;will-change:transform}
+.mk-day{border-radius:50%;background:var(--c);color:#0A0F18;font-family:var(--disp);font-weight:700;font-size:16px;
+  border:2.5px solid rgba(255,255,255,.92);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 20px -2px var(--c),0 3px 8px rgba(0,0,0,.5)}
+.mk-site{border-radius:50%;background:rgba(12,18,28,.92);font-size:14px;
+  border:2px solid var(--c);box-shadow:0 0 12px -3px var(--c),0 2px 6px rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+.mk:hover{transform:scale(1.18);z-index:1000}
+@media (prefers-reduced-motion:no-preference){
+  .mk{animation:pop .5s cubic-bezier(.2,.85,.3,1.25) backwards}
+}
+@keyframes pop{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+
+/* route paths (SVG) */
+.route-main{stroke-linecap:round;stroke-linejoin:round}
+.route-glow{stroke-linecap:round;filter:blur(4px)}
+@media (prefers-reduced-motion:no-preference){
+  .route-main{stroke-dasharray:4000;stroke-dashoffset:4000;animation:draw 2.4s .25s ease forwards}
+}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* ---------- POPUP ---------- */
+.leaflet-popup.glass-popup .leaflet-popup-content-wrapper{background:rgba(13,20,32,.93);color:var(--frost);
+  border:1px solid var(--hair);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.6);backdrop-filter:blur(20px) saturate(1.3);overflow:hidden;padding:0}
+.leaflet-popup.glass-popup .leaflet-popup-content{margin:0;width:262px!important;font-family:var(--body)}
+.leaflet-popup.glass-popup .leaflet-popup-tip{background:rgba(13,20,32,.93);border:1px solid var(--hair)}
+.leaflet-popup.glass-popup a.leaflet-popup-close-button{color:var(--mist);font-size:20px;padding:8px 9px 0 0}
+.leaflet-popup.glass-popup a.leaflet-popup-close-button:hover{color:var(--frost)}
+.pp-img{width:100%;height:138px;object-fit:cover;display:block;background:var(--slate)}
+.pp-body{padding:13px 15px 15px}
+.pp-cat{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--pc);font-weight:700}
+.pp-name{font-family:var(--disp);font-size:17px;font-weight:600;letter-spacing:-.01em;margin:5px 0 7px;line-height:1.15;color:var(--frost)}
+.pp-time{font-family:var(--mono);font-size:10.5px;color:var(--mist);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.pp-note{font-size:12.5px;line-height:1.5;color:#C7D3E2}
+.pp-badge{display:inline-block;margin-top:11px;padding:4px 10px;border-radius:7px;background:var(--pc);color:#0A0F18;
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+
+/* leaflet chrome */
+.leaflet-control-zoom{border:0!important;margin:14px!important}
+.leaflet-control-zoom a{background:var(--panel)!important;color:var(--frost)!important;border:1px solid var(--hair)!important;
+  backdrop-filter:blur(14px);width:34px!important;height:34px!important;line-height:32px!important;font-size:18px!important}
+.leaflet-control-zoom a:first-child{border-radius:10px 10px 0 0!important}
+.leaflet-control-zoom a:last-child{border-radius:0 0 10px 10px!important}
+.leaflet-control-zoom a:hover{background:var(--frost)!important;color:var(--abyss)!important}
+.leaflet-control-attribution{background:rgba(10,15,24,.7)!important;color:var(--mist-dim)!important;font-size:9px!important;
+  font-family:var(--mono);backdrop-filter:blur(6px);border-radius:6px 0 0 0;padding:2px 7px!important}
+.leaflet-control-attribution a{color:var(--mist)!important}
+.leaflet-bar{box-shadow:0 8px 24px rgba(0,0,0,.4)!important}
+
+/* ---------- MOBILE ---------- */
+@media (max-width:860px){
+  .menu-btn{display:block}
+  .brand .sub{display:none}
+  .dates{display:none}
+  .filters{top:auto;bottom:74px;left:16px;right:16px;transform:none;max-width:none;justify-content:flex-start}
+  .rail{top:auto;left:0;right:0;bottom:0;width:100%;max-height:62vh;border-radius:20px 20px 0 0;
+    transform:translateY(calc(100% - 0px));transition:transform .3s cubic-bezier(.3,.8,.3,1)}
+  .rail.open{transform:translateY(0)}
+  .rail::before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:40px;height:4px;
+    border-radius:2px;background:var(--hair);z-index:5}
+  .rail-head{padding-top:22px}
+  .now{bottom:auto;top:70px}
+}
+.sr-skip{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+<div class="atmos"></div>
+
+<header class="hdr">
+  <div class="brand">
+    <span class="mark">Jime <em>&</em> Moi</span><span class="dot"></span>
+    <span class="sub">Las Rockies · Invierno</span>
+  </div>
+  <div class="hdr-right">
+    <div class="dates"><b>26 Dic 2026 — 1 Ene 2027</b><br>7 días · Calgary + Banff</div>
+    <div class="seg" id="viewToggle">
+      <button data-view="sat" class="on">Satélite</button>
+      <button data-view="terr">Terreno</button>
+      <button data-view="dark">Mapa</button>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Ver itinerario">☰</button>
+  </div>
+</header>
+
+<div class="filters" id="filters">
+  <button class="chip on" data-cat="all"><span class="i">✦</span>Todo</button>
+  <button class="chip" data-cat="views"><span class="i">🏔️</span>Vistas</button>
+  <button class="chip" data-cat="food"><span class="i">🍽️</span>Comer</button>
+  <button class="chip" data-cat="animals"><span class="i">🐺</span>Animales</button>
+  <button class="chip" data-cat="shopping"><span class="i">🛍️</span>Shopping</button>
+  <button class="chip" data-cat="activity"><span class="i">❄️</span>Actividades</button>
+  <button class="chip" data-cat="nightlife"><span class="i">🎆</span>Año Nuevo</button>
+  <button class="chip" data-cat="stay"><span class="i">🏨</span>Hotel</button>
+</div>
+
+<aside class="rail" id="rail">
+  <div class="rail-head">
+    <div class="eyebrow">Itinerario</div>
+    <h1>Nuestro primer <em>invierno</em></h1>
+    <div class="rail-stats">
+      <div class="stat"><div class="n">7</div><div class="l">Días</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">Viajeros</div></div>
+      <div class="stat"><div class="n">−8°</div><div class="l">Promedio</div></div>
+      <div class="stat"><div class="n">3</div><div class="l">Días de carro</div></div>
+    </div>
+  </div>
+  <div class="rail-scroll">
+    <div class="trail" id="trail"></div>
+  </div>
+  <div class="rail-foot">
+    <button class="btn-all" id="btnAll">◇ Ver todo el viaje</button>
+  </div>
+</aside>
+
+<div class="now" id="now"><span class="pip"></span><span id="nowText">Viaje completo · <b>7 días en las Rockies</b></span></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const DAYCOL=['#F5A623','#5FD0D6','#EC8C76','#93A7EC','#82C08A','#C58CEC','#E3C56A'];
+const P='https://lh3.googleusercontent.com/place-photos/',PL='https://lh3.googleusercontent.com/places/';
+const TRIP=[
+ {n:1,date:"Vie 26 Dic",tag:"Calgary",title:"Llegada + Boxing Day",trans:"🚕 Uber / taxi local",
+  blurb:"Aterrizan en Boxing Day, el día de rebajas más grande del año. Sueltan maletas y arrancan el viaje con shopping en el outlet más grande de Alberta.",
+  sites:[
+   {name:"Aeropuerto de Calgary (YYC)",lat:51.1216,lng:-114.008,t:"3:00 PM",cat:"transport",ic:"✈️",
+    note:"Llegada del vuelo desde San José. Del aeropuerto al centro son ~30 min en Uber o bus.",img:P+"AJRVUZPOW-IO65KO-A8JHlFCWW7Iz1NIzyT8jSHuDkEK_N6afs3Ek_et9s9xsAmd0Dm3ZMA2cpXcNc5x_QOsF_f_qROVvCxaVl08XomCCy6sCj-nq5jWll3gkBRPXf2MnBnBLU_owziYm3TNhT_tHw=s800"},
+   {name:"CrossIron Mills",lat:51.2031,lng:-113.9935,t:"5:00 PM",cat:"shopping",ic:"🛍️",
+    note:"Outlet gigante 20 min al norte del aeropuerto. En Boxing Day los descuentos son los mejores del año.",img:P+"AJRVUZPnJJKh8s11o-thzjfcOXhsj6rx6-HzbcFhUAdKdbyIlR3uKpXjkARnCK863D-27Pts30UPjp6fs1y_g3Z0CgTcVGjohRpjH-nD5-uHbG90bcMtWYM3harWWoBjxYhx38VvRRiWW0xLhpIAIw=s800"},
+   {name:"Cena: Ten Foot Henry",lat:51.0388,lng:-114.0726,t:"8:30 PM",cat:"food",ic:"🍽️",
+    note:"El favorito foodie de Calgary: cocina veg-forward, platos para compartir, ambiente cool. Arrancar a lo grande."},
+   {name:"Noche en Calgary",lat:51.0447,lng:-114.0719,t:"10:30 PM",cat:"stay",ic:"🏨",
+    note:"Primera noche en el centro. A descansar para subir a las montañas mañana."}
+  ]},
+ {n:2,date:"Sáb 27 Dic",tag:"Traslado",title:"Calgary → Banff",trans:"🚌 Shuttle Banff Airporter",
+  blurb:"Brunch en Calgary y luego el shuttle escénico a Banff: dos horas viendo cómo las Rockies crecen en el horizonte. Tarde para caminar Banff Avenue.",
+  sites:[
+   {name:"Shuttle a Banff",lat:51.1216,lng:-114.008,t:"11:00 AM",cat:"transport",ic:"🚌",
+    note:"~2h por la Trans-Canada (autopista plana y arada). Banff Airporter ~$120 USD ida y vuelta por persona."},
+   {name:"Banff Avenue + check-in",lat:51.1789,lng:-115.5712,t:"2:00 PM",cat:"stay",ic:"🏨",
+    note:"Base por 5 noches. Banff Avenue con las montañas de telón: cafés, tiendas y la calle principal del pueblo.",img:P+"AJRVUZO70cZcfaifwDUroRF5Vas-sxmX6yvuxaHppj8pc-LUoGp6aFouJqFCyxHOF3O2FvM7vYe16JLI9w4TBcPfWyiesmRSMTbMlRhsTXMxy0FvF9QU6v7D55buhxraBRUJ80BwHljeUtoLvmQg9w=s800"},
+   {name:"Cena: The Bison",lat:51.1761,lng:-115.5705,t:"8:00 PM",cat:"food",ic:"🍽️",
+    note:"Cocina de las Rockies, ingredientes locales. El pick de Banff para la primera noche. $$$"}
+  ]},
+ {n:3,date:"Dom 28 Dic",tag:"Carro · Día 1",title:"Lake Louise congelado",trans:"🚗 Carro alquilado",
+  blurb:"Recogen el carro y manejan 45 min por la autopista principal hasta Lake Louise. El lago está totalmente congelado: patinaje, castillo de hielo, y el Fairmont entre montañas nevadas.",
+  sites:[
+   {name:"Pickup del carro (Banff)",lat:51.1758,lng:-115.568,t:"9:00 AM",cat:"transport",ic:"🚗",
+    note:"Confirmá al reservar que trae llantas de invierno: son obligatorias por ley en el parque."},
+   {name:"Lake Louise",lat:51.4254,lng:-116.1773,t:"10:30 AM",cat:"views",ic:"🏔️",
+    note:"El lago congelado por completo: caminan por la orilla helada, ven el castillo de hielo esculpido y el Fairmont al fondo entre montañas nevadas. Tu 'lago cool' hecho realidad.",img:PL+"ANXAkqEqkgritPP55e4_T71Skl7PuwgQFhlWB32p9eKSfu6VEkcIsZ8KKO6k-dHQ-yros6oPcjDA-cY3JoUgapYr5vEXxTB047chBLc=s800"},
+   {name:"Fairmont Chateau (almuerzo)",lat:51.4177,lng:-116.2169,t:"1:00 PM",cat:"food",ic:"🍷",
+    note:"Almuerzo o un trago en el lobby con vista al lago congelado. El toque high-end del día."},
+   {name:"Cena: Block Kitchen",lat:51.1772,lng:-115.5719,t:"8:00 PM",cat:"food",ic:"🍷",
+    note:"De vuelta en Banff: tapas globales para compartir, ambiente cálido. De las mejores para foodies. $$"}
+  ]},
+ {n:4,date:"Lun 29 Dic",tag:"Carro · Día 2",title:"Canmore + trineo de perros",trans:"🚗 Carro alquilado",
+  blurb:"20 min a Canmore. La mañana es de trineo de perros: huskies, paisaje y adrenalina suave a ras de suelo. Tarde de almuerzo lindo y vueltas por el pueblo más local de la zona.",
+  sites:[
+   {name:"Snowy Owl — trineo de perros",lat:51.0905,lng:-115.3627,t:"9:00 AM",cat:"animals",ic:"🐺",
+    note:"Tour de ~3h con huskies, podés manejar tu propio trineo. Reservar online. ~$220 USD por persona.",img:P+"AJRVUZNYDVeDaVOUhDjaqJod68QI6wvOI2OyNW_44HSHD6SOEQRRlSyVmPKwXKV_rLJC6UMb72E6v5YAAsIJKQUBCKoSXVvSfNovSrJR7L5KBJ3iFzZbV-sGuQFV1BcYu0MNYyRq5Y0rqTK3PpVd=s800"},
+   {name:"Almuerzo en Canmore",lat:51.0884,lng:-115.3527,t:"1:00 PM",cat:"food",ic:"🍽️",
+    note:"Communitea Cafe o The Iron Goat. La Calle 8 tiene las mejores opciones del pueblo."},
+   {name:"Canmore Main Street",lat:51.0892,lng:-115.359,t:"2:30 PM",cat:"shopping",ic:"🛍️",
+    note:"Tiendas boutique, galerías y cafés. Pueblo de montaña más local y tranquilo que Banff."},
+   {name:"Cena: Park Distillery",lat:51.178,lng:-115.5708,t:"8:00 PM",cat:"food",ic:"🥃",
+    note:"De vuelta en Banff. Asados y cócteles con destilería propia. Ambiente cool. $$"}
+  ]},
+ {n:5,date:"Mar 30 Dic",tag:"Carro · Día 3",title:"Día de animales",trans:"🚗 Carro · se devuelve PM",
+  blurb:"El día de la fauna. Manejan al santuario Yamnuska para ver lobos y wolfdogs de cerca. Tarde relajada de vuelta en Banff — tiendas, cafés y una buena cena. Devuelven el carro al final del día.",
+  sites:[
+   {name:"Yamnuska Wolfdog Sanctuary",lat:51.236,lng:-114.628,t:"10:00 AM",cat:"animals",ic:"🐺",
+    note:"Santuario de lobos y wolfdogs cerca de Cochrane (1h de Banff). Tour interactivo, animales increíbles y súper cuidados.",img:P+"AJRVUZP-jUr_rrGeLIKOIH4BkvnxsJo9ccJVfnmLYwLL0mL2JprHq0-5nIBZmQsseqb5-V3ohVnMMH7WSldVAT3rmSx7S31mQV0HcAtCOepkT5BnaAvNJLocRZFUvuiuj7_Wzd8zVz-HKo5ohgPtqVE=s800"},
+   {name:"Tarde de shopping en Banff",lat:51.1789,lng:-115.5705,t:"3:00 PM",cat:"shopping",ic:"🛍️",
+    note:"De vuelta en el pueblo: tiendas de Banff Avenue, cafés calientitos y tiempo para relajar antes de devolver el carro."},
+   {name:"Cena: Hello Sunshine",lat:51.1768,lng:-115.5705,t:"7:30 PM",cat:"food",ic:"🍣",
+    note:"Izakaya japonés divertido: sushi, ramen y cócteles. Spot foodie con buena energía. Última noche con carro."}
+  ]},
+ {n:6,date:"Mié 31 Dic",tag:"Año Nuevo",title:"Johnston Canyon + NYE",trans:"🚶 Tour + a pie",
+  blurb:"Tour guiado a Johnston Canyon: pasarelas entre cascadas congeladas, con crampones incluidos. En la noche, Año Nuevo en Banff Avenue con fuegos artificiales sobre las montañas.",
+  sites:[
+   {name:"Johnston Canyon (icewalk)",lat:51.2455,lng:-115.8399,t:"9:00 AM",cat:"activity",ic:"❄️",
+    note:"Tour guiado de ~3h sobre cascadas congeladas, crampones incluidos. Una de las caminatas más mágicas del invierno. ~$110 USD.",img:P+"AJRVUZMuP-RmH_yh9eq20y8Fgn1JlUl1R_0B0lgE-J6UacF0BDJCNov0McKwl4Jc-M4-0mBTTu_wQXplU0V4C_PYGhtJkjEdaF19akI0lVaii3tHEWTBuEuSIE-7zv0HXDsjcIOUJKqqi8mP_8S2=s800"},
+   {name:"Cave and Basin",lat:51.1691,lng:-115.5915,t:"2:30 PM",cat:"activity",ic:"🏛️",
+    note:"Sitio histórico donde nacieron los parques nacionales de Canadá. Cueva con aguas termales originales (solo para ver).",img:P+"AJRVUZM07HcWvIcoqPD36La9fT3T4IrG_vj5FXOBS6R6R5PIQR3nickOl4SdHtyP1meGotL94oFz19K-5vnorvogoPAwasIMm_70_eTPD2iPud7GqoiDoCnJ2tmK8BBpRBqXCksCJlNpY2RAtGNLNA=s800"},
+   {name:"Cena de Año Nuevo",lat:51.1782,lng:-115.571,t:"7:00 PM",cat:"nightlife",ic:"🥂",
+    note:"RESERVAR DESDE SEPTIEMBRE. Opciones top: Eden (alta cocina), 1888 Chop House (asados), Sky Bistro (vista)."},
+   {name:"NYE en Banff Avenue",lat:51.1789,lng:-115.5705,t:"11:00 PM",cat:"nightlife",ic:"🎆",
+    note:"Fiesta de calle: música en vivo y fuegos artificiales sobre las montañas a medianoche. Gratis y mágico."}
+  ]},
+ {n:7,date:"Jue 1 Ene",tag:"Regreso",title:"Vuelo a casa",trans:"🚌 Shuttle + ✈️",
+  blurb:"Mañana relajada en Banff: último café y croissant antes del shuttle de vuelta a Calgary. Regresan con la maleta más pesada y la cámara llena de lagos congelados.",
+  sites:[
+   {name:"Brunch de despedida",lat:51.178,lng:-115.571,t:"10:00 AM",cat:"food",ic:"☕",
+    note:"Wild Flour Bakery o Whitebark Cafe. Café y pastelería local para cerrar el viaje."},
+   {name:"Shuttle a Calgary",lat:51.1789,lng:-115.571,t:"12:30 PM",cat:"transport",ic:"🚌",
+    note:"~2h de regreso al aeropuerto YYC."},
+   {name:"Vuelo a San José",lat:51.1216,lng:-114.008,t:"4:00 PM",cat:"transport",ic:"✈️",
+    note:"De vuelta a casa, con un primer invierno juntos guardado en fotos."}
+  ]}
+];
+const CATLBL={transport:"Transporte",shopping:"Outlet shopping",stay:"Hospedaje",food:"Gastronomía",views:"Vistas / paisaje",animals:"Fauna",activity:"Actividad",nightlife:"Año Nuevo"};
+
+/* ---------- MAP ---------- */
+const map=L.map('map',{zoomControl:true,attributionControl:true,renderer:L.svg(),minZoom:4,maxZoom:17}).setView([51.3,-115.2],8);
+const ESRI_ATTR='Imagery © Esri, Maxar, Earthstar Geographics';
+const layers={
+  sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:ESRI_ATTR}),
+  satLabels:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,opacity:.9}),
+  terr:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© Esri'}),
+  dark:L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19,subdomains:'abcd',attribution:'© OpenStreetMap, © CARTO'})
+};
+let curBase=layers.sat;
+function setView(v){
+  [layers.sat,layers.terr,layers.dark].forEach(l=>map.removeLayer(l)); map.removeLayer(layers.satLabels);
+  if(v==='sat'){layers.sat.addTo(map);layers.satLabels.addTo(map);}
+  else if(v==='terr'){layers.terr.addTo(map);}
+  else{layers.dark.addTo(map);}
+  document.querySelectorAll('#viewToggle button').forEach(b=>b.classList.toggle('on',b.dataset.view===v));
+}
+document.querySelectorAll('#viewToggle button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+
+/* ---------- MARKERS + ROUTES ---------- */
+const markers=[]; const dayLines={}; let mi=0;
+TRIP.forEach((day,di)=>{
+  const c=DAYCOL[di]; day.c=c; dayLines[di]=[];
+  const pts=day.sites.map(s=>[s.lat,s.lng]);
+  // route within the day (glow + main), with draw animation
+  if(pts.length>1){
+    dayLines[di].push(L.polyline(pts,{className:'route-glow',color:c,weight:9,opacity:.18}).addTo(map));
+    dayLines[di].push(L.polyline(pts,{className:'route-main',color:c,weight:3,opacity:.85}).addTo(map));
+  }
+  day.sites.forEach((s,si)=>{
+    const first=si===0, delay=(mi*0.05).toFixed(2);
+    const html=first
+      ? `<div class="mk mk-day" style="--c:${c};animation-delay:${delay}s">${day.n}</div>`
+      : `<div class="mk mk-site" style="--c:${c};animation-delay:${delay}s">${s.ic}</div>`;
+    const icon=L.divIcon({html,className:'',iconSize:first?[38,38]:[28,28],iconAnchor:first?[19,19]:[14,14]});
+    const m=L.marker([s.lat,s.lng],{icon,riseOnHover:true}).addTo(map);
+    m._cat=s.cat; m._di=di; m._s=s;
+    const imgH=s.img?`<img class="pp-img" src="${s.img}" alt="" onerror="this.remove()">`:'';
+    m.bindPopup(
+      `<div style="--pc:${c}">${imgH}<div class="pp-body">
+        <div class="pp-cat">${CATLBL[s.cat]||s.cat}</div>
+        <div class="pp-name">${s.name}</div>
+        <div class="pp-time">◷ ${s.t}</div>
+        <div class="pp-note">${s.note}</div>
+        <span class="pp-badge">Día ${day.n} · ${day.date}</span>
+      </div></div>`,{className:'glass-popup',maxWidth:262,minWidth:262,autoPanPadding:[40,80]});
+    markers.push(m); mi++;
+  });
+});
+// inter-day connectors (last of day N -> first of day N+1)
+const interLines=[];
+for(let i=0;i<TRIP.length-1;i++){
+  const a=TRIP[i].sites.at(-1), b=TRIP[i+1].sites[0];
+  if(a.lat===b.lat&&a.lng===b.lng) continue;
+  const gl=L.polyline([[a.lat,a.lng],[b.lat,b.lng]],{className:'route-glow',color:'#5FD0D6',weight:7,opacity:.10}).addTo(map);
+  const ml=L.polyline([[a.lat,a.lng],[b.lat,b.lng]],{className:'route-main',color:'#5FD0D6',weight:2,opacity:.5,dashArray:'1 9'}).addTo(map);
+  interLines.push(gl,ml);
+}
+
+/* ---------- RAIL ---------- */
+const trail=document.getElementById('trail');
+TRIP.forEach((day,di)=>{
+  const el=document.createElement('div');
+  el.className='day'; el.style.setProperty('--dc',day.c); el.dataset.di=di;
+  const sitesHtml=day.sites.map((s,si)=>
+    `<div class="site" data-di="${di}" data-si="${si}">
+       <div class="s-time">${s.t}</div><div class="s-ico">${s.ic}</div><div class="s-name">${s.name}</div>
+     </div>`).join('');
+  el.innerHTML=
+    `<div class="day-row">
+       <div class="node">${day.n}</div>
+       <div class="day-meta">
+         <div class="dtag">${day.tag}</div>
+         <div class="dttl">${day.title}</div>
+         <div class="ddate">${day.date}</div>
+         <div class="dtrans">${day.trans}</div>
+       </div>
+     </div>
+     <div class="sites">${sitesHtml}</div>`;
+  trail.appendChild(el);
+});
+
+let openDay=null, activeFilter='all';
+
+function applyVisibility(){
+  markers.forEach(m=>{
+    const show=(activeFilter==='all'||m._cat===activeFilter)&&(openDay===null||m._di===openDay);
+    if(show){ m.addTo(map); m.setOpacity(1); } else { map.removeLayer(m); }
+  });
+  Object.entries(dayLines).forEach(([k,arr])=>arr.forEach(l=>{
+    const glow=l.options.className==='route-glow';
+    let op; if(openDay===null) op=glow?.18:.85; else op=(+k===openDay)?(glow?.3:.95):(glow?.04:.08);
+    l.setStyle({opacity:op});
+  }));
+  interLines.forEach(l=>{
+    const glow=l.options.className==='route-glow';
+    l.setStyle({opacity:openDay===null?(glow?.10:.5):(glow?.03:.05)});
+  });
+}
+function setNow(){
+  const t=document.getElementById('nowText');
+  if(openDay===null) t.innerHTML=`Viaje completo · <b>7 días en las Rockies</b>`;
+  else { const d=TRIP[openDay]; t.innerHTML=`Día ${d.n} · <b>${d.title}</b>`; }
+}
+function fitAll(animate=true){
+  const all=[]; TRIP.forEach(d=>d.sites.forEach(s=>all.push([s.lat,s.lng])));
+  const wide=window.innerWidth>860;
+  const opts={paddingTopLeft:[wide?360:30,110],paddingBottomRight:[30,wide?60:90]};
+  if(animate) map.flyToBounds(L.latLngBounds(all),{...opts,duration:.8});
+  else map.fitBounds(L.latLngBounds(all),{...opts,animate:false});
+}
+function focusDay(di){
+  openDay=(openDay===di)?null:di;
+  document.querySelectorAll('.day').forEach(d=>d.classList.toggle('open',+d.dataset.di===openDay));
+  applyVisibility(); setNow();
+  if(openDay===null){ fitAll(); return; }
+  const b=L.latLngBounds(TRIP[di].sites.map(s=>[s.lat,s.lng]));
+  const wide=window.innerWidth>860;
+  map.flyToBounds(b,{paddingTopLeft:[wide?360:40,120],paddingBottomRight:[40,wide?60:280],maxZoom:13,duration:.8});
+}
+function resetView(refit){
+  openDay=null;
+  document.querySelectorAll('.day').forEach(d=>d.classList.remove('open'));
+  applyVisibility(); setNow();
+  if(refit) fitAll();
+}
+
+// rail: open a day (single binding)
+document.querySelectorAll('.day').forEach(d=>{
+  d.querySelector('.day-row').addEventListener('click',()=>focusDay(+d.dataset.di));
+});
+// rail: jump to a specific site
+trail.querySelectorAll('.site').forEach(si=>{
+  si.addEventListener('click',e=>{
+    e.stopPropagation();
+    const di=+si.dataset.di, idx=+si.dataset.si;
+    const target=markers.find(m=>m._di===di&&m._s===TRIP[di].sites[idx]);
+    if(!target) return;
+    if(window.innerWidth<=860) document.getElementById('rail').classList.remove('open');
+    if(!map.hasLayer(target)){ // unhide if a filter was hiding it
+      activeFilter='all';
+      document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.cat==='all'));
+      applyVisibility();
+    }
+    map.flyTo([target._s.lat,target._s.lng],14,{duration:.7});
+    setTimeout(()=>target.openPopup(),720);
+  });
+});
+
+/* ---------- FILTERS ---------- */
+document.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); ch.classList.add('on');
+  activeFilter=ch.dataset.cat;
+  applyVisibility();
+});
+
+document.getElementById('btnAll').onclick=()=>resetView(true);
+document.getElementById('menuBtn').onclick=()=>document.getElementById('rail').classList.toggle('open');
+
+/* ---------- INIT ---------- */
+setTimeout(()=>{
+  map.invalidateSize();
+  resetView(false);          // visibility + label, no fit
+  fitAll(false);             // settle on final bounds without animation
+  curBase.addTo(map);        // add satellite tiles AFTER the view is final -> single load, no aborts
+  layers.satLabels.addTo(map);
+},160);
+</script>
+</body>
+</html>
