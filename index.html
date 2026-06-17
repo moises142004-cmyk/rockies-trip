@@ -4,65 +4,67 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Jime & Moi — El Mapa del Tesoro · Las Rockies</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=IM+Fell+English+SC&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#F1E7CF; --paper-d:#E3D3B0; --paper-l:#FBF4E2; --paper-edge:#CDB78C;
-  --ink:#251E14; --ink2:#574431; --ink3:#857051;
-  --wax:#9B2F26; --wax-d:#7A2118; --wax-l:#C25446;
-  --teal:#2C6E63; --teal-d:#1E4F46;
-  --brass:#9C7A32; --brass-d:#7A5E24; --brass-l:#C8A451;
-  --leather:#4A3823; --leather-d:#352713; --leather-l:#63482A;
-  --line:rgba(37,30,20,.20); --line2:rgba(37,30,20,.10);
+  --cream:#F4ECD6; --cream-d:#E7DABB; --cream-l:#FCF6E7; --cream-edge:#D8C8A2;
+  --ink:#241910; --ink2:#5A4632; --ink3:#8C765A;
+  --ox:#6E2118; --ox-d:#551610; --ox-l:#8C3326; --ox-soft:rgba(110,33,24,.10);
+  --gold:#D8B45C; --gold-d:#AE8B38; --gold-l:#ECCF86;
+  --teal:#234B45; --teal-d:#163530;
+  --line:rgba(36,25,16,.18); --line2:rgba(36,25,16,.09);
   --disp:'Pirata One',system-ui,cursive; --label:'IM Fell English SC',serif;
   --body:'EB Garamond',Georgia,serif; --mono:'Space Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:#352713;color:var(--ink);font-family:var(--body);font-size:16.5px;-webkit-font-smoothing:antialiased}
-#map{position:fixed;inset:0;width:100%;height:100%;background:#cdbb95;z-index:0}
+html,body{height:100%;overflow:hidden;background:#551610;color:var(--ink);font-family:var(--body);font-size:16.5px;-webkit-font-smoothing:antialiased}
+#map{position:fixed;inset:0;width:100%;height:100%;background:#d9c8a4;z-index:0}
 
-/* ---- treasure tint on tiles (subtle, keeps legibility) ---- */
-body.treasure .leaflet-tile{filter:sepia(.38) saturate(.82) contrast(1.02) brightness(1.04)}
+/* treasure tint on tiles */
+body.treasure .leaflet-tile{filter:sepia(.36) saturate(.84) contrast(1.02) brightness(1.04)}
 .scene-fx{position:fixed;inset:0;z-index:500;pointer-events:none;opacity:0;transition:opacity .5s}
 body.treasure .scene-fx{opacity:1}
-.scene-fx .vig{position:absolute;inset:0;
-  background:radial-gradient(130% 100% at 50% 42%,transparent 58%,rgba(74,49,20,.22) 86%,rgba(48,30,12,.46) 100%)}
-.scene-fx .grain{position:absolute;inset:0;mix-blend-mode:multiply;opacity:.28;
+.scene-fx .vig{position:absolute;inset:0;background:radial-gradient(130% 100% at 50% 42%,transparent 58%,rgba(74,40,18,.20) 86%,rgba(50,22,12,.42) 100%)}
+.scene-fx .grain{position:absolute;inset:0;mix-blend-mode:multiply;opacity:.24;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.5'/></svg>")}
+
+/* map unavailable banner */
+.mapfail{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:520;display:none;max-width:420px;text-align:center;
+  background:linear-gradient(180deg,var(--cream-l),var(--cream-d));border:1px solid var(--gold-d);border-radius:12px;padding:20px 24px;
+  box-shadow:0 14px 40px rgba(40,15,8,.4)}
+body.mapfail .mapfail{display:block}
+.mapfail h4{font-family:var(--disp);font-size:24px;color:var(--ox);font-weight:400;margin-bottom:6px}
+.mapfail p{font-size:15px;color:var(--ink2);line-height:1.5}
 
 /* =================== TACTILE BUTTONS =================== */
 .btn{appearance:none;cursor:pointer;font-family:var(--label);font-size:14px;color:var(--ink);
-  background:linear-gradient(180deg,var(--paper-l),var(--paper-d));
-  border:1px solid var(--brass-d);border-radius:8px;padding:8px 14px;letter-spacing:.02em;
-  box-shadow:inset 0 1px 0 #FFFBEF, 0 2px 0 #B79A5E, 0 3px 6px rgba(40,25,10,.30);
-  transition:transform .06s, box-shadow .06s, background .14s}
-.btn:hover{background:linear-gradient(180deg,#FFFBEF,var(--paper))}
-.btn:active{transform:translateY(2px);box-shadow:inset 0 2px 5px rgba(80,50,20,.40)}
-.btn.on{transform:translateY(1px);background:linear-gradient(180deg,var(--teal),var(--teal-d));color:#FBF4E2;
-  border-color:var(--teal-d);text-shadow:0 1px 0 rgba(10,40,35,.5);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 2px 5px rgba(20,50,40,.35)}
+  background:linear-gradient(180deg,var(--cream-l),var(--cream-d));border:1px solid var(--gold-d);border-radius:8px;padding:8px 14px;letter-spacing:.02em;
+  box-shadow:inset 0 1px 0 #FFFCF0, 0 2px 0 #C9AC6A, 0 3px 6px rgba(50,25,10,.28);transition:transform .06s, box-shadow .06s, background .14s}
+.btn:hover{background:linear-gradient(180deg,#FFFCF0,var(--cream))}
+.btn:active{transform:translateY(2px);box-shadow:inset 0 2px 5px rgba(90,55,20,.4)}
+.btn.on{transform:translateY(1px);background:linear-gradient(180deg,var(--gold-l),var(--gold-d));color:#3A2608;
+  border-color:var(--ox);text-shadow:0 1px 0 rgba(255,250,230,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 5px rgba(120,80,20,.35)}
 
-/* =================== HEADER (leather binding) =================== */
+/* =================== HEADER (oxblood binding) =================== */
 .hdr{position:fixed;top:0;left:0;right:0;height:62px;z-index:1000;display:flex;align-items:center;justify-content:space-between;
-  padding:0 16px;background:linear-gradient(180deg,var(--leather-l),var(--leather-d));
-  border-bottom:2px solid #1F1608;box-shadow:inset 0 1px 0 rgba(190,150,90,.35),0 4px 14px rgba(20,12,2,.5)}
+  padding:0 16px;background:linear-gradient(180deg,var(--ox-l),var(--ox-d));border-bottom:2px solid #3A0E08;
+  box-shadow:inset 0 1px 0 rgba(216,180,92,.35),0 4px 14px rgba(30,8,4,.5)}
 .brand{display:flex;align-items:center;gap:13px;min-width:0}
-.brand .mark{font-family:var(--disp);font-size:30px;line-height:1;color:#F3E8CC;text-shadow:0 1px 2px rgba(0,0,0,.55);white-space:nowrap}
-.brand .mark em{color:var(--brass-l);font-style:normal}
-.brand .sub{font-family:var(--label);font-size:12.5px;letter-spacing:.16em;color:#CBB386;text-transform:uppercase;white-space:nowrap;border-left:1px solid rgba(200,160,95,.3);padding-left:13px}
+.brand .mark{font-family:var(--disp);font-size:30px;line-height:1;color:#F6ECCF;text-shadow:0 1px 2px rgba(0,0,0,.5);white-space:nowrap}
+.brand .mark em{color:var(--gold-l);font-style:normal}
+.brand .sub{font-family:var(--label);font-size:12.5px;letter-spacing:.16em;color:#E6C893;text-transform:uppercase;white-space:nowrap;border-left:1px solid rgba(216,180,92,.34);padding-left:13px}
 .hdr-right{display:flex;align-items:center;gap:12px}
-.dates{font-family:var(--mono);font-size:11px;color:#D5BE90;text-align:right;line-height:1.55}
-.dates b{color:#F3E8CC;font-weight:700}
+.dates{font-family:var(--mono);font-size:11px;color:#EAD3A0;text-align:right;line-height:1.55}
+.dates b{color:#F6ECCF;font-weight:700}
 .seg{display:flex;gap:6px}
-.menu-btn{display:none}
 
-/* =================== FILTER STAMPS =================== */
+/* =================== FILTERS =================== */
 .filters{position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:900;display:flex;gap:7px;
-  padding:8px;background:linear-gradient(180deg,rgba(251,244,226,.95),rgba(227,211,176,.95));backdrop-filter:blur(6px);
-  border:1px solid var(--brass-d);border-radius:12px;box-shadow:inset 0 1px 0 #FFFBEF,0 6px 18px rgba(40,25,10,.4);
+  padding:8px;background:linear-gradient(180deg,rgba(252,246,231,.96),rgba(231,218,187,.96));backdrop-filter:blur(6px);
+  border:1px solid var(--gold-d);border-radius:12px;box-shadow:inset 0 1px 0 #FFFCF0,0 6px 18px rgba(50,25,10,.4);
   max-width:calc(100vw - 28px);overflow-x:auto;scrollbar-width:none}
 .filters::-webkit-scrollbar{display:none}
 .chip{flex:none;font-size:14px;letter-spacing:.01em;padding:7px 12px;display:flex;align-items:center;gap:6px}
@@ -70,87 +72,77 @@ body.treasure .scene-fx{opacity:1}
 
 /* =================== LEDGER WINDOW =================== */
 .win{position:fixed;top:74px;left:16px;bottom:16px;width:352px;z-index:850;display:flex;flex-direction:column;
-  background:linear-gradient(180deg,rgba(247,238,216,.96),rgba(233,219,186,.96));backdrop-filter:blur(8px) saturate(1.05);
-  border:1px solid var(--brass-d);border-radius:11px;
-  box-shadow:inset 0 1px 0 #FFFBEF, 0 0 0 1px rgba(90,64,24,.2), 0 22px 50px rgba(25,15,4,.5);overflow:hidden}
+  background:linear-gradient(180deg,rgba(250,243,229,.97),rgba(236,223,194,.97));backdrop-filter:blur(8px) saturate(1.05);
+  border:1px solid var(--gold-d);border-radius:11px;box-shadow:inset 0 1px 0 #FFFCF0, 0 0 0 1px rgba(110,33,24,.22), 0 22px 50px rgba(35,12,6,.5);overflow:hidden}
 .win.closed{display:none}
-.win.min{bottom:auto!important;height:36px;resize:none}
+.win.min{bottom:auto!important;height:38px}
 .win.min .tabs,.win.min .win-head,.win.min .scroll,.win.min .win-foot{display:none}
-.titlebar{flex:none;height:36px;display:flex;align-items:center;gap:10px;padding:0 12px;cursor:grab;
-  background:linear-gradient(180deg,var(--leather-l),var(--leather-d));border-bottom:2px solid #1F1608;
-  box-shadow:inset 0 1px 0 rgba(190,150,90,.3)}
+.titlebar{flex:none;height:38px;display:flex;align-items:center;gap:10px;padding:0 12px;cursor:grab;
+  background:linear-gradient(180deg,var(--ox-l),var(--ox-d));border-bottom:2px solid #3A0E08;box-shadow:inset 0 1px 0 rgba(216,180,92,.3)}
 .titlebar:active{cursor:grabbing}
 .tl-dots{display:flex;gap:8px}
 .tl-dots b{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;
-  border:1px solid rgba(20,10,0,.45);font-size:9px;color:rgba(30,15,0,0);font-family:var(--mono);font-weight:700;line-height:1;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
-.tl-dots b:hover{color:rgba(30,15,0,.75)}
-.tl-dots b.r{background:radial-gradient(circle at 34% 30%,#e8786a,#C23A2C)}
-.tl-dots b.y{background:radial-gradient(circle at 34% 30%,#f2cf72,#D49A2E)}
-.tl-dots b.g{background:radial-gradient(circle at 34% 30%,#86c06f,#3E8B3C)}
-.tl-title{font-family:var(--label);font-size:13.5px;letter-spacing:.16em;text-transform:uppercase;color:#EBD9B2;text-shadow:0 1px 1px rgba(0,0,0,.5)}
+  border:1px solid rgba(20,6,2,.5);font-size:9px;color:rgba(30,10,0,0);font-family:var(--mono);font-weight:700;line-height:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.tl-dots b:hover{color:rgba(30,10,0,.8)}
+.tl-dots b.r{background:radial-gradient(circle at 34% 30%,#ef8a78,#C23A2C)}
+.tl-dots b.y{background:radial-gradient(circle at 34% 30%,#f3d57e,#D8B45C)}
+.tl-dots b.g{background:radial-gradient(circle at 34% 30%,#8fc97a,#3E8B3C)}
+.tl-title{font-family:var(--label);font-size:13.5px;letter-spacing:.16em;text-transform:uppercase;color:#F0DBA8;text-shadow:0 1px 1px rgba(0,0,0,.5)}
 
 .tabs{flex:none;display:flex;gap:7px;padding:10px 11px 5px}
 .tab{flex:1;font-size:14px;padding:8px 6px;text-align:center}
 
 .win-head{padding:12px 16px 10px;flex:none;border-top:1px solid var(--line2)}
-.eyebrow{font-family:var(--label);font-size:12.5px;letter-spacing:.2em;color:var(--wax);text-transform:uppercase}
+.eyebrow{font-family:var(--label);font-size:12.5px;letter-spacing:.2em;color:var(--ox-l);text-transform:uppercase}
 .win-head h1{font-family:var(--disp);font-size:28px;line-height:1.05;color:var(--ink);margin:3px 0 1px;font-weight:400}
-.win-head h1 em{color:var(--wax);font-style:normal}
+.win-head h1 em{color:var(--ox);font-style:normal}
 .stats{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
-.stat{flex:1;min-width:62px;background:linear-gradient(180deg,var(--paper-l),var(--paper-d));border:1px solid var(--line);border-radius:8px;padding:7px 9px;
-  box-shadow:inset 0 1px 0 rgba(255,251,239,.8)}
-.stat .n{font-family:var(--disp);font-size:20px;color:var(--wax-d);line-height:1}
+.stat{flex:1;min-width:62px;background:linear-gradient(180deg,var(--cream-l),var(--cream-d));border:1px solid var(--line);border-radius:8px;padding:7px 9px;box-shadow:inset 0 1px 0 rgba(255,252,240,.8)}
+.stat .n{font-family:var(--disp);font-size:20px;color:var(--ox);line-height:1}
 .stat .l{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:var(--ink3);text-transform:uppercase;margin-top:3px}
 
-.scroll{overflow-y:auto;padding:9px 12px 14px;flex:1;min-height:0;scrollbar-width:thin;scrollbar-color:var(--brass) transparent}
+.scroll{overflow-y:auto;padding:9px 12px 14px;flex:1;min-height:0;scrollbar-width:thin;scrollbar-color:var(--gold-d) transparent}
 .scroll::-webkit-scrollbar{width:10px}
-.scroll::-webkit-scrollbar-track{background:rgba(120,90,40,.1)}
-.scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--brass-l),var(--brass-d));border-radius:5px;border:1px solid var(--brass-d)}
+.scroll::-webkit-scrollbar-track{background:rgba(110,33,24,.08)}
+.scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--gold-l),var(--gold-d));border-radius:5px;border:1px solid var(--gold-d)}
 
-/* trail of days */
 .trail{position:relative}
-.trail::before{content:"";position:absolute;left:25px;top:28px;bottom:28px;width:0;border-left:3px dotted var(--ink3);opacity:.55}
+.trail::before{content:"";position:absolute;left:25px;top:28px;bottom:28px;width:0;border-left:3px dotted var(--ink3);opacity:.5}
 .day{position:relative;cursor:pointer;margin:3px 0}
 .day-row{display:flex;gap:13px;align-items:flex-start;padding:9px;border-radius:10px;transition:background .14s}
-.day:hover .day-row{background:rgba(120,90,40,.10)}
-.day.open .day-row{background:rgba(120,90,40,.15);box-shadow:inset 0 0 0 1px var(--line)}
+.day:hover .day-row{background:rgba(110,33,24,.07)}
+.day.open .day-row{background:rgba(110,33,24,.11);box-shadow:inset 0 0 0 1px var(--line)}
 .seal{width:38px;height:38px;flex:none;border-radius:50% 48% 52% 50%/50% 52% 48% 50%;display:flex;align-items:center;justify-content:center;
   font-family:var(--disp);font-size:19px;color:#FBF1DC;position:relative;z-index:2;background:var(--dc);
   background-image:radial-gradient(circle at 36% 30%,rgba(255,255,255,.4),rgba(255,255,255,0) 55%),radial-gradient(circle at 60% 80%,rgba(0,0,0,.32),rgba(0,0,0,0) 55%);
-  border:1px solid rgba(30,15,4,.5);
-  box-shadow:0 0 0 3px var(--paper), 0 2px 5px rgba(30,16,4,.45), inset 0 1px 2px rgba(255,255,255,.3);
-  text-shadow:0 1px 1px rgba(0,0,0,.45);transition:transform .14s}
+  border:1px solid rgba(30,12,4,.5);box-shadow:0 0 0 3px var(--cream), 0 2px 5px rgba(40,16,6,.45), inset 0 1px 2px rgba(255,255,255,.3);text-shadow:0 1px 1px rgba(0,0,0,.45);transition:transform .14s}
 .day:hover .seal,.day.open .seal{transform:scale(1.07) rotate(-3deg)}
 .day-meta{flex:1;min-width:0;padding-top:1px}
 .dtag{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--dc);text-transform:uppercase;font-weight:700}
 .dttl{font-family:var(--body);font-weight:600;font-size:18px;line-height:1.14;margin:1px 0 4px;color:var(--ink)}
 .dsub{display:flex;gap:6px;flex-wrap:wrap}
-.dsub .pill{font-family:var(--mono);font-size:10px;color:var(--ink2);background:rgba(120,90,40,.13);border:1px solid var(--line2);border-radius:5px;padding:2px 7px}
+.dsub .pill{font-family:var(--mono);font-size:10px;color:var(--ink2);background:rgba(110,33,24,.1);border:1px solid var(--line2);border-radius:5px;padding:2px 7px}
 .dblurb{font-size:15px;line-height:1.5;color:var(--ink2);margin:8px 0 2px}
-.dtip{font-size:14px;line-height:1.45;color:var(--ink2);margin-top:8px;padding:8px 10px;border-radius:8px;
-  background:rgba(155,47,38,.09);border:1px solid rgba(155,47,38,.26)}
-.dtip b{color:var(--wax-d);font-family:var(--label);letter-spacing:.04em}
+.dtip{font-size:14px;line-height:1.45;color:var(--ink2);margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--ox-soft);border:1px solid rgba(110,33,24,.26)}
+.dtip b{color:var(--ox);font-family:var(--label);letter-spacing:.04em}
 
 .sites{max-height:0;overflow:hidden;transition:max-height .34s ease;margin-left:48px}
 .day.open .sites{max-height:1400px}
 .site{display:flex;gap:10px;padding:9px 2px;border-top:1px dotted var(--line);cursor:pointer}
-.site:hover .s-name{color:var(--wax-d)}
+.site:hover .s-name{color:var(--ox)}
 .s-time{font-family:var(--mono);font-size:10px;color:var(--ink3);width:54px;flex:none;padding-top:2px}
 .s-ico{font-size:16px;flex:none}
 .s-name{font-size:15.5px;font-weight:500;color:var(--ink);line-height:1.3}
 
-/* tesoros */
 .tcity{margin:4px 0 12px}
-.tcity h3{font-family:var(--disp);font-size:22px;color:var(--wax-d);font-weight:400;display:flex;align-items:center;gap:10px;margin:8px 2px 8px}
+.tcity h3{font-family:var(--disp);font-size:22px;color:var(--ox);font-weight:400;display:flex;align-items:center;gap:10px;margin:8px 2px 8px}
 .tcity h3::after{content:"";flex:1;height:0;border-top:2px dotted var(--ink3);opacity:.5}
 .tcity .cnt{font-family:var(--mono);font-size:11px;color:var(--ink3)}
 .tspot{display:flex;gap:11px;padding:10px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;cursor:pointer;
-  background:linear-gradient(180deg,var(--paper-l),rgba(227,211,176,.6));box-shadow:inset 0 1px 0 rgba(255,251,239,.8);transition:transform .1s,box-shadow .1s}
-.tspot:hover{transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,251,239,.8),0 4px 10px rgba(40,25,10,.2)}
+  background:linear-gradient(180deg,var(--cream-l),rgba(231,218,187,.65));box-shadow:inset 0 1px 0 rgba(255,252,240,.8);transition:transform .1s,box-shadow .1s}
+.tspot:hover{transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,252,240,.8),0 4px 10px rgba(50,25,10,.2)}
 .tspot:active{transform:translateY(1px)}
-.tspot .tic{width:32px;height:32px;flex:none;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:17px;
-  background:var(--paper);border:1.5px solid var(--cc)}
+.tspot .tic{width:32px;height:32px;flex:none;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--cream);border:1.5px solid var(--cc)}
 .tspot .tn{font-size:16px;font-weight:600;color:var(--ink);line-height:1.15}
 .tspot .tc{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--cc);font-weight:700;margin-top:2px}
 .tspot .tnote{font-size:13.5px;line-height:1.4;color:var(--ink2);margin-top:4px}
@@ -158,47 +150,39 @@ body.treasure .scene-fx{opacity:1}
 .win-foot{flex:none;padding:10px;border-top:1px solid var(--line2);display:flex;gap:8px}
 .win-foot .btn{flex:1;text-align:center;justify-content:center;font-size:13px}
 
-/* reopen button (after close) */
 .reopen{position:fixed;left:16px;top:74px;z-index:849;display:none}
 body.win-closed .reopen{display:inline-flex}
 
-/* =================== NOW RIBBON =================== */
-.now{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:800;
-  font-family:var(--label);font-size:14px;letter-spacing:.03em;color:var(--ink);
-  background:linear-gradient(180deg,var(--paper-l),var(--paper-d));border:1px solid var(--brass-d);border-radius:9px;
-  padding:9px 17px;box-shadow:inset 0 1px 0 #FFFBEF,0 6px 16px rgba(40,25,10,.4);display:flex;align-items:center;gap:10px;
-  white-space:nowrap;max-width:calc(100vw - 28px)}
-.now .pip{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e8786a,#9B2F26);flex:none}
-.now b{color:var(--wax-d)}
+.now{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:800;font-family:var(--label);font-size:14px;letter-spacing:.03em;color:var(--ink);
+  background:linear-gradient(180deg,var(--cream-l),var(--cream-d));border:1px solid var(--gold-d);border-radius:9px;padding:9px 17px;
+  box-shadow:inset 0 1px 0 #FFFCF0,0 6px 16px rgba(50,25,10,.4);display:flex;align-items:center;gap:10px;white-space:nowrap;max-width:calc(100vw - 28px)}
+.now .pip{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ef8a78,#6E2118);flex:none}
+.now b{color:var(--ox)}
 
-/* =================== COMPASS =================== */
-.compass{position:fixed;right:16px;bottom:16px;z-index:800;width:92px;height:92px;pointer-events:none;filter:drop-shadow(0 5px 10px rgba(30,16,4,.5))}
+.compass{position:fixed;right:16px;bottom:16px;z-index:800;width:92px;height:92px;pointer-events:none;filter:drop-shadow(0 5px 10px rgba(40,16,6,.5))}
 @media (max-width:900px){.compass{width:66px;height:66px;right:12px;bottom:84px}}
 
-/* =================== MARKERS =================== */
+/* MARKERS */
 .mk{display:flex;align-items:center;justify-content:center;cursor:pointer;will-change:transform;transform-origin:center}
 .mk.seal-m{width:36px;height:36px;border-radius:50% 48% 52% 50%/50% 52% 48% 50%;font-family:var(--disp);font-size:18px;color:#FBF1DC;background:var(--c);
   background-image:radial-gradient(circle at 36% 30%,rgba(255,255,255,.4),rgba(255,255,255,0) 55%),radial-gradient(circle at 62% 82%,rgba(0,0,0,.3),rgba(0,0,0,0) 55%);
-  border:1px solid rgba(30,15,4,.6);box-shadow:0 0 0 3px rgba(247,238,216,.92),0 2px 6px rgba(30,16,4,.5);text-shadow:0 1px 1px rgba(0,0,0,.5)}
-.mk.pin{width:28px;height:28px;border-radius:50%;font-size:15px;background:linear-gradient(180deg,var(--paper-l),var(--paper-d));
-  border:2px solid var(--c);box-shadow:0 2px 5px rgba(30,16,4,.45),inset 0 1px 0 rgba(255,251,239,.8)}
-.mk.spot{width:26px;height:26px;border-radius:50%;font-size:14px;background:rgba(251,244,226,.97);border:2px dashed var(--c);box-shadow:0 2px 5px rgba(30,16,4,.4)}
+  border:1px solid rgba(30,12,4,.6);box-shadow:0 0 0 3px rgba(244,236,214,.92),0 2px 6px rgba(40,16,6,.5);text-shadow:0 1px 1px rgba(0,0,0,.5)}
+.mk.pin{width:28px;height:28px;border-radius:50%;font-size:15px;background:linear-gradient(180deg,var(--cream-l),var(--cream-d));border:2px solid var(--c);box-shadow:0 2px 5px rgba(40,16,6,.45),inset 0 1px 0 rgba(255,252,240,.8)}
+.mk.spot{width:28px;height:28px;border-radius:50%;font-size:14px;background:rgba(252,246,231,.97);border:2px dashed var(--c);box-shadow:0 2px 5px rgba(40,16,6,.4)}
 .mk:hover{transform:scale(1.2);z-index:1000}
 @media (prefers-reduced-motion:no-preference){.mk{animation:pop .42s cubic-bezier(.2,.85,.3,1.25) backwards}}
 @keyframes pop{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
-
 .trail-dot{stroke-linecap:round}
 @media (prefers-reduced-motion:no-preference){.trail-dot{animation:march 16s linear infinite, fadein 1s ease backwards}}
 @keyframes march{to{stroke-dashoffset:-200}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 
-/* =================== POPUP =================== */
-.leaflet-popup.t-pop .leaflet-popup-content-wrapper{background:linear-gradient(180deg,#FBF4E2,#E8D8B4);color:var(--ink);
-  border:1px solid var(--brass-d);border-radius:11px;box-shadow:inset 0 1px 0 #FFFBEF,0 16px 40px rgba(25,15,4,.55);overflow:hidden;padding:0}
+/* POPUP */
+.leaflet-popup.t-pop .leaflet-popup-content-wrapper{background:linear-gradient(180deg,#FCF6E7,#EADAB7);color:var(--ink);border:1px solid var(--gold-d);border-radius:11px;box-shadow:inset 0 1px 0 #FFFCF0,0 16px 40px rgba(35,12,6,.55);overflow:hidden;padding:0}
 .leaflet-popup.t-pop .leaflet-popup-content{margin:0;width:266px!important;font-family:var(--body)}
-.leaflet-popup.t-pop .leaflet-popup-tip{background:#E8D8B4;border:1px solid var(--brass-d)}
+.leaflet-popup.t-pop .leaflet-popup-tip{background:#EADAB7;border:1px solid var(--gold-d)}
 .leaflet-popup.t-pop a.leaflet-popup-close-button{color:var(--ink2);font-size:22px;padding:6px 8px 0 0}
-.pp-img{width:100%;height:132px;object-fit:cover;display:block;background:var(--paper-d)}
+.pp-img{width:100%;height:132px;object-fit:cover;display:block;background:var(--cream-d)}
 .pp-body{padding:13px 16px 15px}
 .pp-cat{font-family:var(--label);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--pc);font-weight:700}
 .pp-name{font-family:var(--disp);font-size:22px;font-weight:400;margin:3px 0 7px;line-height:1.1;color:var(--ink)}
@@ -206,31 +190,25 @@ body.win-closed .reopen{display:inline-flex}
 .pp-note{font-size:15px;line-height:1.5;color:var(--ink2)}
 .pp-row{display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap}
 .pp-badge{display:inline-block;padding:4px 10px;border-radius:6px;background:var(--pc);color:#FBF1DC;font-family:var(--label);font-size:11px;font-weight:700;letter-spacing:.05em;text-shadow:0 1px 0 rgba(40,15,4,.4)}
-.pp-go{font-family:var(--label);font-size:12px;letter-spacing:.03em;text-decoration:none;color:var(--ink);
-  background:linear-gradient(180deg,var(--paper-l),var(--paper-d));border:1px solid var(--brass-d);border-radius:7px;padding:5px 10px;box-shadow:inset 0 1px 0 #FFFBEF,0 2px 0 #B79A5E}
-.pp-go:active{transform:translateY(2px);box-shadow:inset 0 2px 4px rgba(80,50,20,.4)}
+.pp-go{font-family:var(--label);font-size:12px;letter-spacing:.03em;text-decoration:none;color:var(--ink);background:linear-gradient(180deg,var(--cream-l),var(--cream-d));border:1px solid var(--gold-d);border-radius:7px;padding:5px 10px;box-shadow:inset 0 1px 0 #FFFCF0,0 2px 0 #C9AC6A}
+.pp-go:active{transform:translateY(2px);box-shadow:inset 0 2px 4px rgba(90,55,20,.4)}
 
-/* leaflet chrome */
 .leaflet-control-zoom{border:0!important;margin:14px!important}
-.leaflet-control-zoom a{background:linear-gradient(180deg,var(--paper-l),var(--paper-d))!important;color:var(--ink)!important;border:1px solid var(--brass-d)!important;width:34px!important;height:34px!important;line-height:31px!important;font-size:19px!important;box-shadow:inset 0 1px 0 #FFFBEF}
+.leaflet-control-zoom a{background:linear-gradient(180deg,var(--cream-l),var(--cream-d))!important;color:var(--ink)!important;border:1px solid var(--gold-d)!important;width:34px!important;height:34px!important;line-height:31px!important;font-size:19px!important;box-shadow:inset 0 1px 0 #FFFCF0}
 .leaflet-control-zoom a:first-child{border-radius:9px 9px 0 0!important}
 .leaflet-control-zoom a:last-child{border-radius:0 0 9px 9px!important}
-.leaflet-control-zoom a:hover{background:linear-gradient(180deg,var(--teal),var(--teal-d))!important;color:#FBF4E2!important}
-.leaflet-control-attribution{background:rgba(247,238,216,.82)!important;color:var(--ink3)!important;font-size:9px!important;font-family:var(--mono)}
+.leaflet-control-zoom a:hover{background:linear-gradient(180deg,var(--ox-l),var(--ox-d))!important;color:#F6ECCF!important}
+.leaflet-control-attribution{background:rgba(244,236,214,.82)!important;color:var(--ink3)!important;font-size:9px!important;font-family:var(--mono)}
 .leaflet-control-attribution a{color:var(--ink2)!important}
 
-/* =================== MOBILE =================== */
 .menu-btn.mb{display:none;font-size:18px;width:42px;height:42px;padding:0}
 @media (max-width:900px){
   .brand .sub{display:none}.dates{display:none}
   .menu-btn.mb{display:flex;align-items:center;justify-content:center}
   .filters{top:auto;bottom:74px;left:12px;right:12px;transform:none;max-width:none;justify-content:flex-start;border-radius:11px}
-  .win{top:auto;left:0;right:0;bottom:0;width:100%;max-height:66vh;border-radius:14px 14px 0 0;transform:translateY(calc(100% - 36px));transition:transform .32s cubic-bezier(.3,.8,.3,1)}
-  .win.open{transform:translateY(0)}
-  .win.min{height:auto}
-  .titlebar{cursor:pointer}
-  .now{bottom:auto;top:128px}.compass{display:none}
-  .reopen{display:none!important}
+  .win{top:auto;left:0;right:0;bottom:0;width:100%;max-height:66vh;border-radius:14px 14px 0 0;transform:translateY(calc(100% - 38px));transition:transform .32s cubic-bezier(.3,.8,.3,1)}
+  .win.open{transform:translateY(0)}.win.min{height:auto}
+  .titlebar{cursor:pointer}.now{bottom:auto;top:128px}.compass{display:none}.reopen{display:none!important}
 }
 .sr{position:absolute;left:-9999px}
 </style>
@@ -239,12 +217,10 @@ body.win-closed .reopen{display:inline-flex}
 
 <div id="map"></div>
 <div class="scene-fx"><div class="vig"></div><div class="grain"></div></div>
+<div class="mapfail" id="mapfail"><h4>El mapa no cargó 🧭</h4><p>Tu red bloqueó la librería del mapa, pero el itinerario y los tesoros funcionan en el panel de la izquierda. Probá en otra red o WiFi para ver el mapa.</p></div>
 
 <header class="hdr">
-  <div class="brand">
-    <span class="mark">Jime <em>&amp;</em> Moi</span>
-    <span class="sub">El mapa del tesoro · Las Rockies</span>
-  </div>
+  <div class="brand"><span class="mark">Jime <em>&amp;</em> Moi</span><span class="sub">El mapa del tesoro · Las Rockies</span></div>
   <div class="hdr-right">
     <div class="dates"><b>26 Dic 2026 — 1 Ene 2027</b><br>7 días · Calgary · Banff · Canmore</div>
     <div class="seg" id="viewToggle">
@@ -271,19 +247,14 @@ body.win-closed .reopen{display:inline-flex}
 
 <aside class="win" id="win">
   <div class="titlebar" id="titlebar">
-    <span class="tl-dots">
-      <b class="r" id="dotClose" title="Cerrar">✕</b>
-      <b class="y" id="dotMin" title="Minimizar">–</b>
-      <b class="g" id="dotMax" title="Agrandar">+</b>
-    </span>
+    <span class="tl-dots"><b class="r" id="dotClose" title="Cerrar">✕</b><b class="y" id="dotMin" title="Minimizar">–</b><b class="g" id="dotMax" title="Agrandar">+</b></span>
     <span class="tl-title" id="tlTitle">Bitácora de viaje</span>
   </div>
   <div class="tabs" id="tabs">
     <button class="btn tab on" data-tab="log">⚓ Itinerario</button>
     <button class="btn tab" data-tab="treasures">✕ Tesoros</button>
   </div>
-
-  <div class="win-head" id="winHead">
+  <div class="win-head">
     <div class="eyebrow">Diario del invierno</div>
     <h1>Nuestro primer <em>invierno</em></h1>
     <div class="stats">
@@ -293,16 +264,8 @@ body.win-closed .reopen{display:inline-flex}
       <div class="stat"><div class="n">−8°</div><div class="l">Prom.</div></div>
     </div>
   </div>
-
-  <div class="scroll" id="scroll">
-    <div class="trail" id="trail"></div>
-    <div id="treasures" style="display:none"></div>
-  </div>
-
-  <div class="win-foot">
-    <button class="btn" id="btnAll">◇ Ver todo el viaje</button>
-    <button class="btn" id="btnSpots">✕ Tesoros</button>
-  </div>
+  <div class="scroll" id="scroll"><div class="trail" id="trail"></div><div id="treasures" style="display:none"></div></div>
+  <div class="win-foot"><button class="btn" id="btnAll">◇ Ver todo el viaje</button><button class="btn" id="btnSpots">✕ Tesoros</button></div>
 </aside>
 
 <button class="btn reopen" id="reopen">⚓ Abrir bitácora</button>
@@ -310,17 +273,15 @@ body.win-closed .reopen{display:inline-flex}
 <div class="now" id="now"><span class="pip"></span><span id="nowText">Viaje completo · <b>7 días en las Rockies</b></span></div>
 
 <svg class="compass" viewBox="0 0 100 100" aria-hidden="true">
-  <circle cx="50" cy="50" r="46" fill="#F1E7CF" stroke="#7A5E24" stroke-width="2"/>
-  <circle cx="50" cy="50" r="40" fill="none" stroke="#857051" stroke-width="1" stroke-dasharray="2 3"/>
-  <polygon points="50,8 56,50 50,46 44,50" fill="#9B2F26" stroke="#7A2118" stroke-width=".6"/>
-  <polygon points="50,92 44,50 50,54 56,50" fill="#251E14"/>
-  <polygon points="92,50 50,44 54,50 50,56" fill="#251E14"/>
-  <polygon points="8,50 50,56 46,50 50,44" fill="#251E14"/>
-  <circle cx="50" cy="50" r="3.4" fill="#9C7A32" stroke="#7A2118" stroke-width="1"/>
-  <text x="50" y="20" text-anchor="middle" font-family="IM Fell English SC,serif" font-size="11" fill="#251E14">N</text>
-  <text x="50" y="88" text-anchor="middle" font-family="IM Fell English SC,serif" font-size="9" fill="#251E14">S</text>
-  <text x="86" y="53" text-anchor="middle" font-family="IM Fell English SC,serif" font-size="9" fill="#251E14">E</text>
-  <text x="14" y="53" text-anchor="middle" font-family="IM Fell English SC,serif" font-size="9" fill="#251E14">O</text>
+  <circle cx="50" cy="50" r="46" fill="#F4ECD6" stroke="#AE8B38" stroke-width="2"/>
+  <circle cx="50" cy="50" r="40" fill="none" stroke="#8C765A" stroke-width="1" stroke-dasharray="2 3"/>
+  <polygon points="50,8 56,50 50,46 44,50" fill="#6E2118" stroke="#551610" stroke-width=".6"/>
+  <polygon points="50,92 44,50 50,54 56,50" fill="#241910"/><polygon points="92,50 50,44 54,50 50,56" fill="#241910"/><polygon points="8,50 50,56 46,50 50,44" fill="#241910"/>
+  <circle cx="50" cy="50" r="3.4" fill="#D8B45C" stroke="#551610" stroke-width="1"/>
+  <text x="50" y="20" text-anchor="middle" font-family="IM Fell English SC,serif" font-size="11" fill="#241910">N</text>
+  <text x="50" y="88" text-anchor="middle" font-family="IM Fell English SC,serif" font-size="9" fill="#241910">S</text>
+  <text x="86" y="53" text-anchor="middle" font-family="IM Fell English SC,serif" font-size="9" fill="#241910">E</text>
+  <text x="14" y="53" text-anchor="middle" font-family="IM Fell English SC,serif" font-size="9" fill="#241910">O</text>
 </svg>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -330,7 +291,7 @@ const ROUTES={"d1":[[51.12185,-114.00803],[51.12187,-114.00811],[51.12185,-114.0
 const DIST={"d1":48,"d2":137,"d3":124,"d4":27,"d5":91,"d6":30,"d7":137};
 const SPOTS=[{"id":"fromanother","name":"From Another","city":"Calgary","cat":"hype","lat":51.037966,"lng":-114.07583,"ic":"👟","note":"Vintage + sneaker grail spot on 17th Ave. Curaduría de Drew House, OVO, Nike y Adidas. El hype shop del momento en Calgary."},{"id":"hgvintage","name":"HG Vintage","city":"Calgary","cat":"hype","lat":51.038002,"lng":-114.078098,"ic":"🧥","note":"Flagship de vintage en 17th Ave: piezas únicas, denim y archivo. Para encontrar algo que nadie más va a tener."},{"id":"gravitypope","name":"Gravitypope","city":"Calgary","cat":"hype","lat":51.038021,"lng":-114.088244,"ic":"🥾","note":"Institución de diseñador y calzado en 17th Ave. Marcas que no llegan a otro lado de Canadá. Mitad streetwear, mitad alta gama."},{"id":"aritzia","name":"Aritzia · 17th Ave","city":"Calgary","cat":"girly","lat":51.0381,"lng":-114.0833,"ic":"🤍","note":"La meca girly canadiense. Super Puff, sweats de TNA y la estética \"clean girl\". Tienda grande en plena 17th."},{"id":"purr","name":"Purr Boutique","city":"Calgary","cat":"girly","lat":51.038004,"lng":-114.084063,"ic":"🎀","note":"Boutique colorida en 17th Ave: tendencias, retro, velas, calcetines locos y regalos cute. Muy fotogénica."},{"id":"adorn","name":"Adorn Boutique","city":"Calgary","cat":"girly","lat":51.041949,"lng":-114.035787,"ic":"💗","note":"En Inglewood, familiar y femenina: ropa, joyería y accesorios en clave rosa. La parada girly del barrio cool."},{"id":"plant","name":"Plant · Inglewood","city":"Calgary","cat":"girly","lat":51.039651,"lng":-114.029872,"ic":"🪴","note":"Selva urbana en Inglewood: terrarios, cerámica local y plantas. Aesthetic perfecto para fotos y regalos lindos."},{"id":"majortom","name":"Major Tom","city":"Calgary","cat":"comer","lat":51.046343,"lng":-114.067536,"ic":"🍸","note":"Fine dining moderno 40 pisos arriba del centro. Cócteles, vista 360 y uno de los spots más \"wow\" de la ciudad."},{"id":"pigeonhole","name":"Pigeonhole","city":"Calgary","cat":"comer","lat":51.037979,"lng":-114.068922,"ic":"🍷","note":"Top 100 de Canadá. Platos para compartir, vinos naturales y energía buenísima. Reservar. El favorito foodie local."},{"id":"oeb","name":"OEB Breakfast Co.","city":"Calgary","cat":"comer","lat":51.0381,"lng":-114.0845,"ic":"🍳","note":"El brunch más famoso: poutine de desayuno \"Soul in a Bowl\" con papas en grasa de pato. Filas, pero vale."},{"id":"peacebridge","name":"Peace Bridge","city":"Calgary","cat":"viral","lat":51.053914,"lng":-114.07891,"ic":"📸","note":"El puente rojo helicoidal de Calatrava: la estructura más fotografiada de Calgary. En invierno con el río helado = postal."},{"id":"studiobell","name":"Studio Bell","city":"Calgary","cat":"viral","lat":51.0445,"lng":-114.0598,"ic":"🎶","note":"National Music Centre: arquitectura ondulada de panales dorados. Museo + edificio icónico para fotos."},{"id":"wonderland","name":"Wonderland (The Bow)","city":"Calgary","cat":"viral","lat":51.0476,"lng":-114.0631,"ic":"🗿","note":"La cabeza de malla gigante de Jaume Plensa frente a la torre The Bow. Te metés adentro: foto obligatoria."},{"id":"stephenave","name":"Stephen Avenue","city":"Calgary","cat":"viral","lat":51.04614,"lng":-114.067154,"ic":"🏙️","note":"Peatonal histórica de adoquines: edificios patrimoniales, tiendas y bares. El corazón caminable del centro."},{"id":"farmfire","name":"Farm & Fire","city":"Banff","cat":"comer","lat":51.179944,"lng":-115.570258,"ic":"🔥","note":"Cocina a fuego de leña en Banff Ave: flatbreads, vegetales rostizados y carnes. Brunch diario. Rústico y rico."},{"id":"nourish","name":"Nourish Bistro","city":"Banff","cat":"comer","lat":51.177582,"lng":-115.572537,"ic":"🥗","note":"Veg/vegano creativo y colorido: tablas para armar y raviolis de hongos en crema de marañón. Único en el pueblo."},{"id":"whitebark","name":"Whitebark Café","city":"Banff","cat":"comer","lat":51.181167,"lng":-115.56903,"ic":"☕","note":"Mejor café de Banff varios años seguidos. Cozy, eco-friendly y perfecto para entrar en calor."},{"id":"cows","name":"COWS Ice Cream","city":"Banff","cat":"viral","lat":51.17618,"lng":-115.57067,"ic":"🍦","note":"El heladería viral de Banff Ave (138). Sabores con nombres locos tipo \"Gooey Mooey\" + tienda de camisetas de vaca."},{"id":"beavertails","name":"BeaverTails","city":"Banff","cat":"viral","lat":51.175511,"lng":-115.570738,"ic":"🦫","note":"La masa frita canadiense en forma de cola de castor, calientita con toppings. Clásico de invierno en Banff Ave."},{"id":"fudgery","name":"The Fudgery","city":"Banff","cat":"comer","lat":51.177673,"lng":-115.571071,"ic":"🍫","note":"Fudge artesanal desde 1976 y manzanas bañadas en chocolate. El olor te jala desde la calle (202 Banff Ave)."},{"id":"communitea","name":"Communitea Café","city":"Canmore","cat":"comer","lat":51.090355,"lng":-115.358615,"ic":"🍵","note":"El lunch favorito de Canmore: Buddha bowls, pad thai, tés y opciones plant-based. Luminoso y sano."},{"id":"tavern1883","name":"Tavern 1883","city":"Canmore","cat":"comer","lat":51.0902,"lng":-115.359117,"ic":"🍔","note":"Gastropub con taps rotativos, famoso por su elk burger. Música en vivo y buena onda local."},{"id":"jkbakery","name":"JK Bakery","city":"Canmore","cat":"comer","lat":51.095716,"lng":-115.358425,"ic":"🥐","note":"Panadería de culto: pasteles, panes y los mejores sándwiches del pueblo. Parada de camino a la montaña."},{"id":"sensory","name":"The Sensory","city":"Canmore","cat":"comer","lat":51.0888,"lng":-115.3578,"ic":"🍽️","note":"Cena refinada con vista a las Three Sisters: menú albertano creativo, flights de vino y cócteles. Para una noche especial."},{"id":"bridgette","name":"Bridgette Bar","city":"Canmore","cat":"comer","lat":51.083779,"lng":-115.348173,"ic":"🍕","note":"Probablemente el spot más popular de Canmore: pizza a la leña, pastas y happy hour mitad de precio 2–5pm."}];
 
-const DAYCOL=['#B03A2E','#2C6E63','#B5662F','#3E4A86','#3E7A3A','#7A3E68','#9C7A32'];
+const DAYCOL=['#8C3326','#234B45','#B5662F','#3E4A86','#3E7A3A','#7A3E68','#AE8B38'];
 const P='https://lh3.googleusercontent.com/place-photos/',PL='https://lh3.googleusercontent.com/places/';
 
 const TRIP=[
@@ -423,196 +384,194 @@ const TRIP=[
   ]}
 ];
 
-const FCLBL={ruta:"Ruta / traslado",shops:"Shopping",comer:"Gastronomía",hotel:"Hospedaje",vistas:"Vista / paisaje",
-  animales:"Fauna",actividad:"Actividad",finde:"Año Nuevo",hype:"Streetwear / hype",girly:"Boutique girly",viral:"Spot viral"};
-const FCCOL={comer:'#B5662F',hype:'#3E4A86',girly:'#9B2F26',viral:'#2C6E63',vistas:'#3E7A3A',animales:'#7A3E68',
-  actividad:'#2C6E63',finde:'#9B2F26',shops:'#9C7A32',hotel:'#857051',ruta:'#857051'};
+const FCLBL={ruta:"Ruta / traslado",shops:"Shopping",comer:"Gastronomía",hotel:"Hospedaje",vistas:"Vista / paisaje",animales:"Fauna",actividad:"Actividad",finde:"Año Nuevo",hype:"Streetwear / hype",girly:"Boutique girly",viral:"Spot viral"};
+const FCCOL={comer:'#B5662F',hype:'#3E4A86',girly:'#8C3326',viral:'#234B45',vistas:'#3E7A3A',animales:'#7A3E68',actividad:'#234B45',finde:'#8C3326',shops:'#AE8B38',hotel:'#8C765A',ruta:'#8C765A'};
 
-/* ---------- MAP ---------- */
-const map=L.map('map',{zoomControl:true,attributionControl:true,renderer:L.svg(),minZoom:4,maxZoom:17}).setView([51.3,-115.2],8);
-const layers={
-  treasure:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© Esri · Mapa del Tesoro'}),
-  sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Imagery © Esri, Maxar'}),
-  satLabels:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,opacity:.9}),
-  dark:L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19,subdomains:'abcd',attribution:'© OpenStreetMap, © CARTO'})
-};
-function setView(v){
-  [layers.treasure,layers.sat,layers.dark].forEach(l=>map.removeLayer(l)); map.removeLayer(layers.satLabels);
-  document.body.classList.toggle('treasure',v==='treasure');
-  if(v==='treasure'){layers.treasure.addTo(map);}
-  else if(v==='sat'){layers.sat.addTo(map);layers.satLabels.addTo(map);}
-  else{layers.dark.addTo(map);}
-  document.querySelectorAll('#viewToggle button').forEach(b=>b.classList.toggle('on',b.dataset.view===v));
-}
-document.querySelectorAll('#viewToggle button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
-
-/* ---------- ROUTES (street-following treasure trails) ---------- */
-const dayLines={};
-TRIP.forEach((day,di)=>{
-  const c=DAYCOL[di]; day.c=c; dayLines[di]=[];
-  const geo=ROUTES&&ROUTES['d'+(di+1)];
-  const pts=geo&&geo.length>1 ? geo : day.sites.map(s=>[s.lat,s.lng]);
-  if(pts.length>1){
-    dayLines[di].push(L.polyline(pts,{className:'trail-shadow',color:'#2f2110',weight:7,opacity:.18,lineCap:'round'}).addTo(map));
-    dayLines[di].push(L.polyline(pts,{className:'trail-dot',color:c,weight:3.6,opacity:.95,dashArray:'0.5 11',lineCap:'round'}).addTo(map));
-  }
-});
-
-/* ---------- MARKERS ---------- */
-const markers=[];let mi=0;
+/* ===== module state ===== */
+let map=null, MAP_OK=false;
+const markers=[]; const dayLines={};
+let openDay=null, activeFilter='all';
+const $=id=>document.getElementById(id);
 function gmaps(lat,lng){return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;}
-function popHtml(o){
-  const imgH=o.img?`<img class="pp-img" src="${o.img}" alt="" onerror="this.remove()">`:'';
-  const meta=o.metaLine?`<div class="pp-meta">${o.metaLine}</div>`:'';
-  return `<div style="--pc:${o.pc}">${imgH}<div class="pp-body">
-     <div class="pp-cat">${o.cat}</div><div class="pp-name">${o.name}</div>${meta}
-     <div class="pp-note">${o.note}</div>
-     <div class="pp-row"><span class="pp-badge">${o.badge}</span>
-       <a class="pp-go" href="${gmaps(o.lat,o.lng)}" target="_blank" rel="noopener">▸ Cómo llegar</a></div>
-   </div></div>`;
-}
-TRIP.forEach((day,di)=>{
-  const c=day.c;
-  day.sites.forEach((s,si)=>{
-    const first=si===0, delay=(mi*0.04).toFixed(2);
-    const html=first?`<div class="mk seal-m" style="--c:${c};animation-delay:${delay}s">${day.n}</div>`
-                    :`<div class="mk pin" style="--c:${c};animation-delay:${delay}s">${s.ic}</div>`;
-    const icon=L.divIcon({html,className:'',iconSize:first?[42,42]:[30,30],iconAnchor:first?[21,21]:[15,15]});
-    const m=L.marker([s.lat,s.lng],{icon,riseOnHover:true}).addTo(map);
-    m._fc=s.fc;m._di=di;m._kind='site';m._s=s;
-    m.bindPopup(popHtml({pc:c,img:s.img,cat:FCLBL[s.fc]||s.fc,name:s.name,metaLine:`◷ ${s.t} &nbsp;·&nbsp; ${day.wx}`,note:s.note,badge:`Día ${day.n} · ${day.date}`,lat:s.lat,lng:s.lng}),
-      {className:'t-pop',maxWidth:266,minWidth:266,autoPanPadding:[40,90]});
-    markers.push(m);mi++;
+
+/* ===== PANELS (no Leaflet needed) ===== */
+function buildPanels(){
+  // stats
+  $('kmStat').textContent=DIST?Object.values(DIST).reduce((a,b)=>a+b,0):'—';
+  // itinerary
+  const trail=$('trail');
+  TRIP.forEach((day,di)=>{
+    day.c=DAYCOL[di];
+    const el=document.createElement('div');el.className='day';el.style.setProperty('--dc',day.c);el.dataset.di=di;
+    const km=DIST&&DIST['d'+(di+1)]?DIST['d'+(di+1)]+' km':'—';
+    const sitesHtml=day.sites.map((s,si)=>`<div class="site" data-di="${di}" data-si="${si}"><div class="s-time">${s.t}</div><div class="s-ico">${s.ic}</div><div class="s-name">${s.name}</div></div>`).join('');
+    el.innerHTML=`<div class="day-row"><div class="seal">${day.n}</div><div class="day-meta">
+      <div class="dtag">${day.tag}</div><div class="dttl">${day.title}</div>
+      <div class="dsub"><span class="pill">${day.date}</span><span class="pill">${day.trans}</span><span class="pill">🌡️ ${day.wx}</span><span class="pill">🧭 ${km}</span></div>
+      <div class="dblurb">${day.blurb}</div><div class="dtip"><b>Tip ·</b> ${day.tip}</div></div></div><div class="sites">${sitesHtml}</div>`;
+    trail.appendChild(el);
   });
-});
-SPOTS.forEach(sp=>{
-  const c=FCCOL[sp.cat]||'#9C7A32';sp.c=c;
-  const icon=L.divIcon({html:`<div class="mk spot" style="--c:${c}">${sp.ic}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
-  const m=L.marker([sp.lat,sp.lng],{icon,riseOnHover:true}).addTo(map);
-  m._fc=sp.cat;m._di=null;m._kind='spot';m._sp=sp;
-  m.bindPopup(popHtml({pc:c,cat:FCLBL[sp.cat]||sp.cat,name:sp.name,metaLine:`✕ ${sp.city}`,note:sp.note,badge:`Tesoro · ${sp.city}`,lat:sp.lat,lng:sp.lng}),
-    {className:'t-pop',maxWidth:266,minWidth:266,autoPanPadding:[40,90]});
-  sp._m=m;markers.push(m);
-});
-
-/* ---------- LEDGER: itinerary ---------- */
-const trail=document.getElementById('trail');
-TRIP.forEach((day,di)=>{
-  const el=document.createElement('div');el.className='day';el.style.setProperty('--dc',day.c);el.dataset.di=di;
-  const km=DIST&&DIST['d'+(di+1)]?DIST['d'+(di+1)]+' km':'—';
-  const sitesHtml=day.sites.map((s,si)=>
-    `<div class="site" data-di="${di}" data-si="${si}"><div class="s-time">${s.t}</div><div class="s-ico">${s.ic}</div><div class="s-name">${s.name}</div></div>`).join('');
-  el.innerHTML=`<div class="day-row"><div class="seal">${day.n}</div><div class="day-meta">
-     <div class="dtag">${day.tag}</div><div class="dttl">${day.title}</div>
-     <div class="dsub"><span class="pill">${day.date}</span><span class="pill">${day.trans}</span><span class="pill">🌡️ ${day.wx}</span><span class="pill">🧭 ${km}</span></div>
-     <div class="dblurb">${day.blurb}</div><div class="dtip"><b>Tip ·</b> ${day.tip}</div>
-   </div></div><div class="sites">${sitesHtml}</div>`;
-  trail.appendChild(el);
-});
-
-/* ---------- LEDGER: tesoros ---------- */
-const tWrap=document.getElementById('treasures');
-['Calgary','Banff','Canmore'].forEach(city=>{
-  const list=SPOTS.filter(s=>s.city===city);if(!list.length)return;
-  const block=document.createElement('div');block.className='tcity';
-  block.innerHTML=`<h3>${city} <span class="cnt">${list.length}</span></h3>`+
-    list.map(sp=>`<div class="tspot" data-id="${sp.id}" style="--cc:${FCCOL[sp.cat]}"><div class="tic">${sp.ic}</div>
-       <div><div class="tn">${sp.name}</div><div class="tc">${FCLBL[sp.cat]}</div><div class="tnote">${sp.note}</div></div></div>`).join('');
-  tWrap.appendChild(block);
-});
-
-/* ---------- STATE + VISIBILITY ---------- */
-let openDay=null,activeFilter='all';
-document.getElementById('kmStat').textContent=DIST?Object.values(DIST).reduce((a,b)=>a+b,0):'—';
-
-function applyVisibility(){
-  markers.forEach(m=>{
-    let show=(activeFilter==='all'||m._fc===activeFilter);
-    if(m._kind==='site'&&openDay!==null) show=show&&(m._di===openDay);
-    if(show){m.addTo(map);} else {map.removeLayer(m);}
+  // tesoros
+  const tWrap=$('treasures');
+  ['Calgary','Banff','Canmore'].forEach(city=>{
+    const list=SPOTS.filter(s=>s.city===city);if(!list.length)return;
+    const block=document.createElement('div');block.className='tcity';
+    block.innerHTML=`<h3>${city} <span class="cnt">${list.length}</span></h3>`+
+      list.map(sp=>`<div class="tspot" data-id="${sp.id}" style="--cc:${FCCOL[sp.cat]}"><div class="tic">${sp.ic}</div><div><div class="tn">${sp.name}</div><div class="tc">${FCLBL[sp.cat]}</div><div class="tnote">${sp.note}</div></div></div>`).join('');
+    tWrap.appendChild(block);
   });
-  Object.entries(dayLines).forEach(([k,arr])=>arr.forEach(l=>{
-    const shadow=l.options.className==='trail-shadow';
-    let op; if(openDay===null) op=shadow?.18:.95; else op=(+k===openDay)?(shadow?.26:1):(shadow?.05:.12);
-    l.setStyle({opacity:op});
+  // day open
+  document.querySelectorAll('.day').forEach(d=>d.querySelector('.day-row').addEventListener('click',()=>focusDay(+d.dataset.di)));
+  // site jump
+  trail.querySelectorAll('.site').forEach(si=>si.addEventListener('click',e=>{
+    e.stopPropagation();
+    const di=+si.dataset.di,idx=+si.dataset.si;
+    if(window.innerWidth<=900)$('win').classList.remove('open');
+    if(!MAP_OK)return;
+    const target=markers.find(m=>m._kind==='site'&&m._di===di&&m._s===TRIP[di].sites[idx]);if(!target)return;
+    if(!map.hasLayer(target)){activeFilter='all';syncChips();applyVisibility();}
+    map.flyTo([target._s.lat,target._s.lng],14,{duration:.7});setTimeout(()=>target.openPopup(),720);
   }));
+  // tesoro jump
+  tWrap.querySelectorAll('.tspot').forEach(el=>el.addEventListener('click',()=>{
+    const sp=SPOTS.find(s=>s.id===el.dataset.id);if(!sp)return;
+    if(window.innerWidth<=900)$('win').classList.remove('open');
+    if(!MAP_OK)return;
+    if(!map.hasLayer(sp._m)){activeFilter='all';syncChips();applyVisibility();}
+    map.flyTo([sp.lat,sp.lng],15,{duration:.7});setTimeout(()=>sp._m.openPopup(),720);
+  }));
+  // tabs
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+    const log=t.dataset.tab==='log';
+    $('trail').style.display=log?'':'none';$('treasures').style.display=log?'none':'';
+    $('tlTitle').textContent=log?'Bitácora de viaje':'Cofre de tesoros';
+  });
+  $('btnSpots').onclick=()=>{document.querySelector('.tab[data-tab="treasures"]').click();$('scroll').scrollTop=0;if(window.innerWidth<=900)$('win').classList.add('open');};
+  // filters
+  document.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));ch.classList.add('on');
+    activeFilter=ch.dataset.cat;
+    if(MAP_OK){applyVisibility();if(openDay===null){activeFilter==='all'?fitAll():fitVisible();}}
+  });
+  $('btnAll').onclick=()=>{activeFilter='all';syncChips();if(MAP_OK)resetView(true);else{openDay=null;document.querySelectorAll('.day').forEach(d=>d.classList.remove('open'));setNow();}};
+  // view toggle (only acts if map ready)
+  document.querySelectorAll('#viewToggle button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#viewToggle button').forEach(x=>x.classList.toggle('on',x===b));if(MAP_OK)setView(b.dataset.view);});
+  // window chrome
+  $('menuBtn').onclick=()=>$('win').classList.toggle('open');
+  const win=$('win'),stop=e=>e.stopPropagation();
+  $('dotClose').addEventListener('click',e=>{stop(e);win.classList.add('closed');document.body.classList.add('win-closed');});
+  $('reopen').addEventListener('click',()=>{win.classList.remove('closed');document.body.classList.remove('win-closed');});
+  $('dotMin').addEventListener('click',e=>{stop(e);win.classList.toggle('min');});
+  $('dotMax').addEventListener('click',e=>{stop(e);
+    if(window.innerWidth<=900){win.classList.add('open');return;}
+    win.classList.remove('min');
+    if(win.classList.toggle('max')){win.style.width='430px';win.style.left='16px';win.style.top='74px';win.style.bottom='16px';}
+    else{win.style.width='';win.style.left='';win.style.top='';win.style.bottom='';}
+  });
+  ['dotClose','dotMin','dotMax'].forEach(id=>$(id).addEventListener('mousedown',stop));
+  $('titlebar').addEventListener('click',e=>{if(e.target.closest('.tl-dots'))return;if(window.innerWidth<=900)win.classList.toggle('open');});
+  // drag
+  (function(){let drag=false,sx,sy,ox,oy;const bar=$('titlebar');
+    bar.addEventListener('mousedown',e=>{if(window.innerWidth<=900||e.target.closest('.tl-dots'))return;drag=true;sx=e.clientX;sy=e.clientY;const r=win.getBoundingClientRect();ox=r.left;oy=r.top;win.style.bottom='auto';win.style.right='auto';win.style.left=ox+'px';win.style.top=oy+'px';e.preventDefault();});
+    window.addEventListener('mousemove',e=>{if(!drag)return;let nx=ox+(e.clientX-sx),ny=oy+(e.clientY-sy);nx=Math.max(6,Math.min(window.innerWidth-360,nx));ny=Math.max(66,Math.min(window.innerHeight-120,ny));win.style.left=nx+'px';win.style.top=ny+'px';});
+    window.addEventListener('mouseup',()=>drag=false);
+  })();
 }
-function setNow(){
-  const t=document.getElementById('nowText');
-  if(openDay===null) t.innerHTML=`Viaje completo · <b>7 días en las Rockies</b>`;
-  else{const d=TRIP[openDay];t.innerHTML=`Día ${d.n} · <b>${d.title}</b>`;}
-}
-function fitAll(animate=true){
-  const all=[];TRIP.forEach(d=>d.sites.forEach(s=>all.push([s.lat,s.lng])));
-  const wide=window.innerWidth>900;
-  const opts={paddingTopLeft:[wide?378:30,118],paddingBottomRight:[wide?120:30,wide?60:90]};
-  if(animate)map.flyToBounds(L.latLngBounds(all),{...opts,duration:.8});else map.fitBounds(L.latLngBounds(all),{...opts,animate:false});
-}
-function fitVisible(){
-  const pts=[];markers.forEach(m=>{if(map.hasLayer(m))pts.push(m.getLatLng());});
-  if(!pts.length)return;
-  const wide=window.innerWidth>900;
-  map.flyToBounds(L.latLngBounds(pts),{paddingTopLeft:[wide?378:30,118],paddingBottomRight:[wide?120:30,wide?70:96],maxZoom:14,duration:.7});
-}
+function syncChips(){document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.cat===activeFilter));}
+function setNow(){const t=$('nowText');if(openDay===null)t.innerHTML=`Viaje completo · <b>7 días en las Rockies</b>`;else{const d=TRIP[openDay];t.innerHTML=`Día ${d.n} · <b>${d.title}</b>`;}}
+
+/* day focus (DOM always; map optional) */
 function focusDay(di){
   openDay=(openDay===di)?null:di;
   document.querySelectorAll('.day').forEach(d=>d.classList.toggle('open',+d.dataset.di===openDay));
-  applyVisibility();setNow();
+  setNow();
+  if(!MAP_OK)return;
+  applyVisibility();
   if(openDay===null){fitAll();return;}
-  const b=L.latLngBounds(TRIP[di].sites.map(s=>[s.lat,s.lng]));
   const wide=window.innerWidth>900;
-  map.flyToBounds(b,{paddingTopLeft:[wide?378:40,120],paddingBottomRight:[wide?120:40,wide?60:280],maxZoom:13,duration:.8});
-}
-function resetView(refit){
-  openDay=null;document.querySelectorAll('.day').forEach(d=>d.classList.remove('open'));
-  applyVisibility();setNow();if(refit)fitAll();
+  map.flyToBounds(L.latLngBounds(TRIP[di].sites.map(s=>[s.lat,s.lng])),{paddingTopLeft:[wide?378:40,120],paddingBottomRight:[wide?120:40,wide?60:280],maxZoom:13,duration:.8});
 }
 
-document.querySelectorAll('.day').forEach(d=>{d.querySelector('.day-row').addEventListener('click',()=>focusDay(+d.dataset.di));});
-trail.querySelectorAll('.site').forEach(si=>{
-  si.addEventListener('click',e=>{
-    e.stopPropagation();
-    const di=+si.dataset.di,idx=+si.dataset.si;
-    const target=markers.find(m=>m._kind==='site'&&m._di===di&&m._s===TRIP[di].sites[idx]);if(!target)return;
-    if(window.innerWidth<=900)document.getElementById('win').classList.remove('open');
-    if(!map.hasLayer(target)){activeFilter='all';document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.cat==='all'));applyVisibility();}
-    map.flyTo([target._s.lat,target._s.lng],14,{duration:.7});setTimeout(()=>target.openPopup(),720);
+/* ===== MAP (Leaflet) ===== */
+function popHtml(o){
+  const imgH=o.img?`<img class="pp-img" src="${o.img}" alt="" onerror="this.remove()">`:'';
+  const meta=o.metaLine?`<div class="pp-meta">${o.metaLine}</div>`:'';
+  return `<div style="--pc:${o.pc}">${imgH}<div class="pp-body"><div class="pp-cat">${o.cat}</div><div class="pp-name">${o.name}</div>${meta}<div class="pp-note">${o.note}</div><div class="pp-row"><span class="pp-badge">${o.badge}</span><a class="pp-go" href="${gmaps(o.lat,o.lng)}" target="_blank" rel="noopener">▸ Cómo llegar</a></div></div></div>`;
+}
+let layers;
+function setView(v){
+  [layers.treasure,layers.sat,layers.dark].forEach(l=>map.removeLayer(l));map.removeLayer(layers.satLabels);
+  document.body.classList.toggle('treasure',v==='treasure');
+  if(v==='treasure')layers.treasure.addTo(map);
+  else if(v==='sat'){layers.sat.addTo(map);layers.satLabels.addTo(map);}
+  else layers.dark.addTo(map);
+}
+function applyVisibility(){
+  markers.forEach(m=>{let show=(activeFilter==='all'||m._fc===activeFilter);if(m._kind==='site'&&openDay!==null)show=show&&(m._di===openDay);show?m.addTo(map):map.removeLayer(m);});
+  Object.entries(dayLines).forEach(([k,arr])=>arr.forEach(l=>{const sh=l.options.className==='trail-shadow';let op;if(openDay===null)op=sh?.18:.95;else op=(+k===openDay)?(sh?.26:1):(sh?.05:.12);l.setStyle({opacity:op});}));
+}
+function fitAll(animate=true){
+  const all=[];TRIP.forEach(d=>d.sites.forEach(s=>all.push([s.lat,s.lng])));
+  const wide=window.innerWidth>900,opts={paddingTopLeft:[wide?378:30,118],paddingBottomRight:[wide?120:30,wide?60:90]};
+  animate?map.flyToBounds(L.latLngBounds(all),{...opts,duration:.8}):map.fitBounds(L.latLngBounds(all),{...opts,animate:false});
+}
+function fitVisible(){const pts=[];markers.forEach(m=>{if(map.hasLayer(m))pts.push(m.getLatLng());});if(!pts.length)return;const wide=window.innerWidth>900;map.flyToBounds(L.latLngBounds(pts),{paddingTopLeft:[wide?378:30,118],paddingBottomRight:[wide?120:30,wide?70:96],maxZoom:14,duration:.7});}
+function resetView(refit){openDay=null;document.querySelectorAll('.day').forEach(d=>d.classList.remove('open'));applyVisibility();setNow();if(refit)fitAll();}
+
+function initMap(){
+  map=L.map('map',{zoomControl:true,attributionControl:true,renderer:L.svg(),minZoom:4,maxZoom:17}).setView([51.3,-115.2],8);
+  layers={
+    treasure:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© Esri · Mapa del Tesoro'}),
+    sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Imagery © Esri, Maxar'}),
+    satLabels:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,opacity:.9}),
+    dark:L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19,subdomains:'abcd',attribution:'© OpenStreetMap, © CARTO'})
+  };
+  // routes
+  TRIP.forEach((day,di)=>{
+    const c=day.c;dayLines[di]=[];
+    const geo=ROUTES&&ROUTES['d'+(di+1)];
+    const pts=geo&&geo.length>1?geo:day.sites.map(s=>[s.lat,s.lng]);
+    if(pts.length>1){
+      dayLines[di].push(L.polyline(pts,{className:'trail-shadow',color:'#3a1c10',weight:7,opacity:.18,lineCap:'round'}).addTo(map));
+      dayLines[di].push(L.polyline(pts,{className:'trail-dot',color:c,weight:3.6,opacity:.95,dashArray:'0.5 11',lineCap:'round'}).addTo(map));
+    }
   });
-});
-tWrap.querySelectorAll('.tspot').forEach(el=>{
-  el.addEventListener('click',()=>{
-    const sp=SPOTS.find(s=>s.id===el.dataset.id);if(!sp)return;
-    if(window.innerWidth<=900)document.getElementById('win').classList.remove('open');
-    if(!map.hasLayer(sp._m)){activeFilter='all';document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.cat==='all'));applyVisibility();}
-    map.flyTo([sp.lat,sp.lng],15,{duration:.7});setTimeout(()=>sp._m.openPopup(),720);
+  // markers
+  let mi=0;
+  TRIP.forEach((day,di)=>{const c=day.c;day.sites.forEach((s,si)=>{
+    const first=si===0,delay=(mi*0.04).toFixed(2);
+    const html=first?`<div class="mk seal-m" style="--c:${c};animation-delay:${delay}s">${day.n}</div>`:`<div class="mk pin" style="--c:${c};animation-delay:${delay}s">${s.ic}</div>`;
+    const icon=L.divIcon({html,className:'',iconSize:first?[42,42]:[30,30],iconAnchor:first?[21,21]:[15,15]});
+    const m=L.marker([s.lat,s.lng],{icon,riseOnHover:true}).addTo(map);
+    m._fc=s.fc;m._di=di;m._kind='site';m._s=s;
+    m.bindPopup(popHtml({pc:c,img:s.img,cat:FCLBL[s.fc]||s.fc,name:s.name,metaLine:`◷ ${s.t} &nbsp;·&nbsp; ${day.wx}`,note:s.note,badge:`Día ${day.n} · ${day.date}`,lat:s.lat,lng:s.lng}),{className:'t-pop',maxWidth:266,minWidth:266,autoPanPadding:[40,90]});
+    markers.push(m);mi++;
+  });});
+  SPOTS.forEach(sp=>{const c=FCCOL[sp.cat]||'#AE8B38';sp.c=c;
+    const icon=L.divIcon({html:`<div class="mk spot" style="--c:${c}">${sp.ic}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
+    const m=L.marker([sp.lat,sp.lng],{icon,riseOnHover:true}).addTo(map);
+    m._fc=sp.cat;m._di=null;m._kind='spot';m._sp=sp;
+    m.bindPopup(popHtml({pc:c,cat:FCLBL[sp.cat]||sp.cat,name:sp.name,metaLine:`✕ ${sp.city}`,note:sp.note,badge:`Tesoro · ${sp.city}`,lat:sp.lat,lng:sp.lng}),{className:'t-pop',maxWidth:266,minWidth:266,autoPanPadding:[40,90]});
+    sp._m=m;markers.push(m);
   });
-});
+  MAP_OK=true;
+  map.invalidateSize();applyVisibility();fitAll(false);
+  layers.treasure.addTo(map);
+}
+function showMapError(){document.body.classList.add('mapfail');}
 
-/* ---------- TABS ---------- */
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
-  const log=t.dataset.tab==='log';
-  document.getElementById('trail').style.display=log?'':'none';
-  document.getElementById('treasures').style.display=log?'none':'';
-  document.getElementById('tlTitle').textContent=log?'Bitácora de viaje':'Cofre de tesoros';
-});
-document.getElementById('btnSpots').onclick=()=>{document.querySelector('.tab[data-tab="treasures"]').click();document.getElementById('scroll').scrollTop=0;if(window.innerWidth<=900)document.getElementById('win').classList.add('open');};
-
-/* ---------- FILTERS (with fly-to) ---------- */
-document.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));ch.classList.add('on');
-  activeFilter=ch.dataset.cat;applyVisibility();
-  if(openDay===null){ if(activeFilter==='all')fitAll(); else fitVisible(); }
-});
-document.getElementById('btnAll').onclick=()=>{
-  activeFilter='all';document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.cat==='all'));
-  resetView(true);
-};
-document.getElementById('menuBtn').onclick=()=>document.getElementById('win').classList.toggle('open');
-
-/* ---------- WINDOW CONTROLS (close / min / max) ---------- */
-const win=document.getElementById('win');
-function stop(e){e.stopPropagation();}
-document.getElementById('dotClose').addEventListener('click',e=>{stop(e);win.classList.add('closed');document.body.classList.add('win-closed');});
-document.getElementById('reopen').addEventListener('click',()=>{win.classList.remove('closed');document.body.classList.remove('win-closed');});
-document.getElementById('dotMin').addEventLi
+/* ===== BOOT ===== */
+function ensureLeaflet(cb){
+  if(window.L)return cb(true);
+  const s=document.createElement('script');
+  s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.onload=()=>cb(!!window.L);s.onerror=()=>cb(false);
+  document.head.appendChild(s);
+}
+buildPanels();
+setNow();
+ensureLeaflet(function(ok){ if(ok){ try{initMap();}catch(e){console.error(e);showMapError();} } else { showMapError(); } });
+</script>
+</body>
+</html>
