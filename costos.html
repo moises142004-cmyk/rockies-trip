@@ -93,7 +93,8 @@
   <div class="rates">
     <div class="f"><label>1 CAD = ? USD</label><input id="rUSD" type="number" step="0.0001" inputmode="decimal"></div>
     <div class="f"><label>1 CAD = ? CRC (colones)</label><input id="rCRC" type="number" step="0.01" inputmode="decimal"></div>
-    <div class="note">Editá el tipo de cambio cuando quieras — se guarda y funciona sin internet. Valores de referencia, confirmá con tu banco/tarjeta.</div>
+    <button class="btn ghost" id="refreshRates" style="height:38px">↻ Tipo real</button>
+    <div class="note" id="rateNote">Tipo de cambio en vivo. Podés editarlo a mano; se guarda y funciona sin internet. Confirmá con tu banco/tarjeta.</div>
   </div>
 
   <div class="addbar">
@@ -113,7 +114,8 @@
 const CATS = ['Vuelos','Hotel','Auto','Comida','Actividades','Shopping','Otros'];
 const CAT_IC = {'Vuelos':'✈️','Hotel':'🏨','Auto':'🚗','Comida':'🍽️','Actividades':'🎿','Shopping':'🛍️','Otros':'💳'};
 const CAT_COL = {'Vuelos':'#5FD0D6','Hotel':'#93A7EC','Auto':'#E3C56A','Comida':'#F5A623','Actividades':'#82C08A','Shopping':'#EC8C76','Otros':'#C58CEC'};
-const DEFAULT_RATES = { usd:0.73, crc:525 };
+const DEFAULT_RATES = { usd:0.71, crc:322 };
+const RATES_API = 'https://open.er-api.com/v6/latest/CAD';
 
 let costs  = Store.read('costs', []);
 let rates  = Store.read('rates', DEFAULT_RATES);
@@ -137,9 +139,11 @@ function render(){
     const pct = total/budget*100;
     const over = total>budget;
     $('bbar').firstChild; const bi=$('bbar'); bi.style.width = Math.min(100,pct)+'%'; bi.classList.toggle('over',over);
+    const diff = Math.abs(budget-total);
+    const conv = `≈ $${fmt(diff*rates.usd)} · ₡${fmt(diff*rates.crc)}`;
     $('bnote').innerHTML = over
-      ? `Te pasaste por <b style="color:var(--bad)">${fmt(total-budget)} CAD</b>`
-      : `Quedan <b>${fmt(budget-total)} CAD</b> · ${Math.round(pct)}% usado`;
+      ? `Te pasaste por <b style="color:var(--bad)">${fmt(diff)} CAD</b> (${conv})`
+      : `Quedan <b>${fmt(diff)} CAD</b> (${conv}) · ${Math.round(pct)}% usado`;
   } else { $('bbar').style.width='0%'; $('bnote').textContent='Sin presupuesto fijado'; }
 
   // list grouped
@@ -176,10 +180,31 @@ $('rCRC').addEventListener('input',()=>{ rates.crc=parseFloat($('rCRC').value)||
 $('budget').addEventListener('input',()=>{ budget=parseFloat($('budget').value)||null; Store.write('budget',budget); render(); });
 $('clearBtn').onclick=()=>{ if(confirm('¿Borrar todos los gastos?')){ costs=[]; Store.write('costs',costs); render(); } };
 
+async function fetchRates(){
+  const note = $('rateNote');
+  note.textContent = 'Buscando tipo de cambio real…';
+  try{
+    const res = await fetch(RATES_API, {cache:'no-store'});
+    const d = await res.json();
+    if(d.result!=='success' || !d.rates || !d.rates.USD || !d.rates.CRC) throw new Error('bad');
+    rates.usd = +d.rates.USD.toFixed(4);
+    rates.crc = +d.rates.CRC.toFixed(2);
+    Store.write('rates', rates);
+    $('rUSD').value = rates.usd; $('rCRC').value = rates.crc;
+    let when=''; try{ when = new Date(d.time_last_update_utc).toLocaleDateString('es-CR',{day:'numeric',month:'short'}); }catch(e){}
+    note.innerHTML = `✓ Tipo de cambio real (1 CAD = $${rates.usd} · ₡${fmt(rates.crc)})${when?' · '+when:''}. Editable a mano.`;
+    render();
+  }catch(e){
+    note.textContent = 'Sin conexión al tipo de cambio — usando el último guardado. Editá a mano si hace falta.';
+  }
+}
+
 // init values
 $('rUSD').value = rates.usd; $('rCRC').value = rates.crc; if(budget) $('budget').value = budget;
+$('refreshRates').onclick = fetchRates;
 fillCatSelect();
 render();
+fetchRates();
 </script>
 </body>
 </html>
