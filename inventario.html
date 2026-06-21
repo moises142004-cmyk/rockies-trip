@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Inventario · Jime & Moi — Las Rockies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ---- inventario page ---- */
+.kpis{display:flex;gap:10px;flex-wrap:wrap;margin:0 2px 6px}
+.kpi{flex:1;min-width:120px;background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:13px 15px;backdrop-filter:blur(16px)}
+.kpi .n{font-family:var(--disp);font-size:24px;font-weight:700;line-height:1}
+.kpi .n.amber{color:var(--amber)} .kpi .n.glacier{color:var(--glacier)} .kpi .n.good{color:var(--good)}
+.kpi .l{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-top:6px}
+.bar{height:7px;border-radius:5px;background:var(--hair-2);overflow:hidden;margin:14px 2px 4px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--glacier),var(--good));border-radius:5px;transition:width .35s}
+
+.addbar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:13px;margin:18px 2px;backdrop-filter:blur(16px)}
+.addbar .f{flex:1;min-width:130px} .addbar .f.name{flex:2;min-width:180px}
+.addbar .btn{height:38px}
+
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 2px 4px}
+.chip{appearance:none;border:1px solid var(--hair);background:transparent;color:var(--mist);font-family:var(--body);font-size:12px;font-weight:500;padding:7px 13px;border-radius:999px;cursor:pointer;transition:.14s}
+.chip:hover{color:var(--frost);border-color:rgba(255,255,255,.22)}
+.chip.on{background:var(--amber);color:#241500;font-weight:600;border-color:var(--amber)}
+
+.items{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.item{display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--hair-2);border-radius:12px;background:rgba(255,255,255,.02);transition:.14s}
+.item:hover{border-color:var(--hair);background:rgba(255,255,255,.04)}
+.item.packed{opacity:.55}
+.item.packed .iname{text-decoration:line-through;text-decoration-color:var(--mist-dim)}
+.item .iname{font-size:14px;font-weight:500;color:var(--frost);flex:1;min-width:0}
+.item .iname small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist-dim);margin-top:3px;font-weight:400}
+.tagbtn{appearance:none;cursor:pointer;border:1px solid var(--hair);background:transparent;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:7px;color:var(--mist);transition:.14s;white-space:nowrap}
+.tagbtn:hover{color:var(--frost);border-color:rgba(255,255,255,.25)}
+.tagbtn.buy{color:var(--warn);border-color:rgba(227,197,106,.4);background:rgba(227,197,106,.08)}
+.tagbtn.bought{color:var(--good);border-color:rgba(130,192,138,.4);background:rgba(130,192,138,.1)}
+.who{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mist-dim);background:var(--hair-2);border:0;border-radius:7px;padding:5px 8px;cursor:pointer}
+.del{appearance:none;border:0;background:transparent;color:var(--mist-dim);cursor:pointer;font-size:16px;line-height:1;padding:4px;border-radius:6px;transition:.14s}
+.del:hover{color:var(--bad);background:rgba(236,140,118,.1)}
+.empty{text-align:center;color:var(--mist-dim);font-size:13px;padding:40px 0;font-family:var(--mono)}
+.foot{margin-top:30px;text-align:center}
+.foot .btn{font-size:9.5px}
+@media (max-width:640px){
+  .item{flex-wrap:wrap} .item .iname{flex-basis:100%}
+  .addbar .f,.addbar .f.name{flex-basis:100%}
+}
+</style>
+</head>
+<body class="page">
+<header class="pagehdr">
+  <div class="brand"><a class="mark" href="index.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Las Rockies</span></div>
+  <nav class="sections">
+    <a href="index.html"><span class="ic">🗺️</span>Mapa</a>
+    <a class="on" href="inventario.html"><span class="ic">🎒</span>Inventario</a>
+    <a href="costos.html"><span class="ic">💰</span>Costos</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="phead">
+    <div class="eyebrow">El bolso de invierno</div>
+    <h1>Qué <em>llevamos</em></h1>
+    <p>Lista de empaque para −15°C. Marcá lo que ya empacaste, anotá lo que hay que comprar (el Boxing Day es el día más barato del año) y agregá lo que compremos allá.</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="n glacier" id="kTotal">0</div><div class="l">Ítems</div></div>
+    <div class="kpi"><div class="n good" id="kPacked">0</div><div class="l">Empacados</div></div>
+    <div class="kpi"><div class="n amber" id="kBuy">0</div><div class="l">Por comprar</div></div>
+    <div class="kpi"><div class="n" id="kBought">0</div><div class="l">Comprado allá</div></div>
+  </div>
+  <div class="bar"><i id="bar" style="width:0%"></i></div>
+
+  <div class="addbar">
+    <div class="f name"><label>Agregar ítem</label><input id="addName" placeholder="ej. Buff de lana, souvenir…" autocomplete="off"></div>
+    <div class="f"><label>Categoría</label><select id="addCat"></select></div>
+    <div class="f"><label>Estado</label><select id="addStatus">
+      <option value="tengo">Ya tengo</option>
+      <option value="comprar">Comprar antes</option>
+      <option value="comprado">Comprado allá 🇨🇦</option>
+    </select></div>
+    <button class="btn amber" id="addBtn">+ Agregar</button>
+  </div>
+
+  <div class="chips" id="chips">
+    <button class="chip on" data-f="all">Todo</button>
+    <button class="chip" data-f="topack">Por empacar</button>
+    <button class="chip" data-f="packed">Empacado</button>
+    <button class="chip" data-f="comprar">Por comprar 🛒</button>
+    <button class="chip" data-f="comprado">Comprado allá 🇨🇦</button>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="foot"><button class="btn ghost" id="resetBtn">↺ Restaurar lista por defecto</button></div>
+</div>
+
+<script src="store.js"></script>
+<script>
+const CATS = ['Abrigo','Calzado','Accesorios','Higiene','Tech & Docs','Otros'];
+const CAT_IC = {'Abrigo':'🧥','Calzado':'🥾','Accesorios':'🧤','Higiene':'🧴','Tech & Docs':'🔌','Otros':'🎒'};
+const WHO = ['ambos','jime','moi'];
+const WHO_LBL = {ambos:'👫 Ambos', jime:'👩 Jime', moi:'🧔 Moi'};
+
+const SEED = [
+  ['Parka con relleno (down/sintético)','Abrigo','comprar'],
+  ['Capas base térmicas (merino)','Abrigo','comprar'],
+  ['Suéter / fleece medio','Abrigo','tengo'],
+  ['Gorro de lana','Abrigo','comprar'],
+  ['Buff / cuello','Abrigo','tengo'],
+  ['Botas impermeables y aisladas','Calzado','comprar'],
+  ['Calcetines de lana (varios pares)','Calzado','comprar'],
+  ['Guantes o mitones de verdad','Accesorios','comprar'],
+  ['Hand warmers (sobres de calor)','Accesorios','comprar'],
+  ['Microspikes (para los icewalks)','Accesorios','comprar'],
+  ['Lentes de sol (reflejo de nieve)','Accesorios','tengo'],
+  ['Traje de baño (termas y spa)','Accesorios','comprar'],
+  ['Botella térmica','Accesorios','tengo'],
+  ['Bálsamo labial','Higiene','tengo'],
+  ['Crema hidratante','Higiene','tengo'],
+  ['Protector solar','Higiene','tengo'],
+  ['Pasaporte','Tech & Docs','tengo'],
+  ['eTA / visa de Canadá','Tech & Docs','comprar'],
+  ['Licencia de conducir','Tech & Docs','tengo'],
+  ['Adaptador de enchufe (tipo A/B)','Tech & Docs','comprar'],
+  ['Cargadores + power bank','Tech & Docs','tengo'],
+  ['Cámara / GoPro','Tech & Docs','tengo'],
+  ['Efectivo CAD + tarjetas','Tech & Docs','comprar'],
+  ['Mochila de día','Otros','tengo'],
+  ['Botiquín básico','Otros','tengo'],
+];
+function seedItems(){ return SEED.map(([name,cat,status]) => ({id:Store.uid(),name,cat,status,packed:false,who:'ambos'})); }
+
+let items = Store.read('inventory', null);
+if (!items) { items = seedItems(); Store.write('inventory', items); }
+let filter = 'all';
+
+const $ = id => document.getElementById(id);
+function save(){ Store.write('inventory', items); }
+
+function fillCatSelect(){ $('addCat').innerHTML = CATS.map(c=>`<option value="${c}">${CAT_IC[c]} ${c}</option>`).join(''); }
+
+function passesFilter(it){
+  if (filter==='all') return true;
+  if (filter==='packed') return it.packed;
+  if (filter==='topack') return !it.packed;
+  if (filter==='comprar') return it.status==='comprar';
+  if (filter==='comprado') return it.status==='comprado';
+  return true;
+}
+function render(){
+  const total = items.length;
+  const packed = items.filter(i=>i.packed).length;
+  $('kTotal').textContent = total;
+  $('kPacked').textContent = packed;
+  $('kBuy').textContent = items.filter(i=>i.status==='comprar').length;
+  $('kBought').textContent = items.filter(i=>i.status==='comprado').length;
+  $('bar').style.width = (total? Math.round(packed/total*100):0) + '%';
+
+  const view = items.filter(passesFilter);
+  const list = $('list');
+  if (!view.length){ list.innerHTML = `<div class="empty">Nada acá todavía.</div>`; return; }
+  const groups = {};
+  view.forEach(it=>{ (groups[it.cat] ||= []).push(it); });
+  list.innerHTML = CATS.filter(c=>groups[c]).map(cat=>`
+    <div class="section-title">${CAT_IC[cat]} ${cat} <span class="cnt">${groups[cat].length}</span></div>
+    <div class="items">${groups[cat].map(rowHtml).join('')}</div>
+  `).join('');
+}
+function rowHtml(it){
+  const tag = it.status==='comprar' ? `<button class="tagbtn buy" data-act="status" data-id="${it.id}">🛒 Comprar</button>`
+            : it.status==='comprado' ? `<button class="tagbtn bought" data-act="status" data-id="${it.id}">🇨🇦 Comprado</button>`
+            : `<button class="tagbtn" data-act="status" data-id="${it.id}">Ya tengo</button>`;
+  return `<div class="item ${it.packed?'packed':''}">
+    <input type="checkbox" class="check" data-act="pack" data-id="${it.id}" ${it.packed?'checked':''} aria-label="Empacado">
+    <div class="iname">${esc(it.name)}</div>
+    ${tag}
+    <button class="who" data-act="who" data-id="${it.id}">${WHO_LBL[it.who]}</button>
+    <button class="del" data-act="del" data-id="${it.id}" title="Eliminar">×</button>
+  </div>`;
+}
+function esc(s){ return s.replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function addItem(){
+  const name = $('addName').value.trim(); if(!name) return;
+  items.unshift({id:Store.uid(), name, cat:$('addCat').value, status:$('addStatus').value, packed:false, who:'ambos'});
+  $('addName').value=''; save(); render(); $('addName').focus();
+}
+
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-act]'); if(!t) return;
+  const it = items.find(i=>i.id===t.dataset.id); if(!it && t.dataset.act!=='del') return;
+  const act = t.dataset.act;
+  if (act==='pack'){ it.packed = t.checked; }
+  else if (act==='status'){ it.status = it.status==='tengo'?'comprar':it.status==='comprar'?'comprado':'tengo'; }
+  else if (act==='who'){ it.who = WHO[(WHO.indexOf(it.who)+1)%WHO.length]; }
+  else if (act==='del'){ items = items.filter(i=>i.id!==t.dataset.id); }
+  save(); render();
+});
+$('addBtn').onclick = addItem;
+$('addName').addEventListener('keydown', e=>{ if(e.key==='Enter') addItem(); });
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on')); c.classList.add('on');
+  filter = c.dataset.f; render();
+});
+$('resetBtn').onclick = ()=>{ if(confirm('¿Restaurar la lista por defecto? Se borra lo que agregaste.')){ items = seedItems(); save(); render(); } };
+
+fillCatSelect();
+render();
+</script>
+</body>
+</html>

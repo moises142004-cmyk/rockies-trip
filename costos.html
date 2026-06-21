@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Costos · Jime & Moi — Las Rockies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ---- costos page ---- */
+.totalcard{background:linear-gradient(160deg,rgba(245,166,35,.14),rgba(15,23,37,.72) 60%);border:1px solid var(--hair);border-radius:18px;padding:20px 22px;backdrop-filter:blur(18px);margin:0 2px}
+.totalcard .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist)}
+.totalcard .big{font-family:var(--disp);font-size:42px;font-weight:700;letter-spacing:-.02em;line-height:1;margin:8px 0 2px}
+.totalcard .big .cur{font-size:18px;font-weight:600;color:var(--mist);margin-left:6px}
+.conv{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px}
+.conv .c .v{font-family:var(--disp);font-size:18px;font-weight:600;color:var(--frost)}
+.conv .c .k{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist-dim);margin-top:2px}
+.conv .c .v.amber{color:var(--amber)} .conv .c .v.glacier{color:var(--glacier)}
+
+.budget{display:flex;align-items:center;gap:12px;margin:16px 2px 0;flex-wrap:wrap}
+.budget .f{display:flex;align-items:center;gap:8px}
+.budget input{width:130px}
+.bbar{height:8px;border-radius:5px;background:var(--hair-2);overflow:hidden;flex:1;min-width:140px}
+.bbar i{display:block;height:100%;border-radius:5px;transition:width .35s;background:linear-gradient(90deg,var(--good),var(--glacier))}
+.bbar i.over{background:linear-gradient(90deg,var(--warn),var(--bad))}
+.bnote{font-family:var(--mono);font-size:10px;color:var(--mist)} .bnote b{color:var(--frost)}
+
+.rates{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:13px;margin:18px 2px;backdrop-filter:blur(16px)}
+.rates .f{flex:1;min-width:140px}
+.rates .note{flex-basis:100%;font-family:var(--mono);font-size:9.5px;color:var(--mist-dim);letter-spacing:.04em}
+
+.addbar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:13px;margin:0 2px 8px;backdrop-filter:blur(16px)}
+.addbar .f{flex:1;min-width:120px} .addbar .f.concept{flex:2;min-width:170px} .addbar .f.amt{max-width:130px}
+.addbar .btn{height:38px}
+
+.catrow{display:flex;align-items:center;gap:12px;padding:9px 2px}
+.catrow .ic{width:34px;height:34px;flex:none;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--panel-2);border:1px solid var(--hair)}
+.catrow .cname{font-family:var(--disp);font-size:14px;font-weight:600;flex:1}
+.catrow .camt{font-family:var(--disp);font-size:15px;font-weight:600;color:var(--amber)}
+.catbar{height:6px;border-radius:4px;background:var(--hair-2);overflow:hidden;margin:0 2px 6px 48px}
+.catbar i{display:block;height:100%;border-radius:4px}
+
+.lines{display:flex;flex-direction:column;gap:6px;margin:2px 0 4px 48px}
+.line{display:flex;align-items:center;gap:12px;padding:9px 12px;border:1px solid var(--hair-2);border-radius:10px;background:rgba(255,255,255,.02)}
+.line .lc{font-size:13.5px;color:var(--frost);flex:1;min-width:0}
+.line .la{font-family:var(--mono);font-size:13px;color:var(--frost);white-space:nowrap}
+.line .la small{color:var(--mist-dim);font-size:10px;margin-left:5px}
+.del{appearance:none;border:0;background:transparent;color:var(--mist-dim);cursor:pointer;font-size:16px;padding:4px;border-radius:6px;transition:.14s}
+.del:hover{color:var(--bad);background:rgba(236,140,118,.1)}
+.empty{text-align:center;color:var(--mist-dim);font-size:13px;padding:40px 0;font-family:var(--mono)}
+.foot{margin-top:30px;text-align:center}
+@media (max-width:640px){
+  .totalcard .big{font-size:34px}
+  .addbar .f,.addbar .f.concept,.addbar .f.amt{flex-basis:100%;max-width:none}
+  .lines,.catbar{margin-left:0}
+}
+</style>
+</head>
+<body class="page">
+<header class="pagehdr">
+  <div class="brand"><a class="mark" href="index.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Las Rockies</span></div>
+  <nav class="sections">
+    <a href="index.html"><span class="ic">🗺️</span>Mapa</a>
+    <a href="inventario.html"><span class="ic">🎒</span>Inventario</a>
+    <a class="on" href="costos.html"><span class="ic">💰</span>Costos</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="phead">
+    <div class="eyebrow">El presupuesto</div>
+    <h1>Cuánto <em>cuesta</em></h1>
+    <p>Anotá todo en dólares canadienses (lo que vas a pagar allá) y mirá la conversión en vivo a dólares y colones. Poné un presupuesto y seguilo sin sustos.</p>
+  </div>
+
+  <div class="totalcard">
+    <div class="lbl">Total del viaje</div>
+    <div class="big"><span id="tCAD">0</span><span class="cur">CAD</span></div>
+    <div class="conv">
+      <div class="c"><div class="v glacier" id="tUSD">$0</div><div class="k">≈ dólares</div></div>
+      <div class="c"><div class="v amber" id="tCRC">₡0</div><div class="k">≈ colones</div></div>
+      <div class="c"><div class="v" id="tPP">0 CAD</div><div class="k">por persona (÷2)</div></div>
+    </div>
+    <div class="budget">
+      <div class="f"><label style="margin:0">Presupuesto CAD</label><input id="budget" type="number" min="0" placeholder="ej. 6000" inputmode="decimal"></div>
+      <div class="bbar"><i id="bbar" style="width:0%"></i></div>
+      <div class="bnote" id="bnote">Sin presupuesto fijado</div>
+    </div>
+  </div>
+
+  <div class="rates">
+    <div class="f"><label>1 CAD = ? USD</label><input id="rUSD" type="number" step="0.0001" inputmode="decimal"></div>
+    <div class="f"><label>1 CAD = ? CRC (colones)</label><input id="rCRC" type="number" step="0.01" inputmode="decimal"></div>
+    <div class="note">Editá el tipo de cambio cuando quieras — se guarda y funciona sin internet. Valores de referencia, confirmá con tu banco/tarjeta.</div>
+  </div>
+
+  <div class="addbar">
+    <div class="f concept"><label>Concepto</label><input id="aConcept" placeholder="ej. Banff Gondola (2 tickets)" autocomplete="off"></div>
+    <div class="f"><label>Categoría</label><select id="aCat"></select></div>
+    <div class="f amt"><label>Monto CAD</label><input id="aAmt" type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal"></div>
+    <button class="btn amber" id="addBtn">+ Agregar</button>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="foot"><button class="btn ghost" id="clearBtn">🗑 Borrar todos los gastos</button></div>
+</div>
+
+<script src="store.js"></script>
+<script>
+const CATS = ['Vuelos','Hotel','Auto','Comida','Actividades','Shopping','Otros'];
+const CAT_IC = {'Vuelos':'✈️','Hotel':'🏨','Auto':'🚗','Comida':'🍽️','Actividades':'🎿','Shopping':'🛍️','Otros':'💳'};
+const CAT_COL = {'Vuelos':'#5FD0D6','Hotel':'#93A7EC','Auto':'#E3C56A','Comida':'#F5A623','Actividades':'#82C08A','Shopping':'#EC8C76','Otros':'#C58CEC'};
+const DEFAULT_RATES = { usd:0.73, crc:525 };
+
+let costs  = Store.read('costs', []);
+let rates  = Store.read('rates', DEFAULT_RATES);
+let budget = Store.read('budget', null);
+
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('en-CA', {maximumFractionDigits:0});
+function esc(s){ return s.replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function fillCatSelect(){ $('aCat').innerHTML = CATS.map(c=>`<option value="${c}">${CAT_IC[c]} ${c}</option>`).join(''); }
+
+function render(){
+  const total = costs.reduce((s,c)=>s+c.amount,0);
+  $('tCAD').textContent = fmt(total);
+  $('tUSD').textContent = '$' + fmt(total*rates.usd);
+  $('tCRC').textContent = '₡' + fmt(total*rates.crc);
+  $('tPP').textContent  = fmt(total/2) + ' CAD';
+
+  // budget
+  if (budget && budget>0){
+    const pct = total/budget*100;
+    const over = total>budget;
+    $('bbar').firstChild; const bi=$('bbar'); bi.style.width = Math.min(100,pct)+'%'; bi.classList.toggle('over',over);
+    $('bnote').innerHTML = over
+      ? `Te pasaste por <b style="color:var(--bad)">${fmt(total-budget)} CAD</b>`
+      : `Quedan <b>${fmt(budget-total)} CAD</b> · ${Math.round(pct)}% usado`;
+  } else { $('bbar').style.width='0%'; $('bnote').textContent='Sin presupuesto fijado'; }
+
+  // list grouped
+  const list = $('list');
+  if (!costs.length){ list.innerHTML = `<div class="empty">Todavía no anotaste gastos.</div>`; return; }
+  const groups = {};
+  costs.forEach(c=>{ (groups[c.cat] ||= []).push(c); });
+  const maxCat = Math.max(...CATS.map(c=>(groups[c]||[]).reduce((s,x)=>s+x.amount,0)),1);
+  list.innerHTML = CATS.filter(c=>groups[c]).map(cat=>{
+    const sub = groups[cat].reduce((s,x)=>s+x.amount,0);
+    const col = CAT_COL[cat];
+    return `<div class="catrow"><div class="ic">${CAT_IC[cat]}</div><div class="cname">${cat}</div><div class="camt" style="color:${col}">${fmt(sub)} <small style="color:var(--mist-dim);font-size:10px">CAD</small></div></div>
+    <div class="catbar"><i style="width:${sub/maxCat*100}%;background:${col}"></i></div>
+    <div class="lines">${groups[cat].map(c=>lineHtml(c)).join('')}</div>`;
+  }).join('');
+}
+function lineHtml(c){
+  return `<div class="line"><div class="lc">${esc(c.concept)}</div>
+    <div class="la">${fmt(c.amount)} CAD<small>≈₡${fmt(c.amount*rates.crc)}</small></div>
+    <button class="del" data-id="${c.id}" title="Eliminar">×</button></div>`;
+}
+function addCost(){
+  const concept=$('aConcept').value.trim(); const amount=parseFloat($('aAmt').value);
+  if(!concept || !(amount>0)) return;
+  costs.unshift({id:Store.uid(), concept, cat:$('aCat').value, amount});
+  Store.write('costs',costs); $('aConcept').value=''; $('aAmt').value=''; render(); $('aConcept').focus();
+}
+
+$('addBtn').onclick=addCost;
+[$('aConcept'),$('aAmt')].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')addCost();}));
+$('list').addEventListener('click',e=>{ const b=e.target.closest('.del'); if(!b)return; costs=costs.filter(c=>c.id!==b.dataset.id); Store.write('costs',costs); render(); });
+$('rUSD').addEventListener('input',()=>{ rates.usd=parseFloat($('rUSD').value)||0; Store.write('rates',rates); render(); });
+$('rCRC').addEventListener('input',()=>{ rates.crc=parseFloat($('rCRC').value)||0; Store.write('rates',rates); render(); });
+$('budget').addEventListener('input',()=>{ budget=parseFloat($('budget').value)||null; Store.write('budget',budget); render(); });
+$('clearBtn').onclick=()=>{ if(confirm('¿Borrar todos los gastos?')){ costs=[]; Store.write('costs',costs); render(); } };
+
+// init values
+$('rUSD').value = rates.usd; $('rCRC').value = rates.crc; if(budget) $('budget').value = budget;
+fillCatSelect();
+render();
+</script>
+</body>
+</html>
