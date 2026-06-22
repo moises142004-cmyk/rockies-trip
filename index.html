@@ -84,7 +84,13 @@ body.mapfail .mapfail{display:block}
 .scroll::-webkit-scrollbar-thumb{background:var(--hair);border-radius:3px}
 
 .trail{position:relative}
-.trail::before{content:"";position:absolute;left:28px;top:24px;bottom:24px;width:2px;background:linear-gradient(180deg,var(--d1),var(--d2),var(--d3),var(--d4),var(--d5),var(--d6),var(--d7));opacity:.45;border-radius:2px}
+.trail::before{content:"";position:absolute;left:28px;top:24px;bottom:24px;width:2px;background:linear-gradient(180deg,var(--d1),var(--d2),var(--d3),var(--d4),var(--d5),var(--d6),var(--d7),#6FB1E0);opacity:.45;border-radius:2px}
+.dstay{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:var(--mist);background:var(--hair-2);border:1px solid var(--hair-2);border-radius:7px;padding:4px 9px;text-decoration:none;transition:.14s}
+.dstay:hover{color:var(--frost);border-color:var(--hair)}
+.dstay b{color:#C7D3E2;font-weight:600}
+.dstay.todo{background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.28);color:var(--amber)}
+.dstay.todo b{color:var(--amber)}
+.dstay .ext{opacity:.6}
 .day{position:relative;padding:4px 0;cursor:pointer}
 .day-row{display:flex;gap:14px;align-items:flex-start;padding:8px;border-radius:13px;transition:background .14s}
 .day:hover .day-row{background:var(--hair-2)}
@@ -235,7 +241,7 @@ body.win-closed .reopen{display:inline-flex}
     <a href="costos.html"><span class="ic">💰</span>Costos</a>
   </nav>
   <div class="hdr-right">
-    <div class="dates"><b>26 Dic 2026 — 1 Ene 2027</b><br>7 días · Calgary · Canmore · Banff</div>
+    <div class="dates"><b>26 Dic 2026 — 2 Ene 2027</b><br>8 días · Calgary · Canmore · Banff</div>
     <div class="seg" id="viewToggle">
       <button data-view="sat" class="on">Satélite</button>
       <button data-view="terr">Terreno</button>
@@ -271,12 +277,12 @@ body.win-closed .reopen{display:inline-flex}
     <div class="eyebrow">Diario del invierno</div>
     <h1>Nuestro primer <em>invierno</em></h1>
     <div class="stats">
-      <div class="stat"><div class="n">7</div><div class="l">Días</div></div>
+      <div class="stat"><div class="n">8</div><div class="l">Días</div></div>
       <div class="stat"><div class="n" id="spotStat">—</div><div class="l">Tesoros</div></div>
       <div class="stat"><div class="n" id="kmStat">—</div><div class="l">Km ruta</div></div>
       <div class="stat"><div class="n">−8°</div><div class="l">Prom.</div></div>
     </div>
-    <div class="legline">Base doble: <b>3 noches en Calgary</b> + <b>3 en Canmore</b>. Banff y Lake Louise son day trips (Canmore↔Banff ≈ 25 min). Solo dos check-ins.</div>
+    <div class="legline">Ruta: <b>3 noches Calgary</b> → <b>2 Canmore</b> → <b>2 Calgary</b> (Año Nuevo). Banff y Lake Louise son day trips desde Canmore (≈ 25 min). Fuegos de fin de año en Calgary.</div>
   </div>
   <div class="scroll" id="scroll">
     <div class="trail" id="trail"></div>
@@ -288,29 +294,35 @@ body.win-closed .reopen{display:inline-flex}
 
 <button class="btn reopen" id="reopen">⚓ Itinerario</button>
 
-<div class="now" id="now"><span class="pip"></span><span id="nowText">Viaje completo · <b>7 días en las Rockies</b></span></div>
+<div class="now" id="now"><span class="pip"></span><span id="nowText">Viaje completo · <b>8 días en las Rockies</b></span></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="routes.js"></script>
 <script src="photos.js"></script>
 <script>
 /* ===== DATA ===== */
-const DAYCOL=['#F5A623','#5FD0D6','#EC8C76','#93A7EC','#82C08A','#C58CEC','#E3C56A'];
+const DAYCOL=['#F5A623','#5FD0D6','#EC8C76','#93A7EC','#82C08A','#C58CEC','#E3C56A','#6FB1E0'];
+const STAY={
+  calgary:{label:"Airbnb · Calgary",dates:"26–29 Dic",url:"https://www.airbnb.co.cr/rooms/1186366606519434113?adults=2&check_in=2026-12-26&check_out=2026-12-29"},
+  canmore:{label:"Airbnb · Canmore",dates:"29–31 Dic",url:"https://www.airbnb.co.cr/rooms/1030358885544130626?check_in=2026-12-29&check_out=2026-12-31"},
+  calgary2:{label:"Calgary · Año Nuevo",dates:"31 Dic–2 Ene",url:null,todo:true},
+  flight:{label:"Vuelo de regreso",dates:"2 Ene",flight:true}
+};
 const PHOTOS = window.PHOTOS || {};
 const ROUTES = window.ROUTES || {};
 const ROUTE_KM = window.ROUTE_KM || {};
 
 const TRIP=[
- {n:1,date:"Vie 26 Dic",tag:"Calgary",title:"Llegada + Boxing Day",trans:"🚕 Uber / a pie",wx:"−3°/−12°",
-  blurb:"Aterrizan en Boxing Day, el día de rebajas más grande del año. Sueltan maletas, se equipan de frío con descuento y bajan a la 17th Ave a comer.",
-  tip:"Boxing Day = las mejores rebajas del año. Comprá hoy las capas base y accesorios de invierno con descuento.",
+ {n:1,date:"Vie 26 Dic",tag:"Calgary",title:"Llegada + Boxing Day",trans:"✈️ Vuelo nocturno + Uber",wx:"−3°/−12°",stay:"calgary",
+  blurb:"Salimos de San José la noche del 25 (vuelo nocturno, ~10–12 h con escala) para aterrizar cerca del mediodía del 26 y agarrar el Boxing Day — el día de rebajas más grande del año. Dejamos maletas y derecho a equiparnos de frío con descuento.",
+  tip:"Volar la noche del 25 = dormís en el avión y no pagás hotel esa noche. El check-in del Airbnb es en la tarde: dejá las maletas y arrancá las compras. Boxing Day tiene las mejores rebajas del año — hoy se compran las capas base y accesorios.",
   sites:[
-   {name:"Aeropuerto de Calgary (YYC)",lat:51.1297,lng:-114.0106,t:"2:00 PM",fc:"ruta",ic:"✈️",pk:"yyc",note:"Llegada del vuelo desde San José. Del aeropuerto al centro son ~25 min."},
-   {name:"CF Chinook Centre",lat:50.9986,lng:-114.0729,t:"4:00 PM",fc:"shops",ic:"🛍️",pk:"chinook",note:"El mall más grande de Calgary. En Boxing Day abre temprano con los descuentos más fuertes — perfecto para armar el kit de frío (parka, botas, capas)."},
-   {name:"Streetwear en 17th Ave",lat:51.0381,lng:-114.0760,t:"6:30 PM",fc:"shops",ic:"👟",pk:"17ave",note:"LESS 17 y From Another: streetwear, sneakers y marcas canadienses como OVO y Drew House. La calle más cool de la ciudad."},
-   {name:"Cena: Modern Steak",lat:51.0454,lng:-114.0667,t:"8:30 PM",fc:"comer",ic:"🥩",pk:"modernsteak",note:"Carne de Alberta a otro nivel, en la peatonal Stephen Ave. Para arrancar el viaje fuerte."}
+   {name:"Aeropuerto de Calgary (YYC)",lat:51.1297,lng:-114.0106,t:"~11:30 AM",fc:"ruta",ic:"✈️",pk:"yyc",note:"Llegada del vuelo nocturno desde San José (sale el 25 en la noche, ~10–12 h con escala en EE.UU. o Toronto). Del aeropuerto al centro, ~25 min."},
+   {name:"CF Chinook Centre",lat:50.9986,lng:-114.0729,t:"1:30 PM",fc:"shops",ic:"🛍️",pk:"chinook",note:"El mall más grande de Calgary. En Boxing Day abre con los descuentos más fuertes — perfecto para armar el kit de frío (parka, botas, capas)."},
+   {name:"Streetwear en 17th Ave",lat:51.0381,lng:-114.0760,t:"5:00 PM",fc:"shops",ic:"👟",pk:"17ave",note:"LESS 17 y From Another: streetwear, sneakers y marcas canadienses como OVO y Drew House. La calle más cool de la ciudad."},
+   {name:"Cena: Modern Steak",lat:51.0454,lng:-114.0667,t:"8:00 PM",fc:"comer",ic:"🥩",pk:"modernsteak",note:"Carne de Alberta a otro nivel, en la peatonal Stephen Ave. Para arrancar el viaje fuerte (y aguantar el desvelo del vuelo)."}
   ]},
- {n:2,date:"Sáb 27 Dic",tag:"Calgary",title:"Ciudad & barrios",trans:"🚶 A pie / Uber",wx:"−4°/−13°",
+ {n:2,date:"Sáb 27 Dic",tag:"Calgary",title:"Ciudad & barrios",trans:"🚶 A pie / Uber",wx:"−4°/−13°",stay:"calgary",
   blurb:"Día de ciudad: el puente rojo de Calatrava, el museo de música más cool de Canadá y los barrios con onda, cerrando con una de las mejores mesas de Calgary.",
   tip:"Casi todo es caminable. Reservá Pigeonhole con antelación — es de los favoritos foodie de la ciudad.",
   sites:[
@@ -319,7 +331,7 @@ const TRIP=[
    {name:"Barrio Kensington",lat:51.0530,lng:-114.0860,t:"2:00 PM",fc:"shops",ic:"🛍️",pk:"kensington",note:"Barrio bohemio y caminable: boutiques, vinilos, una librería de 3 pisos y cafés con onda."},
    {name:"Cena: Pigeonhole",lat:51.0380,lng:-114.0689,t:"8:00 PM",fc:"comer",ic:"🍷",pk:"pigeonhole",note:"Top 100 de Canadá: platos para compartir y vinos naturales. El favorito foodie local. Reservar."}
   ]},
- {n:3,date:"Dom 28 Dic",tag:"Calgary",title:"Calgary local",trans:"🚗 Auto / a pie",wx:"−5°/−14°",
+ {n:3,date:"Dom 28 Dic",tag:"Calgary",title:"Calgary local",trans:"🚗 Auto / a pie",wx:"−5°/−14°",stay:"calgary",
   blurb:"Último día de ciudad sin prisa: brunch famoso, el barrio histórico de Inglewood, la vista desde la torre y de noche las luces del zoológico.",
   tip:"ZooLights va hasta inicios de enero — la mejor actividad nocturna de invierno en la ciudad. Confirmá horarios del 28.",
   sites:[
@@ -329,7 +341,7 @@ const TRIP=[
    {name:"Cena: Caesar's Steakhouse",lat:51.0466,lng:-114.0635,t:"7:00 PM",fc:"comer",ic:"🥩",pk:"caesars",note:"Institución de Calgary desde 1972: carne de Alberta madurada y ensalada Caesar preparada en la mesa."},
    {name:"Calgary Zoo · ZooLights",lat:51.0454,lng:-114.0232,t:"8:30 PM",fc:"actividad",ic:"✨",pk:"zoo",note:"El zoológico se transforma en un bosque de luces para las fiestas. Cozy, caminable y muy navideño."}
   ]},
- {n:4,date:"Lun 29 Dic",tag:"Calgary → Canmore",title:"Traslado + lobos",trans:"🚗 Auto · 1h20",wx:"−5°/−14°",
+ {n:4,date:"Lun 29 Dic",tag:"Calgary → Canmore",title:"Traslado + lobos",trans:"🚗 Auto · 1h20",wx:"−5°/−14°",stay:"canmore",
   blurb:"Recogen el auto y enfilan a las montañas. Parada estrella en ruta: el santuario de wolfdogs. Llegada a Canmore, el pueblo base de la segunda mitad.",
   tip:"El santuario abre jue–lun; reservá el tour. Salí con el tanque lleno y confirmá que el auto traiga llantas de invierno.",
   sites:[
@@ -338,7 +350,7 @@ const TRIP=[
    {name:"Three Sisters / Policeman's Creek",lat:51.0860,lng:-115.3470,t:"4:00 PM",fc:"vistas",ic:"📸",pk:"threesisters",note:"Paseo corto al arroyo que no se congela del todo: reflejo postal de los picos Three Sisters."},
    {name:"Cena: Tavern 1883",lat:51.0890,lng:-115.3585,t:"7:00 PM",fc:"comer",ic:"🍔",pk:"tavern1883",note:"Gastropub famoso por su elk burger (hamburguesa de alce). Música en vivo y buena onda local."}
   ]},
- {n:5,date:"Mar 30 Dic",tag:"Canmore · day trip Banff",title:"Día grande de Banff",trans:"🚗 Auto · 25 min",wx:"−6°/−15°",
+ {n:5,date:"Mar 30 Dic",tag:"Canmore · day trip Banff",title:"Día grande de Banff",trans:"🚗 Auto · 25 min",wx:"−6°/−15°",stay:"canmore",
   blurb:"Día de Banff a 25 minutos: la góndola a la cima de seis cordilleras, la avenida del pueblo, las aguas termales bajo la nieve y fondue de cierre. De vuelta a dormir a Canmore.",
   tip:"Comprá la góndola online con horario. Las termas no necesitan reserva — andá temprano o al atardecer. Reservá Grizzly House.",
   sites:[
@@ -347,22 +359,28 @@ const TRIP=[
    {name:"Banff Upper Hot Springs",lat:51.1509,lng:-115.5606,t:"4:00 PM",fc:"actividad",ic:"♨️",pk:"hotsprings",note:"Aguas termales más altas de Canadá (37–40°C), con vista al Mt Rundle nevado. El plan perfecto al atardecer."},
    {name:"Cena: Grizzly House",lat:51.1755,lng:-115.5710,t:"7:30 PM",fc:"comer",ic:"🫕",pk:"grizzlyhouse",note:"Fondue ritual desde 1967: queso → carnes exóticas en piedra caliente → chocolate. Retro y romántico. Reservar."}
   ]},
- {n:6,date:"Mié 31 Dic",tag:"Canmore · Año Nuevo",title:"Trineo de perros & Año Nuevo",trans:"🚗 Auto",wx:"−7°/−16°",
-  blurb:"El día más aventura: trineo tirado por huskies en la mañana, el lago helado de Minnewanka por la tarde, y un Año Nuevo cozy en Canmore — cena especial y brindis de medianoche sin tener que manejar.",
-  tip:"El trineo de perros en temporada alta se agota semanas antes — reservá YA. Banff y Canmore no tienen fuegos (zona de parque); el plan es cena + brindis. Reservá la cena de fin de año con mucha antelación.",
+ {n:6,date:"Mié 31 Dic",tag:"Canmore → Calgary",title:"Trineo + Año Nuevo en la ciudad",trans:"🚗 Auto · 1h20",wx:"−6°/−15°",stay:"calgary2",
+  blurb:"Última aventura en la montaña —trineo tirado por huskies— y de vuelta a Calgary para el Año Nuevo: la única ciudad de la zona con fuegos artificiales. Cena especial y fuegos sobre el río helado.",
+  tip:"Reservá el trineo con semanas (se agota). Banff y Canmore prohíben fuegos — por eso cerramos en Calgary. Checkout de Canmore hoy; reservá la cena de fin de año con tiempo.",
   sites:[
-   {name:"Snowy Owl Sled Dog Tours",lat:51.0779,lng:-115.3889,t:"9:00 AM",fc:"actividad",ic:"🛷",pk:"sleddog",note:"Trineo tirado por huskies en Kananaskis: lección de musher y manejás el trineo vos. El operador más veterano del valle — se agota, reservá con semanas de antelación."},
-   {name:"Lake Minnewanka",lat:51.2562,lng:-115.4609,t:"2:00 PM",fc:"animales",ic:"🐏",pk:"minnewanka",note:"El loop fiable para borrego cimarrón y wapití junto al camino, más el lago helado con burbujas de metano atrapadas."},
-   {name:"Cena de Año Nuevo: Crazyweed",lat:51.0792,lng:-115.3530,t:"7:30 PM",fc:"finde",ic:"🥂",pk:"crazyweed",note:"Top-10 de Canmore por años: menú global audaz y buenos cócteles. La mesa para despedir el año. Reservar temprano."},
-   {name:"Brindis de medianoche · Canmore",lat:51.0884,lng:-115.3479,t:"11:45 PM",fc:"finde",ic:"🎆",pk:"canmore",note:"Recibir el 2027 caminando la Main St nevada y el Policeman's Creek, sin manejar. Cozy y nuestro. ¡Feliz 2027!"}
+   {name:"Snowy Owl Sled Dog Tours",lat:51.0779,lng:-115.3889,t:"9:00 AM",fc:"actividad",ic:"🛷",pk:"sleddog",note:"Trineo tirado por huskies en Kananaskis: lección de musher y manejás el trineo vos. El operador más veterano del valle — se agota, reservá con semanas. Después, manejada de vuelta a Calgary."},
+   {name:"Cena de Año Nuevo: River Café",lat:51.0539,lng:-114.0701,t:"7:00 PM",fc:"finde",ic:"🥂",pk:"rivercafe",note:"Menú junto a Prince's Island Park, con chimenea y producto local. Premium y romántico para cerrar el año. Reservar con mucha antelación."},
+   {name:"Fuegos: Prince's Island Park",lat:51.0535,lng:-114.0670,t:"11:45 PM",fc:"finde",ic:"🎆",pk:"fireworks",note:"Los únicos fuegos artificiales de la región a medianoche, sobre el parque y el río helado, con festejo gratis del centro. ¡Feliz 2027!"}
   ]},
- {n:7,date:"Jue 1 Ene",tag:"Canmore → YYC",title:"Salida fácil",trans:"🚗 Auto · 1h05",wx:"−5°/−13°",
-  blurb:"Mañana tranquila: último cinnamon bun de montaña, una caminata corta al lago espejo y la manejada panorámica de regreso al aeropuerto. Sin prisa.",
-  tip:"Salí con margen: en invierno la Trans-Canada puede ir lenta. Cargá gasolina antes de salir de Canmore.",
+ {n:7,date:"Jue 1 Ene",tag:"Calgary",title:"Año Nuevo tranquilo",trans:"🚶 A pie / +15",wx:"−4°/−12°",stay:"calgary2",
+  blurb:"Primer día del 2027 sin alarma: brunch tardío, una caminata por el sistema +15 (todo bajo techo y calientito) y las últimas compras antes de volar mañana.",
+  tip:"El 1 de enero varios lugares abren reducido — confirmá el brunch antes de salir. El +15 conecta el centro por puentes climatizados, sin pisar la calle helada.",
   sites:[
-   {name:"Último café: JK Bakery",lat:51.0957,lng:-115.3584,t:"9:00 AM",fc:"comer",ic:"☕",pk:"jkbakery",note:"Panadería de culto: cinnamon buns y los mejores sándwiches del pueblo. El desayuno perfecto antes de bajar."},
-   {name:"Quarry Lake (mirador)",lat:51.0748,lng:-115.3729,t:"10:30 AM",fc:"vistas",ic:"📸",pk:"quarry",note:"Lago al borde de Canmore con el reflejo de los picos. Caminata corta y plana para la última foto de montaña."},
-   {name:"Aeropuerto YYC",lat:51.1297,lng:-114.0106,t:"1:30 PM",fc:"ruta",ic:"✈️",pk:"yyc",note:"Devolución del auto y vuelo de regreso. ¡Hasta la próxima!"}
+   {name:"Brunch: Alforno Bakery & Café",lat:51.0505,lng:-114.0686,t:"11:00 AM",fc:"comer",ic:"🍳",pk:"alforno",note:"Café y horneados en Eau Claire para el primer desayuno del año, sin prisa."},
+   {name:"CORE & el +15",lat:51.0457,lng:-114.0656,t:"1:30 PM",fc:"shops",ic:"🛍️",pk:"core",note:"El mall del centro conectado por el +15, la red de puentes climatizados más grande del mundo — shopping y caminata sin frío."},
+   {name:"Cena cozy: Major Tom",lat:51.0466,lng:-114.0680,t:"7:30 PM",fc:"comer",ic:"🍸",pk:"majortom",note:"Bar-restaurante en un piso 40 con vista de la ciudad iluminada. Brindis tranquilo del primer día del año."}
+  ]},
+ {n:8,date:"Vie 2 Ene",tag:"Calgary → YYC",title:"Salida fácil",trans:"🚕 Uber · 25 min",wx:"−5°/−13°",stay:"flight",
+  blurb:"Mañana suave: un último café de especialidad, las valijas y el salto corto al aeropuerto. La salida más fácil.",
+  tip:"YYC queda a ~25 min del centro. Devolvé el auto con tiempo y confirmá el vuelo — el 2 de enero el tráfico ya es normal.",
+  sites:[
+   {name:"Último café: Phil & Sebastian",lat:51.0449,lng:-114.0667,t:"9:30 AM",fc:"comer",ic:"☕",pk:"philseb",note:"El mejor café de especialidad de Calgary para el último ritual antes de volar."},
+   {name:"Aeropuerto YYC",lat:51.1297,lng:-114.0106,t:"12:00 PM",fc:"ruta",ic:"✈️",pk:"yyc",note:"Devolución del auto y vuelo de regreso. ¡Hasta la próxima, Canadá!"}
   ]}
 ];
 
@@ -455,11 +473,17 @@ function renderTrail(){
     day.c=DAYCOL[di];
     const el=document.createElement('div');el.className='day';el.style.setProperty('--dc',day.c);el.dataset.di=di;
     const km=ROUTE_KM[di]?ROUTE_KM[di]+' km':'—';
+    const st=day.stay?STAY[day.stay]:null;
+    const stayHtml=!st?'':st.flight
+      ?`<div class="dstay">✈️ <b>${st.label}</b> · ${st.dates}</div>`
+      :st.url
+        ?`<a class="dstay" href="${st.url}" target="_blank" rel="noopener">🛏 <b>${st.label}</b> · ${st.dates} <span class="ext">↗</span></a>`
+        :`<div class="dstay${st.todo?' todo':''}">🛏 <b>${st.label}</b> · ${st.dates}${st.todo?' · por reservar':''}</div>`;
     const sitesHtml=day.sites.map((s,si)=>`<div class="site" data-di="${di}" data-si="${si}"><div class="s-time">${s.t}</div><div class="s-ico">${s.ic}</div><div class="s-name">${s.name}</div></div>`).join('');
     el.innerHTML=`<div class="day-row"><div class="seal">${day.n}</div><div class="day-meta">
       <div class="dtag">${day.tag}</div><div class="dttl">${day.title}</div>
       <div class="dsub"><span class="pill">${day.date}</span><span class="pill">${day.trans}</span><span class="pill">🌡️ ${day.wx}</span><span class="pill">🧭 ${km}</span></div>
-      <div class="dblurb">${day.blurb}</div><div class="dtip"><b>Tip ·</b> ${day.tip}</div></div></div><div class="sites">${sitesHtml}</div>`;
+      <div class="dblurb">${day.blurb}</div><div class="dtip"><b>Tip ·</b> ${day.tip}</div>${stayHtml}</div></div><div class="sites">${sitesHtml}</div>`;
     trail.appendChild(el);
   });
   trail.querySelectorAll('.day').forEach(d=>d.querySelector('.day-row').addEventListener('click',()=>focusDay(+d.dataset.di)));
@@ -530,7 +554,7 @@ function buildPanels(){
   })();
 }
 function syncChips(){document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.cat===activeFilter));}
-function setNow(){const t=$('nowText');if(openDay===null)t.innerHTML=`Viaje completo · <b>7 días en las Rockies</b>`;else{const d=TRIP[openDay];t.innerHTML=`Día ${d.n} · <b>${d.title}</b>`;}}
+function setNow(){const t=$('nowText');if(openDay===null)t.innerHTML=`Viaje completo · <b>8 días en las Rockies</b>`;else{const d=TRIP[openDay];t.innerHTML=`Día ${d.n} · <b>${d.title}</b>`;}}
 function focusDay(di){
   openDay=(openDay===di)?null:di;
   document.querySelectorAll('.day').forEach(d=>d.classList.toggle('open',+d.dataset.di===openDay));
