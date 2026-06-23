@@ -111,7 +111,11 @@ body.mapfail .mapfail{display:block}
 .site:hover .s-name{color:var(--amber)}
 .s-time{font-family:var(--mono);font-size:9.5px;color:var(--mist-dim);width:54px;flex:none;padding-top:2px}
 .s-ico{font-size:14px;flex:none}
-.s-name{font-size:12.5px;font-weight:500;color:var(--frost);line-height:1.35;transition:color .14s}
+.s-name{font-size:12.5px;font-weight:500;color:var(--frost);line-height:1.35;transition:color .14s;flex:1;min-width:0}
+.s-km{font-family:var(--mono);font-size:9px;color:var(--mist-dim);white-space:nowrap;padding-top:2px;flex:none}
+.site.ret{cursor:default;opacity:.7}
+.site.ret .s-name{font-style:italic;color:var(--mist)}
+.site.ret:hover .s-name{color:var(--mist)}
 
 .tcity{margin:2px 0 14px}
 .tcity h3{font-family:var(--disp);font-size:15px;font-weight:600;color:var(--frost);display:flex;align-items:center;gap:10px;margin:8px 2px 8px}
@@ -166,6 +170,7 @@ body.win-closed .reopen{display:inline-flex}
 .mk.seal-m{width:36px;height:36px;border-radius:50%;background:var(--c);color:#0A0F18;font-family:var(--disp);font-weight:700;font-size:16px;border:2.5px solid rgba(255,255,255,.92);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 20px -2px var(--c),0 3px 8px rgba(0,0,0,.5)}
 .mk.pin{width:28px;height:28px;border-radius:50%;background:rgba(12,18,28,.92);font-size:14px;border:2px solid var(--c);box-shadow:0 0 12px -3px var(--c),0 2px 6px rgba(0,0,0,.55);backdrop-filter:blur(4px)}
 .mk.spot{width:26px;height:26px;border-radius:50%;background:rgba(12,18,28,.86);font-size:13px;border:2px dashed var(--c);box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.mk.home{width:32px;height:32px;border-radius:9px;background:rgba(245,166,35,.95);font-size:16px;border:2px solid rgba(255,255,255,.92);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 3px 9px rgba(0,0,0,.55)}
 .mk:hover{transform:scale(1.18);z-index:1000}
 @media (prefers-reduced-motion:no-preference){.mk{animation:pop .45s cubic-bezier(.2,.85,.3,1.25) backwards}}
 @keyframes pop{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
@@ -304,13 +309,25 @@ body.win-closed .reopen{display:inline-flex}
 const DAYCOL=['#F5A623','#5FD0D6','#EC8C76','#93A7EC','#82C08A','#C58CEC','#E3C56A','#6FB1E0'];
 const STAY={
   calgary:{label:"Airbnb · Calgary",dates:"26–29 Dic",url:"https://www.airbnb.co.cr/rooms/1186366606519434113?adults=2&check_in=2026-12-26&check_out=2026-12-29"},
-  canmore:{label:"Airbnb · Canmore",dates:"29–31 Dic",url:"https://www.airbnb.co.cr/rooms/1030358885544130626?check_in=2026-12-29&check_out=2026-12-31"},
+  canmore:{label:"Airbnb · Dead Man's Flats",dates:"29–31 Dic",url:"https://www.airbnb.co.cr/rooms/1030358885544130626?check_in=2026-12-29&check_out=2026-12-31"},
   calgary2:{label:"Calgary · Año Nuevo",dates:"31 Dic–2 Ene",url:null,todo:true},
   flight:{label:"Vuelo de regreso",dates:"2 Ene",flight:true}
 };
 const PHOTOS = window.PHOTOS || {};
 const ROUTES = window.ROUTES || {};
 const ROUTE_KM = window.ROUTE_KM || {};
+const ROUTE_SITEKM = window.ROUTE_SITEKM || {};
+const ROUTE_RETURNKM = window.ROUTE_RETURNKM || {};
+
+/* Hospedaje real (Airbnb). Coordenadas aproximadas del listing hasta confirmar la reserva. */
+const LODGING=[
+ {id:"stay-cal",name:"Airbnb · Calgary (centro)",lat:51.04371,lng:-114.07667,dates:"26–29 Dic",
+  url:"https://www.airbnb.co.cr/rooms/1186366606519434113?adults=2&check_in=2026-12-26&check_out=2026-12-29",
+  note:"\"Vistas a la Torre de Calgary\" — apto de 2 dormitorios en el centro. Base de los días 1–3, caminable a casi todo. (Para el Año Nuevo, 31 Dic–2 Ene, falta reservar.)"},
+ {id:"stay-dmf",name:"Airbnb · Dead Man's Flats",lat:51.04148,lng:-115.26058,dates:"29–31 Dic",
+  url:"https://www.airbnb.co.cr/rooms/1030358885544130626?check_in=2026-12-29&check_out=2026-12-31",
+  note:"Apto de montaña con balcón (1 cama king). En Dead Man's Flats, ~10 min de Canmore y ~20 de Banff. Base de los días 4–5. Ubicación aproximada hasta confirmar la reserva."}
+];
 
 const TRIP=[
  {n:1,date:"Vie 26 Dic",tag:"Calgary",title:"Llegada + Boxing Day",trans:"✈️ Vuelo nocturno + Uber",wx:"−3°/−12°",stay:"calgary",
@@ -343,12 +360,11 @@ const TRIP=[
   ]},
  {n:4,date:"Lun 29 Dic",tag:"Calgary → Canmore",title:"Traslado + lobos",trans:"🚗 Auto · 1h20",wx:"−5°/−14°",stay:"canmore",
   blurb:"Recogen el auto y enfilan a las montañas. Parada estrella en ruta: el santuario de wolfdogs. Llegada a Canmore, el pueblo base de la segunda mitad.",
-  tip:"El santuario abre jue–lun; reservá el tour. Salí con el tanque lleno y confirmá que el auto traiga llantas de invierno.",
+  tip:"Hoy recogés el auto de alquiler (en Calgary no hace falta — todo a pie/Uber); confirmá llantas de invierno y salí con tanque lleno. El santuario abre jue–lun; reservá el tour. Check-in del Airbnb en Dead Man's Flats, ~10 min de Canmore.",
   sites:[
    {name:"Yamnuska Wolfdog Sanctuary",lat:51.2384,lng:-114.6275,t:"10:30 AM",fc:"animales",ic:"🐺",pk:"wolfdog",note:"La forma REAL de 'ver lobos': wolfdogs de alto contenido en recintos enormes, con guía. Justo en ruta Calgary→Canmore (cerca de Cochrane)."},
-   {name:"Canmore (check-in)",lat:51.0884,lng:-115.3479,t:"2:00 PM",fc:"hotel",ic:"🏔️",pk:"canmore",note:"Pueblo de montaña más local y tranquilo que Banff. Base de los últimos 3 días — y a 25 min de Banff."},
-   {name:"Three Sisters / Policeman's Creek",lat:51.0860,lng:-115.3470,t:"4:00 PM",fc:"vistas",ic:"📸",pk:"threesisters",note:"Paseo corto al arroyo que no se congela del todo: reflejo postal de los picos Three Sisters."},
-   {name:"Cena: Tavern 1883",lat:51.0890,lng:-115.3585,t:"7:00 PM",fc:"comer",ic:"🍔",pk:"tavern1883",note:"Gastropub famoso por su elk burger (hamburguesa de alce). Música en vivo y buena onda local."}
+   {name:"Three Sisters / Policeman's Creek",lat:51.0860,lng:-115.3470,t:"4:00 PM",fc:"vistas",ic:"📸",pk:"threesisters",note:"Paseo corto al arroyo que no se congela del todo: reflejo postal de los picos Three Sisters, en Canmore (~10 min del Airbnb)."},
+   {name:"Cena: Tavern 1883",lat:51.0890,lng:-115.3585,t:"7:00 PM",fc:"comer",ic:"🍔",pk:"tavern1883",note:"Gastropub famoso por su elk burger (hamburguesa de alce), en Canmore. Música en vivo y buena onda local."}
   ]},
  {n:5,date:"Mar 30 Dic",tag:"Canmore · day trip Banff",title:"Día grande de Banff",trans:"🚗 Auto · 25 min",wx:"−6°/−15°",stay:"canmore",
   blurb:"Día de Banff a 25 minutos: la góndola a la cima de seis cordilleras, la avenida del pueblo, las aguas termales bajo la nieve y fondue de cierre. De vuelta a dormir a Canmore.",
@@ -479,7 +495,12 @@ function renderTrail(){
       :st.url
         ?`<a class="dstay" href="${st.url}" target="_blank" rel="noopener">🛏 <b>${st.label}</b> · ${st.dates} <span class="ext">↗</span></a>`
         :`<div class="dstay${st.todo?' todo':''}">🛏 <b>${st.label}</b> · ${st.dates}${st.todo?' · por reservar':''}</div>`;
-    const sitesHtml=day.sites.map((s,si)=>`<div class="site" data-di="${di}" data-si="${si}"><div class="s-time">${s.t}</div><div class="s-ico">${s.ic}</div><div class="s-name">${s.name}</div></div>`).join('');
+    const skm=ROUTE_SITEKM[di]||[];
+    let sitesHtml=day.sites.map((s,si)=>{
+      const k=skm[si];const kmTag=(k!=null)?`<span class="s-km">${k} km</span>`:'';
+      return `<div class="site" data-di="${di}" data-si="${si}"><div class="s-time">${s.t}</div><div class="s-ico">${s.ic}</div><div class="s-name">${s.name}</div>${kmTag}</div>`;
+    }).join('');
+    if(ROUTE_RETURNKM[di]!=null) sitesHtml+=`<div class="site ret"><div class="s-time"></div><div class="s-ico">🛏</div><div class="s-name">Vuelta al hospedaje</div><span class="s-km">${ROUTE_RETURNKM[di]} km</span></div>`;
     el.innerHTML=`<div class="day-row"><div class="seal">${day.n}</div><div class="day-meta">
       <div class="dtag">${day.tag}</div><div class="dttl">${day.title}</div>
       <div class="dsub"><span class="pill">${day.date}</span><span class="pill">${day.trans}</span><span class="pill">🌡️ ${day.wx}</span><span class="pill">🧭 ${km}</span></div>
@@ -573,6 +594,13 @@ function galHtml(photos){
   const nav=photos.length>1?`<button class="nav prev" onclick="this.parentNode.querySelector('.track').scrollBy({left:-272})">‹</button><button class="nav next" onclick="this.parentNode.querySelector('.track').scrollBy({left:272})">›</button><span class="count">1 / ${photos.length}</span>`:'';
   return `<div class="gal"><div class="track">${imgs}</div>${nav}</div>`;
 }
+function stayPopHtml(o){
+  return `<div style="--pc:#F5A623"><div class="gal"><div class="ph"><span class="e">🏠</span><span class="t">Hospedaje</span></div></div>`+
+    `<div class="pp-body"><div class="pp-cat" style="color:#F5A623">Hospedaje</div><div class="pp-name">${o.name}</div>`+
+    `<div class="pp-meta">🗓 ${o.dates}</div><div class="pp-note">${o.note}</div>`+
+    `<div class="pp-row"><a class="pp-go" href="${o.url}" target="_blank" rel="noopener" style="background:#F5A623;color:#241500;border-color:#F5A623">↗ Ver en Airbnb</a>`+
+    `<a class="pp-go" href="${gmaps(o.lat,o.lng)}" target="_blank" rel="noopener">▸ Mapa</a></div></div></div>`;
+}
 function popHtml(o){
   const photos=photosFor(o.pk);
   const gal=photos.length?galHtml(photos):`<div class="gal"><div class="ph"><span class="e">${o.ic||'📍'}</span><span class="t">Sin foto todavía</span></div></div>`;
@@ -636,6 +664,13 @@ function initMap(){
     m._fc=sp.cat;m._di=null;m._kind='spot';m._sp=sp;
     m.bindPopup(popHtml({pc:c,cat:FCLBL[sp.cat]||sp.cat,name:sp.name,ic:sp.ic,pk:sp.pk,metaLine:`✦ ${sp.city}`,note:sp.note,badge:`Tesoro · ${sp.city}`,lat:sp.lat,lng:sp.lng}),{className:'t-pop',maxWidth:272,minWidth:272,autoPanPadding:[40,90]});
     sp._m=m;spotMarkers.push(m);
+  });
+  LODGING.forEach(lg=>{
+    const icon=L.divIcon({html:`<div class="mk home" title="${lg.name}">🏠</div>`,className:'',iconSize:[32,32],iconAnchor:[16,16]});
+    const m=L.marker([lg.lat,lg.lng],{icon,riseOnHover:true}).addTo(map);
+    m._kind='stay';m._fc='hotel';m._di=null;
+    m.bindPopup(stayPopHtml(lg),{className:'t-pop',maxWidth:272,minWidth:272,autoPanPadding:[40,90]});
+    lg._m=m;
   });
   renderDayLayers();
   MAP_OK=true;
