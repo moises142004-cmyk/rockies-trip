@@ -33,8 +33,45 @@ window.PHOTOS = {
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Calgary%20Tower%201.jpg?width=1000",caption:"Calgary Tower"},
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Calgary%20Tower%20with%20flame%201.jpg?width=1000",caption:"Calgary Tower con la llama encendida"}
  ]},
- modernsteak:{photos:[]}, pigeonhole:{photos:[]}, oeb:{photos:[]},
- fromanother:{photos:[]}, less17:{photos:[]}, caesars:{photos:[]},
+ modernsteak:{photos:[
+  {url:"https://img1.wsimg.com/isteam/ip/e1839b12-3fa8-47b0-9065-745519fe89c8/6.jpg/:/rs=w:1200",caption:"Salón de Modern Steak — pared de vinos y piedra expuesta, Stephen Ave"},
+  {url:"https://img1.wsimg.com/isteam/ip/e1839b12-3fa8-47b0-9065-745519fe89c8/15.jpg/:/rs=w:1200",caption:"Corte prime de Alberta marmoleado en Modern Steak"}
+ ]},
+ pigeonhole:{photos:[
+  {url:"https://images.squarespace-cdn.com/content/v1/5fcadab8cb1c8a2efc380b58/1607445460184-6UHB3ACH14QYCPL2VR2W/IMG_4755-2.jpg?format=1500w",caption:"Barra de mármol de Pigeonhole, Calgary"},
+  {url:"https://images.squarespace-cdn.com/content/v1/5fcadab8cb1c8a2efc380b58/1607445487809-6Y1Q37JZ6IFDB3N47JD4/PIGEONHOLE-8536.jpg?format=1500w",caption:"Comedor de Pigeonhole — ladrillo expuesto y sillas naranjas"}
+ ]},
+ oeb:{photos:[
+  {url:"https://eatoeb.com/wp-content/uploads/2026/06/ThreesomeBreakfast-1024x686.webp",caption:"Desayuno estrella de OEB Breakfast Co."},
+  {url:"https://eatoeb.com/wp-content/uploads/2026/06/HP-Pancakes-1024x640.webp",caption:"Pancakes de OEB Breakfast Co."}
+ ]},
+ caesars:{photos:[
+  {url:"https://images.squarespace-cdn.com/content/v1/614a28fd437b323bbf2be0c5/0893a802-0c32-4aa1-b2e7-9798d833c8bb/caesars-steakhouse-calgary-02.jpg",caption:"Caesar's Steakhouse, Calgary"},
+  {url:"https://images.squarespace-cdn.com/content/v1/614a28fd437b323bbf2be0c5/d7781e20-9340-4d50-851e-b07a10419a63/photo-01-edit.jpg",caption:"Interior de Caesar's Steakhouse"}
+ ]},
+ fromanother:{photos:[
+  {url:"https://cdn.shopify.com/s/files/1/0017/9680/0571/files/IMG_1457.jpg?v=1707253734",caption:"Fachada de From Another en 17th Ave"},
+  {url:"https://cdn.shopify.com/s/files/1/0017/9680/0571/files/IMG_2089.jpg?v=1707255876",caption:"Adentro de From Another — vintage, gorras y sneakers"}
+ ]},
+ less17:{photos:[
+  {url:"https://lessoneseven.com/cdn/shop/files/Store_FW21__25.jpg?v=1654540952&width=1800",caption:"Tienda LESS 17 en 930 17th Ave SW, Calgary"}
+ ]},
+ alforno:{photos:[
+  {url:"https://alforno.ca/wp-content/uploads/2025/03/225A5316-scaled.jpg",caption:"Interior de Alforno Bakery & Café, Eau Claire"},
+  {url:"https://alforno.ca/wp-content/uploads/2022/11/alforno-about-2-min.jpg",caption:"Panadería de Alforno"}
+ ]},
+ majortom:{photos:[
+  {url:"https://images.squarespace-cdn.com/content/v1/5e4c381520b2c302b4fa6c42/1640196029325-33LMV6XXRCH2AAMR0BEW/image-asset.jpeg?format=1500w",caption:"Major Tom — comedor con vista de la ciudad, piso 40"},
+  {url:"https://images.squarespace-cdn.com/content/v1/5e4c381520b2c302b4fa6c42/1642096685631-TTO9CU6IZANE88QE1L4F/image-asset.jpeg?format=1500w",caption:"Barra de mármol de Major Tom"}
+ ]},
+ philseb:{photos:[
+  {url:"https://philsebastian.com/cdn/shop/files/Simmons-Exterior.jpg?v=1614305562&width=1600",caption:"El histórico Simmons Building, roastery de Phil & Sebastian en East Village"},
+  {url:"https://philsebastian.com/cdn/shop/files/SAP_Storefront_1_SQUARE.jpg?v=1623433348&width=1600",caption:"Phil & Sebastian en Stephen Avenue Place"}
+ ]},
+ core:{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Core_Shopping_Concourse_1.jpg?width=1000",caption:"Concourse de The CORE Shopping Centre, centro de Calgary"},
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Plus_15_sign_and_walkway_Calgary.jpg?width=1000",caption:"Pasarela y señal del +15, la red de puentes climatizados de Calgary"}
+ ]},
  zoo:{photos:[
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Calgary%20Zoo%20-%20Zoolights%20-%20Gift%20Shop.jpg?width=1000",caption:"ZooLights en el Calgary Zoo, de noche con nieve"},
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Calgary%20Zoo%20Africa.jpg?width=1000",caption:"Pabellón del Calgary Zoo en un día de invierno"}
