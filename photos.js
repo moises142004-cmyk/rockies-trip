@@ -34,7 +34,22 @@ window.PHOTOS = {
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Calgary%20Tower%20with%20flame%201.jpg?width=1000",caption:"Calgary Tower con la llama encendida"}
  ]},
  modernsteak:{photos:[]}, pigeonhole:{photos:[]}, oeb:{photos:[]},
- fromanother:{photos:[]}, less17:{photos:[]}, caesars:{photos:[]}, zoo:{photos:[]},
+ fromanother:{photos:[]}, less17:{photos:[]}, caesars:{photos:[]},
+ zoo:{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Calgary%20Zoo%20-%20Zoolights%20-%20Gift%20Shop.jpg?width=1000",caption:"ZooLights en el Calgary Zoo, de noche con nieve"},
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Calgary%20Zoo%20Africa.jpg?width=1000",caption:"Pabellón del Calgary Zoo en un día de invierno"}
+ ]},
+ rivercafe:{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/River%20Cafe%20%282341850095%29.jpg?width=1000",caption:"River Café en Prince's Island Park, Calgary, con el skyline detrás"}
+ ]},
+ fireworks:{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/New%20Years%20in%20Calgary%20%282%29%20%2831872546722%29.jpg?width=1000",caption:"Fuegos de Año Nuevo sobre el centro de Calgary (Olympic Plaza)"},
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/New%20Years%20in%20Calgary%20%281%29%20%2832020491385%29.jpg?width=1000",caption:"Fuegos de fin de año iluminando el cielo de Calgary"},
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/New%20Years%20in%20Calgary%20%283%29%20%2831982279916%29.jpg?width=1000",caption:"Estallido dorado de fuegos sobre Calgary en una noche de invierno"}
+ ]},
+ princesisland:{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Calgary%20AB%20Prince%27s-Island-Park%202022-09-28.jpg?width=1000",caption:"Prince's Island Park con el skyline de Calgary detrás"}
+ ]},
 
  /* ---------- Banff ---------- */
  banfftown:{photos:[
@@ -91,7 +106,9 @@ window.PHOTOS = {
  beavertails:{photos:[
   {url:"https://assets.beavertails.com/production/Shops/_1440x1153_crop_center-center_90_none_ns/16646/IMG_7935.webp",caption:"BeaverTails en 120 Banff Avenue"}
  ]},
- monod:{photos:[]},
+ monod:{photos:[
+  {url:"https://www.monodsports.com/cdn/shop/files/2011_Monods_front.jpg",caption:"Monod Sports en 129 Banff Avenue, con el Mt Cascade detrás"}
+ ]},
  sweetshoppe:{photos:[
   {url:"https://banfflakelouise.bynder.com/m/7be07b0706689262/1500x810_jpg-2022_BanffTownsite_Shopping_Banff-Sweet-Shoppe_Jody-Robbins.jpg",caption:"Frascos de dulces en Banff Sweet Shoppe"}
  ]},
@@ -143,6 +160,9 @@ window.PHOTOS = {
  bankhead:{photos:[
   {url:"https://images.squarespace-cdn.com/content/v1/653a7308f17d61648ba3cffb/6389aaec-79ee-4fe3-b2b0-5e50e9f94753/shashuka+egg+benedict.jpg?format=1500w",caption:"Eggs benedict en The Bankhead, Canmore"}
  ]},
- bridgette:{photos:[]},
+ bridgette:{photos:[
+  {url:"https://www.frankarchitecture.ca/wp-content/uploads/2022/09/bridgette-bar-calgary-beltline-mid-century-modern-design-restaurant-10.jpeg",caption:"Interior de Bridgette Bar: banquetas, plantas colgantes y sillas rojas"},
+  {url:"https://www.frankarchitecture.ca/wp-content/uploads/2022/09/bridgette-bar-calgary-beltline-mid-century-modern-design-restaurant-7.jpeg",caption:"Rincón lounge mid-century de Bridgette Bar"}
+ ]},
  quarry:{photos:[]}
 };
