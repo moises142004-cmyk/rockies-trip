@@ -1,6 +1,15 @@
 /* Real, hotlinked photos per place. Keyed by `pk`. {url, caption}.
    Wikimedia = hotlink-safe/CORS-friendly; business sites are official-CDN (lower permanence).
-   Broken images hide gracefully (onerror) and fall back to an icon placeholder. */
+   Broken images hide gracefully (onerror) and fall back to an icon placeholder.
+
+   TODO fotos pendientes (cada card de restaurante debería tener LUGAR + COMIDA):
+   - Cards nuevas sin foto: classclown, ryuko, noblepie, gyukaku, lupo (lugar+comida);
+     four20, prairierecords, originalgoods (fachada).
+   - Cards que solo tienen LUGAR y les falta COMIDA: pigeonhole, caesars, majortom,
+     alforno, philseb, rivercafe, whitebark, tavern1883, bridgette.
+   - Card que solo tiene COMIDA y le falta LUGAR: oeb.
+   No se pudieron sourcear aquí: el sandbox bloquea toda salida HTTPS (curl/WebFetch 403),
+   así que no hay forma de buscar ni verificar URLs de imagen reales desde este entorno. */
 window.PHOTOS = {
  /* ---------- Calgary ---------- */
  yyc:{photos:[
@@ -88,6 +97,33 @@ window.PHOTOS = {
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Calgary%20AB%20Prince%27s-Island-Park%202022-09-28.jpg?width=1000",caption:"Prince's Island Park con el skyline de Calgary detrás"}
  ]},
 
+ /* ---------- Calgary · restaurantes nuevos ----------
+    FOTOS PENDIENTES: el sandbox bloquea toda salida HTTPS (no se pueden
+    buscar ni verificar URLs de imagen). Cada card debe llevar 1 foto del
+    LUGAR + 1 foto de la COMIDA. Mientras tanto cae al placeholder con ícono. */
+ classclown:{photos:[
+  /* {url:"…",caption:"Comedor retro de Class Clown, Mission"},
+     {url:"…",caption:"Smash burger de Alberta AAA en Class Clown"} */
+ ]},
+ ryuko:{photos:[
+  /* {url:"…",caption:"Barra de Ryuko Japanese Kitchen + Bar"},
+     {url:"…",caption:"Sushi/plato estrella de Ryuko"} */
+ ]},
+ noblepie:{photos:[
+  /* {url:"…",caption:"Noble Pie, el callejón escondido del Beltline"},
+     {url:"…",caption:"Pizza al horno de Noble Pie"} */
+ ]},
+ gyukaku:{photos:[
+  /* {url:"…",caption:"Parrillas en la mesa en Gyu-Kaku, downtown"},
+     {url:"…",caption:"Yakiniku — carne a la parrilla en Gyu-Kaku"} */
+ ]},
+
+ /* ---------- Cannabis (zaza) · cerca del Airbnb del centro ----------
+    FOTOS PENDIENTES (mismo bloqueo de red). Una foto de fachada/interior c/u. */
+ four20:{photos:[]},
+ prairierecords:{photos:[]},
+ originalgoods:{photos:[]},
+
  /* ---------- Banff ---------- */
  banfftown:{photos:[
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Banff_Townsite_%2815641698605%29.jpg?width=1000",caption:"Banff townsite nevado desde Sulphur Mountain"},
@@ -148,6 +184,11 @@ window.PHOTOS = {
  ]},
  sweetshoppe:{photos:[
   {url:"https://banfflakelouise.bynder.com/m/7be07b0706689262/1500x810_jpg-2022_BanffTownsite_Shopping_Banff-Sweet-Shoppe_Jody-Robbins.jpg",caption:"Frascos de dulces en Banff Sweet Shoppe"}
+ ]},
+ lupo:{photos:[
+  /* FOTOS PENDIENTES (bloqueo de red). Lugar + comida.
+     {url:"…",caption:"Comedor de LUPO Italian Ristorante, Banff"},
+     {url:"…",caption:"Pasta hecha a mano / pizza al horno de LUPO"} */
  ]},
 
  /* ---------- Canmore / Kananaskis ---------- */

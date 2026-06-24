@@ -266,6 +266,7 @@ body.win-closed .reopen{display:inline-flex}
   <button class="chip" data-cat="hype"><span class="i">👟</span>Hype</button>
   <button class="chip" data-cat="viral"><span class="i">📸</span>Virales</button>
   <button class="chip" data-cat="finde"><span class="i">🎆</span>Año Nuevo</button>
+  <button class="chip" data-cat="zaza"><span class="i">🌿</span>Zaza</button>
 </div>
 
 <aside class="win" id="win">
@@ -336,6 +337,7 @@ const TRIP=[
   sites:[
    {name:"Aeropuerto de Calgary (YYC)",lat:51.1297,lng:-114.0106,t:"~11:30 AM",fc:"ruta",ic:"✈️",pk:"yyc",note:"Llegada del vuelo nocturno desde San José (sale el 25 en la noche, ~10–12 h con escala en EE.UU. o Toronto). Del aeropuerto al centro, ~25 min."},
    {name:"CF Chinook Centre",lat:50.9986,lng:-114.0729,t:"1:30 PM",fc:"shops",ic:"🛍️",pk:"chinook",note:"El mall más grande de Calgary. En Boxing Day abre con los descuentos más fuertes — perfecto para armar el kit de frío (parka, botas, capas)."},
+   {name:"Almuerzo: Ryuko",lat:50.9215,lng:-114.0606,t:"3:00 PM",fc:"comer",ic:"🍣",pk:"ryuko",note:"La japonesa que dicen que es BOMBA — sushi/izakaya de Ryuko. Queda al sur sobre Macleod Trail (Uber ~15–20 min del centro, pero de camino bajando a Chinook). El plato fuerte japonés del viaje."},
    {name:"Streetwear en 17th Ave",lat:51.0381,lng:-114.0760,t:"5:00 PM",fc:"shops",ic:"👟",pk:"17ave",note:"LESS 17 y From Another: streetwear, sneakers y marcas canadienses como OVO y Drew House. La calle más cool de la ciudad."},
    {name:"Cena: Modern Steak",lat:51.0454,lng:-114.0667,t:"8:00 PM",fc:"comer",ic:"🥩",pk:"modernsteak",note:"Carne de Alberta a otro nivel, en la peatonal Stephen Ave. Para arrancar el viaje fuerte (y aguantar el desvelo del vuelo)."}
   ]},
@@ -345,6 +347,7 @@ const TRIP=[
   sites:[
    {name:"Peace Bridge",lat:51.0539,lng:-114.0789,t:"10:00 AM",fc:"viral",ic:"📸",pk:"peacebridge",note:"El puente rojo helicoidal de Calatrava sobre el río helado. La estructura más fotografiada de Calgary."},
    {name:"Studio Bell (National Music Centre)",lat:51.0445,lng:-114.0598,t:"11:30 AM",fc:"viral",ic:"🎶",pk:"studiobell",note:"Arquitectura ondulada de panales dorados. Museo de música + edificio icónico para fotos."},
+   {name:"Almuerzo: Noble Pie",lat:51.0436,lng:-114.0780,t:"1:00 PM",fc:"comer",ic:"🍕",pk:"noblepie",note:"Pizza de culto en un callejón escondido del Beltline (atrás, sobre 11 Ave SW). Informal, central y de paso para la tarde de barrios."},
    {name:"Barrio Kensington",lat:51.0530,lng:-114.0860,t:"2:00 PM",fc:"shops",ic:"🛍️",pk:"kensington",note:"Barrio bohemio y caminable: boutiques, vinilos, una librería de 3 pisos y cafés con onda."},
    {name:"Cena: Pigeonhole",lat:51.0380,lng:-114.0689,t:"8:00 PM",fc:"comer",ic:"🍷",pk:"pigeonhole",note:"Top 100 de Canadá: platos para compartir y vinos naturales. El favorito foodie local. Reservar."}
   ]},
@@ -354,6 +357,7 @@ const TRIP=[
   sites:[
    {name:"Brunch: OEB Breakfast Co.",lat:51.0381,lng:-114.0845,t:"10:30 AM",fc:"comer",ic:"🍳",pk:"oeb",note:"El brunch más famoso: 'Soul in a Bowl' con papas en grasa de pato. Filas, pero vale."},
    {name:"Inglewood",lat:51.0388,lng:-114.0345,t:"12:30 PM",fc:"shops",ic:"🛍️",pk:"inglewood",note:"El barrio más cool: vintage, diseño, discos, cafés y cervecerías en edificios patrimoniales."},
+   {name:"Almuerzo: Class Clown",lat:51.0345,lng:-114.0726,t:"1:30 PM",fc:"comer",ic:"🍔",pk:"classclown",note:"Smash burgers de Alberta AAA en un local retro de Mission — la mejor hamburguesa de Calgary (Avenue Best Restaurant). Informal y rápido entre barrios."},
    {name:"Calgary Tower",lat:51.0443,lng:-114.0631,t:"3:00 PM",fc:"vistas",ic:"🌃",pk:"calgarytower",note:"190 m con piso de vidrio y vista 360° de la ciudad con las Rocosas de fondo en el horizonte."},
    {name:"Cena: Caesar's Steakhouse",lat:51.0466,lng:-114.0635,t:"7:00 PM",fc:"comer",ic:"🥩",pk:"caesars",note:"Institución de Calgary desde 1972: carne de Alberta madurada y ensalada Caesar preparada en la mesa."},
    {name:"Calgary Zoo · ZooLights",lat:51.0454,lng:-114.0232,t:"8:30 PM",fc:"actividad",ic:"✨",pk:"zoo",note:"El zoológico se transforma en un bosque de luces para las fiestas. Cozy, caminable y muy navideño."}
@@ -389,6 +393,7 @@ const TRIP=[
   sites:[
    {name:"Brunch: Alforno Bakery & Café",lat:51.0505,lng:-114.0686,t:"11:00 AM",fc:"comer",ic:"🍳",pk:"alforno",note:"Café y horneados en Eau Claire para el primer desayuno del año, sin prisa."},
    {name:"CORE & el +15",lat:51.0457,lng:-114.0656,t:"1:30 PM",fc:"shops",ic:"🛍️",pk:"core",note:"El mall del centro conectado por el +15, la red de puentes climatizados más grande del mundo — shopping y caminata sin frío."},
+   {name:"Almuerzo: Gyu-Kaku",lat:51.0489,lng:-114.0775,t:"2:30 PM",fc:"comer",ic:"🍢",pk:"gyukaku",note:"Yakiniku/BBQ japonés a la parrilla en la mesa, en el centro (6 Ave SW). Divertido y abrigado para el 1 de enero. Confirmá horario del feriado — es cadena, suele abrir."},
    {name:"Cena cozy: Major Tom",lat:51.0466,lng:-114.0680,t:"7:30 PM",fc:"comer",ic:"🍸",pk:"majortom",note:"Bar-restaurante en un piso 40 con vista de la ciudad iluminada. Brindis tranquilo del primer día del año."}
   ]},
  {n:8,date:"Vie 2 Ene",tag:"Calgary → YYC",title:"Salida fácil",trans:"🚕 Uber · 25 min",wx:"−5°/−13°",stay:"flight",
@@ -409,11 +414,16 @@ const SPOTS=[
  {id:"studiobell",name:"Studio Bell",city:"Calgary",cat:"viral",lat:51.0445,lng:-114.0598,ic:"🎶",pk:"studiobell",note:"National Music Centre: arquitectura ondulada de panales dorados. Museo + edificio icónico para fotos."},
  {id:"pigeonhole",name:"Pigeonhole",city:"Calgary",cat:"comer",lat:51.0380,lng:-114.0689,ic:"🍷",pk:"pigeonhole",note:"Top 100 de Canadá: platos para compartir y vinos naturales. El favorito foodie local. Reservar."},
  {id:"oeb",name:"OEB Breakfast Co.",city:"Calgary",cat:"comer",lat:51.0381,lng:-114.0845,ic:"🍳",pk:"oeb",note:"El brunch más famoso: 'Soul in a Bowl' con papas en grasa de pato. Filas, pero vale."},
+ /* zaza — dispensarios de cannabis más cercanos al Airbnb del centro (51.04371, -114.07667). Distancias a pie aprox. */
+ {id:"originalgoods",name:"Original Goods Cannabis",city:"Calgary",cat:"zaza",lat:51.0440,lng:-114.0843,ic:"🌿",pk:"originalgoods",note:"El más cercano caminando: 1000 9 Ave SW, sobre la misma avenida del Airbnb. ~6–7 min derecho al oeste."},
+ {id:"prairierecords",name:"Prairie Records (Palace)",city:"Calgary",cat:"zaza",lat:51.0457,lng:-114.0686,ic:"🌿",pk:"prairierecords",note:"219A 8 Ave SW, en Stephen Ave (peatonal), dentro del viejo Palace Theatre. ~7 min: una cuadra al norte y unas al este."},
+ {id:"four20",name:"FOUR20 · Stephen Avenue",city:"Calgary",cat:"zaza",lat:51.0456,lng:-114.0648,ic:"🌿",pk:"four20",note:"121 8 Ave SW, sobre la peatonal Stephen Ave hacia Centre St. ~9 min a pie del Airbnb."},
  {id:"whitebark",name:"Whitebark Café",city:"Banff",cat:"comer",lat:51.1812,lng:-115.5690,ic:"☕",pk:"whitebark",note:"Mejor café de Banff varios años seguidos. Cozy y perfecto para entrar en calor."},
  {id:"cows",name:"COWS Ice Cream",city:"Banff",cat:"viral",lat:51.1762,lng:-115.5707,ic:"🍦",pk:"cows",note:"La heladería viral de Banff Ave + camisetas de vaca con nombres locos. Clásico del pueblo."},
  {id:"beavertails",name:"BeaverTails",city:"Banff",cat:"viral",lat:51.1755,lng:-115.5707,ic:"🦫",pk:"beavertails",note:"La masa frita canadiense en forma de cola de castor, calientita con toppings. Clásico de invierno."},
  {id:"monod",name:"Monod Sports",city:"Banff",cat:"shops",lat:51.1766,lng:-115.5709,ic:"🧥",pk:"monod",note:"Tienda de montaña legendaria (1949): esquí, escalada y ropa técnica premium. La de verdad, no turística."},
  {id:"sweetshoppe",name:"Banff Sweet Shoppe",city:"Banff",cat:"comer",lat:51.1770,lng:-115.5710,ic:"🍫",pk:"sweetshoppe",note:"Fudge artesanal y manzanas bañadas en chocolate. El olor te jala desde la calle."},
+ {id:"lupo",name:"LUPO Italian Ristorante",city:"Banff",cat:"comer",lat:51.1786,lng:-115.5724,ic:"🍝",pk:"lupo",note:"Italiano de Banff (208 Wolf St, segundo piso): pasta hecha a mano y pizza al horno. Alternativa cálida a la fondue para la noche de Banff. Reservar."},
  {id:"norquay",name:"Mt Norquay Rd (borregos)",city:"Banff",cat:"animales",lat:51.1970,lng:-115.5950,ic:"🐏",pk:"norquay",note:"Las switchbacks donde el borrego cimarrón baja a lamer la sal del camino. Desvío rápido y casi seguro."},
  {id:"twojack",name:"Two Jack Lake",city:"Banff",cat:"vistas",lat:51.2419,lng:-115.4730,ic:"🌅",pk:"twojack",note:"Lago helado y sereno con el Mt Rundle de fondo. Mágico al amanecer, a 15 min del pueblo."},
  {id:"surprise",name:"Surprise Corner",city:"Banff",cat:"vistas",lat:51.1730,lng:-115.5530,ic:"🏞️",pk:"surprisecorner",note:"Mirador fácil sobre el río Bow y el 'castillo' Fairmont Banff Springs. La foto clásica de Banff."},
@@ -429,8 +439,8 @@ const SPOTS=[
  {id:"nordicspa",name:"Kananaskis Nordic Spa",city:"Canmore",cat:"actividad",lat:50.9706,lng:-115.1530,ic:"♨️",pk:"nordicspa",note:"Circuito escandinavo al aire libre: pozas calientes, saunas y plunge frío entre los picos. La experiencia de pareja más relajante. Adultos 18+."}
 ];
 
-const FCLBL={ruta:"Ruta / traslado",shops:"Shopping",comer:"Gastronomía",hotel:"Hospedaje",vistas:"Vista / paisaje",animales:"Fauna",actividad:"Actividad",finde:"Año Nuevo",hype:"Streetwear / hype",viral:"Spot viral"};
-const FCCOL={comer:'#F5A623',hype:'#5FD0D6',viral:'#93A7EC',vistas:'#82C08A',animales:'#C58CEC',actividad:'#5FD0D6',finde:'#F5A623',shops:'#E3C56A',hotel:'#93A4BC',ruta:'#93A4BC'};
+const FCLBL={ruta:"Ruta / traslado",shops:"Shopping",comer:"Gastronomía",hotel:"Hospedaje",vistas:"Vista / paisaje",animales:"Fauna",actividad:"Actividad",finde:"Año Nuevo",hype:"Streetwear / hype",viral:"Spot viral",zaza:"Zaza / cannabis"};
+const FCCOL={comer:'#F5A623',hype:'#5FD0D6',viral:'#93A7EC',vistas:'#82C08A',animales:'#C58CEC',actividad:'#5FD0D6',finde:'#F5A623',shops:'#E3C56A',hotel:'#93A4BC',ruta:'#93A4BC',zaza:'#6FC07A'};
 
 const COLD_HTML=`
 <div class="lead">Diciembre en las Rocosas es <b>frío seco</b>, no el frío húmedo que cala. Con la ropa correcta, −10°C con sol se disfruta perfecto — los locales hacen trineo y caminan cañones helados todo el invierno. Lo importante no es el número, es venir bien equipados. La lista completa está en <a href="inventario.html" style="color:var(--glacier)">Inventario</a>.</div>
