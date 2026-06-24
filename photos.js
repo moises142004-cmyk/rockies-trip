@@ -4,7 +4,7 @@
 
    TODO fotos pendientes (cada card de restaurante debería tener LUGAR + COMIDA):
    - Cards nuevas sin foto: classclown, ryuko, noblepie, gyukaku, lupo (lugar+comida);
-     four20, prairierecords, originalgoods (fachada).
+     sidewalkcitizen, deville (desayuno); four20, prairierecords, originalgoods (fachada).
    - Cards que solo tienen LUGAR y les falta COMIDA: pigeonhole, caesars, majortom,
      alforno, philseb, rivercafe, whitebark, tavern1883, bridgette.
    - Card que solo tiene COMIDA y le falta LUGAR: oeb.
@@ -116,6 +116,14 @@ window.PHOTOS = {
  gyukaku:{photos:[
   /* {url:"…",caption:"Parrillas en la mesa en Gyu-Kaku, downtown"},
      {url:"…",caption:"Yakiniku — carne a la parrilla en Gyu-Kaku"} */
+ ]},
+ sidewalkcitizen:{photos:[
+  /* {url:"…",caption:"Sidewalk Citizen Bakery en el Simmons Building, East Village"},
+     {url:"…",caption:"Croissants y challah de Sidewalk Citizen"} */
+ ]},
+ deville:{photos:[
+  /* {url:"…",caption:"DEVILLE Coffee en Stephen Ave"},
+     {url:"…",caption:"Café y beignets/churros de DEVILLE"} */
  ]},
 
  /* ---------- Cannabis (zaza) · cerca del Airbnb del centro ----------
