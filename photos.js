@@ -101,35 +101,29 @@ window.PHOTOS = {
     FOTOS PENDIENTES: el sandbox bloquea toda salida HTTPS (no se pueden
     buscar ni verificar URLs de imagen). Cada card debe llevar 1 foto del
     LUGAR + 1 foto de la COMIDA. Mientras tanto cae al placeholder con ícono. */
- classclown:{photos:[
-  /* {url:"…",caption:"Comedor retro de Class Clown, Mission"},
-     {url:"…",caption:"Smash burger de Alberta AAA en Class Clown"} */
- ]},
+ classclown:{photos:[]},
  ryuko:{photos:[
-  /* {url:"…",caption:"Barra de Ryuko Japanese Kitchen + Bar"},
-     {url:"…",caption:"Sushi/plato estrella de Ryuko"} */
+  {url:"https://images.squarespace-cdn.com/content/v1/6165e48a19f0e07104746a1f/a86fa7f8-43b1-4563-bc59-8778710e822d/ryuko-diningroom-seating.jpg",caption:"Comedor de Ryuko Japanese Kitchen + Bar (pared azul a rayas), Beltline"},
+  {url:"https://images.squarespace-cdn.com/content/v1/6165e48a19f0e07104746a1f/14ccca61-ffa3-4b20-9d0f-a34921cc5134/ryuko-main-24.jpg",caption:"Interior y platos de Ryuko"}
  ]},
  noblepie:{photos:[
-  /* {url:"…",caption:"Noble Pie, el callejón escondido del Beltline"},
-     {url:"…",caption:"Pizza al horno de Noble Pie"} */
+  {url:"https://images.squarespace-cdn.com/content/v1/671fe8d6ab2af759aa1282a4/8fbb1f2c-b410-4553-b036-631d94e7df16/NPWEB-13b.jpg",caption:"Slices estilo NY y vino natural en Noble Pie, Beltline"},
+  {url:"https://images.squarespace-cdn.com/content/v1/671fe8d6ab2af759aa1282a4/bb61c7a0-c61f-45b1-8fd9-863562f52ad6/NPWEB-49.jpg",caption:"Pizza de Noble Pie"}
  ]},
- gyukaku:{photos:[
-  /* {url:"…",caption:"Parrillas en la mesa en Gyu-Kaku, downtown"},
-     {url:"…",caption:"Yakiniku — carne a la parrilla en Gyu-Kaku"} */
- ]},
+ gyukaku:{photos:[]},
  sidewalkcitizen:{photos:[
-  /* {url:"…",caption:"Sidewalk Citizen Bakery en el Simmons Building, East Village"},
-     {url:"…",caption:"Croissants y challah de Sidewalk Citizen"} */
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Sidewalk_Citizen_%2829156911751%29.jpg?width=1000",caption:"Sidewalk Citizen Bakery en el Simmons Building, East Village"}
  ]},
  deville:{photos:[
-  /* {url:"…",caption:"DEVILLE Coffee en Stephen Ave"},
-     {url:"…",caption:"Café y beignets/churros de DEVILLE"} */
+  {url:"https://images.squarespace-cdn.com/content/v1/5a7f5f104c0dbf05e2dad8b6/1608222704444-07N7APQKS5VEN7SHI6BC/deville-fashion-central.jpg",caption:"DEVILLE Coffee — interior y vitrina de pastelería (Stephen Ave)"}
  ]},
 
  /* ---------- Cannabis (zaza) · cerca del Airbnb del centro ----------
     FOTOS PENDIENTES (mismo bloqueo de red). Una foto de fachada/interior c/u. */
  four20:{photos:[]},
- prairierecords:{photos:[]},
+ prairierecords:{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Palace_Theatre%2C_Calgary.jpg?width=1000",caption:"Prairie Records (cannabis) en el histórico Palace Theatre, Stephen Ave"}
+ ]},
  originalgoods:{photos:[]},
 
  /* ---------- Banff ---------- */
@@ -194,9 +188,8 @@ window.PHOTOS = {
   {url:"https://banfflakelouise.bynder.com/m/7be07b0706689262/1500x810_jpg-2022_BanffTownsite_Shopping_Banff-Sweet-Shoppe_Jody-Robbins.jpg",caption:"Frascos de dulces en Banff Sweet Shoppe"}
  ]},
  lupo:{photos:[
-  /* FOTOS PENDIENTES (bloqueo de red). Lugar + comida.
-     {url:"…",caption:"Comedor de LUPO Italian Ristorante, Banff"},
-     {url:"…",caption:"Pasta hecha a mano / pizza al horno de LUPO"} */
+  {url:"https://cdn.prod.website-files.com/696e7eabc8af93f0a0d16799/696ff792ac058d05860a9aa3_Lupo_exterior_facade_Car.avif",caption:"Fachada de LUPO Italian Ristorante en Wolf St, Banff"},
+  {url:"https://cdn.prod.website-files.com/696e7eabc8af93f0a0d16799/69927b2f587062a3231179d4_Rigatoni-Mar%2B4-6919%2Bsm.avif",caption:"Rigatoni hecho a mano en LUPO"}
  ]},
 
  /* ---------- Canmore / Kananaskis ---------- */
