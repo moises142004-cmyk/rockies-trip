@@ -14,7 +14,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Las Rockies">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-167.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
 <style>
 .synced{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist-dim)}
 .synced .pip{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good)}
@@ -238,6 +240,11 @@ load();
 setInterval(()=>{ if(!document.hidden) load(); }, 5000);
 window.addEventListener('focus', load);
 </script>
+<nav class="tabbar">
+  <a href="index.html"><span class="ic">🗺️</span><span>Mapa</span></a>
+  <a class="on" href="inventario.html"><span class="ic">🎒</span><span>Inventario</span></a>
+  <a href="costos.html"><span class="ic">💰</span><span>Costos</span></a>
+</nav>
 <script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
 </body>
 </html>

@@ -15,7 +15,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Las Rockies">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-167.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
 <style>
 html,body{height:100%;overflow:hidden}
 #map{position:fixed;inset:0;width:100%;height:100%;background:var(--abyss);z-index:0}
@@ -30,8 +32,9 @@ body.mapfail .mapfail{display:block}
 .mapfail p{font-size:13.5px;color:var(--mist);line-height:1.55}
 
 /* header */
-.hdr{position:fixed;top:0;left:0;right:0;height:60px;z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:0 18px;background:linear-gradient(180deg,rgba(10,15,24,.92),rgba(10,15,24,.45) 70%,transparent)}
+.hdr{position:fixed;top:0;left:0;right:0;height:calc(60px + env(safe-area-inset-top));z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:env(safe-area-inset-top) calc(18px + env(safe-area-inset-right)) 0 calc(18px + env(safe-area-inset-left));
+  background:linear-gradient(180deg,rgba(10,15,24,.96),rgba(10,15,24,.5) 75%,transparent)}
 .brand{display:flex;align-items:baseline;gap:11px;min-width:0}
 .brand .mark{font-family:var(--disp);font-weight:700;font-size:20px;letter-spacing:-.01em;color:var(--frost);white-space:nowrap;text-decoration:none}
 .brand .mark em{color:var(--amber);font-style:normal}
@@ -47,7 +50,7 @@ body.mapfail .mapfail{display:block}
 .menu-btn{display:none;appearance:none;border:1px solid var(--hair);background:var(--panel);color:var(--frost);width:40px;height:40px;border-radius:12px;font-size:17px;cursor:pointer;backdrop-filter:blur(14px)}
 
 /* filters */
-.filters{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:900;display:flex;gap:6px;
+.filters{position:fixed;top:calc(72px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:900;display:flex;gap:6px;
   padding:7px;background:var(--panel);border:1px solid var(--hair);border-radius:14px;backdrop-filter:blur(18px) saturate(1.3);
   box-shadow:0 12px 40px rgba(0,0,0,.4);max-width:calc(100vw - 32px);overflow-x:auto;scrollbar-width:none}
 .filters::-webkit-scrollbar{display:none}
@@ -58,7 +61,7 @@ body.mapfail .mapfail{display:block}
 .chip .i{font-size:13px;line-height:1}
 
 /* window */
-.win{position:fixed;top:72px;left:16px;bottom:16px;width:340px;z-index:850;display:flex;flex-direction:column;
+.win{position:fixed;top:calc(72px + env(safe-area-inset-top));left:calc(16px + env(safe-area-inset-left));bottom:calc(16px + env(safe-area-inset-bottom));width:340px;z-index:850;display:flex;flex-direction:column;
   background:var(--panel);border:1px solid var(--hair);border-radius:18px;backdrop-filter:blur(22px) saturate(1.3);box-shadow:0 24px 60px rgba(0,0,0,.5);overflow:hidden}
 .win.closed{display:none}
 .win.min{bottom:auto!important;height:42px}
@@ -167,10 +170,10 @@ body.mapfail .mapfail{display:block}
 .win-foot{flex:none;padding:11px 12px;border-top:1px solid var(--hair-2);display:flex;gap:8px}
 .win-foot .btn{flex:1;text-align:center;justify-content:center}
 
-.reopen{position:fixed;left:16px;top:72px;z-index:849;display:none}
+.reopen{position:fixed;left:calc(16px + env(safe-area-inset-left));top:calc(72px + env(safe-area-inset-top));z-index:849;display:none}
 body.win-closed .reopen{display:inline-flex}
 
-.now{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:800;background:var(--panel);border:1px solid var(--hair);border-radius:999px;padding:9px 18px;backdrop-filter:blur(18px);font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--mist);box-shadow:0 10px 30px rgba(0,0,0,.4);display:flex;align-items:center;gap:9px;text-transform:uppercase;white-space:nowrap;max-width:calc(100vw - 32px)}
+.now{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:800;background:var(--panel);border:1px solid var(--hair);border-radius:999px;padding:9px 18px;backdrop-filter:blur(18px);font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--mist);box-shadow:0 10px 30px rgba(0,0,0,.4);display:flex;align-items:center;gap:9px;text-transform:uppercase;white-space:nowrap;max-width:calc(100vw - 32px)}
 .now .pip{width:8px;height:8px;border-radius:50%;background:var(--glacier);flex:none;box-shadow:0 0 10px var(--glacier)}
 .now b{color:var(--frost);font-weight:700}
 
@@ -218,7 +221,7 @@ body.win-closed .reopen{display:inline-flex}
 .pp-go{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--frost);background:var(--hair-2);border:1px solid var(--hair);border-radius:8px;padding:5px 10px;transition:.14s}
 .pp-go:hover{background:var(--frost);color:var(--abyss)}
 
-.leaflet-control-zoom{border:0!important;margin:14px!important}
+.leaflet-control-zoom{border:0!important;margin:calc(72px + env(safe-area-inset-top)) 14px 14px 14px!important}
 .leaflet-control-zoom a{background:var(--panel)!important;color:var(--frost)!important;border:1px solid var(--hair)!important;backdrop-filter:blur(14px);width:34px!important;height:34px!important;line-height:32px!important;font-size:18px!important}
 .leaflet-control-zoom a:first-child{border-radius:10px 10px 0 0!important}
 .leaflet-control-zoom a:last-child{border-radius:0 0 10px 10px!important}
@@ -230,12 +233,16 @@ body.win-closed .reopen{display:inline-flex}
 @media (max-width:900px){
   .brand .sub{display:none}
   .menu-btn{display:flex;align-items:center;justify-content:center}
-  .hdr{padding:0 12px;gap:8px}
-  .sections{order:3}
-  .filters{top:auto;bottom:74px;left:12px;right:12px;transform:none;max-width:none;justify-content:flex-start}
-  .win{top:auto;left:0;right:0;bottom:0;width:100%;max-height:72vh;border-radius:20px 20px 0 0;transform:translateY(calc(100% - 42px));transition:transform .3s cubic-bezier(.3,.8,.3,1)}
+  .hdr{gap:8px;height:calc(56px + env(safe-area-inset-top));padding-left:calc(12px + env(safe-area-inset-left));padding-right:calc(12px + env(safe-area-inset-right))}
+  .filters{top:calc(60px + env(safe-area-inset-top));bottom:auto;left:calc(10px + env(safe-area-inset-left));right:calc(10px + env(safe-area-inset-right));transform:none;max-width:none;justify-content:flex-start}
+  .win{top:auto;left:0;right:0;width:100%;max-height:60vh;border-radius:20px 20px 0 0;
+       bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+       transform:translateY(calc(100% - 46px));transition:transform .3s cubic-bezier(.3,.8,.3,1)}
   .win.open{transform:translateY(0)}.win.min{height:auto}
-  .titlebar{cursor:pointer}.now{bottom:auto;top:128px}.reopen{display:none!important}
+  .titlebar{cursor:pointer} .tl-dots{display:none}
+  .now{display:none}
+  .reopen{display:none!important}
+  .leaflet-control-zoom{margin-top:calc(116px + env(safe-area-inset-top))!important}
   .checklist{grid-template-columns:1fr}
 }
 @media (max-width:560px){ .seg{display:none} }
@@ -744,6 +751,11 @@ ensureLeaflet(function(ok){ if(ok){ try{initMap();}catch(e){console.error(e);sho
   if(TODAY_I>=0 && TODAY_I<TRIP.length){ setTimeout(()=>focusDay(TODAY_I),300); }
 });
 </script>
+<nav class="tabbar">
+  <a class="on" href="index.html"><span class="ic">🗺️</span><span>Mapa</span></a>
+  <a href="inventario.html"><span class="ic">🎒</span><span>Inventario</span></a>
+  <a href="costos.html"><span class="ic">💰</span><span>Costos</span></a>
+</nav>
 <script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
 </body>
 </html>
