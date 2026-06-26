@@ -46,8 +46,8 @@ window.PHOTOS = {
   {url:"https://img1.wsimg.com/isteam/ip/e1839b12-3fa8-47b0-9065-745519fe89c8/15.jpg/:/rs=w:1200",caption:"Corte prime de Alberta marmoleado en Modern Steak"}
  ]},
  pigeonhole:{photos:[
-  {url:"https://images.squarespace-cdn.com/content/v1/5fcadab8cb1c8a2efc380b58/1607445460184-6UHB3ACH14QYCPL2VR2W/IMG_4755-2.jpg?format=1500w",caption:"Barra de mármol de Pigeonhole, Calgary"},
-  {url:"https://images.squarespace-cdn.com/content/v1/5fcadab8cb1c8a2efc380b58/1607445487809-6Y1Q37JZ6IFDB3N47JD4/PIGEONHOLE-8536.jpg?format=1500w",caption:"Comedor de Pigeonhole — ladrillo expuesto y sillas naranjas"}
+  {url:"https://images.squarespace-cdn.com/content/v1/5fcadab8cb1c8a2efc380b58/1607445469031-XI7IZE46SISG3RGQZ28J/20200903_0112_LOWRES_FINAL.jpg",caption:"Platos para compartir y pasta con vino, Pigeonhole"},
+  {url:"https://images.squarespace-cdn.com/content/v1/5fcadab8cb1c8a2efc380b58/1607445499404-Y87C72L1N6REIU4OSJZ8/20201001_0829LOW_RES_FINAL.jpg",caption:"Plato de Pigeonhole con cerveza"}
  ]},
  oeb:{photos:[
   {url:"https://eatoeb.com/wp-content/uploads/2026/06/HP-ChickWaff.webp",caption:"Pollo frito con waffles y syrup, OEB"},
@@ -100,7 +100,9 @@ window.PHOTOS = {
     FOTOS PENDIENTES: el sandbox bloquea toda salida HTTPS (no se pueden
     buscar ni verificar URLs de imagen). Cada card debe llevar 1 foto del
     LUGAR + 1 foto de la COMIDA. Mientras tanto cae al placeholder con ícono. */
- classclown:{photos:[]},
+ classclown:{photos:[
+  {url:"https://www.avenuecalgary.com/wp-content/uploads/2026/02/BR2026-ClassClown-scaled.jpg",caption:"Smash burger con queso y papas crinkle, Class Clown"}
+ ]},
  ryuko:{photos:[
   {url:"https://images.squarespace-cdn.com/content/v1/6165e48a19f0e07104746a1f/22450da7-f8a8-459f-bda0-613735da7d7a/ryuko-main-4.jpg",caption:"Set japonés: chirashi, ensalada y platillos, Ryuko"},
   {url:"https://images.squarespace-cdn.com/content/v1/6165e48a19f0e07104746a1f/21f16866-b7b7-495b-bffb-69c1b45b02c6/ryuko-main-23.jpg",caption:"Spread izakaya con sashimi y arroz"}
@@ -109,7 +111,10 @@ window.PHOTOS = {
   {url:"https://images.squarespace-cdn.com/content/v1/671fe8d6ab2af759aa1282a4/8fbb1f2c-b410-4553-b036-631d94e7df16/NPWEB-13b.jpg",caption:"Slices estilo NY con vino natural, Noble Pie"},
   {url:"https://images.squarespace-cdn.com/content/v1/671fe8d6ab2af759aa1282a4/242fc73b-a309-453c-b6df-4218d129b258/food3.jpg?format=1500w",caption:"Slice de pepperoni en el counter"}
  ]},
- gyukaku:{photos:[]},
+ gyukaku:{photos:[
+  {url:"https://westcoastprimemeats.com/wp-content/uploads/2020/02/0377_Gyu-Kaku-Model-2.jpg",caption:"Parrilla de carbón en la mesa con carne, Gyu-Kaku"},
+  {url:"https://westcoastprimemeats.com/wp-content/uploads/2020/03/0J0A2949-cmyk.jpg",caption:"Tostada de res a la parrilla, Gyu-Kaku"}
+ ]},
  sidewalkcitizen:{photos:[
   {url:"https://images.squarespace-cdn.com/content/v1/64ef60fef135340c0d8c6d67/1777407749573-EE9QSWYGKKGFNEUV3KBJ/image-asset.jpeg",caption:"Pain au chocolat y croissants, Sidewalk Citizen"},
   {url:"https://images.squarespace-cdn.com/content/v1/64ef60fef135340c0d8c6d67/1779118215027-KHB6A2RVKVTKM8LQ5N13/image-asset.jpeg",caption:"Bowls de ensalada y quiche de brócoli"}
