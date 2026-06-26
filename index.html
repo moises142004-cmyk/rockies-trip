@@ -9,6 +9,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A0F18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Las Rockies">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
 html,body{height:100%;overflow:hidden}
 #map{position:fixed;inset:0;width:100%;height:100%;background:var(--abyss);z-index:0}
@@ -102,6 +109,8 @@ body.mapfail .mapfail{display:block}
 .dttl{font-family:var(--disp);font-size:15.5px;font-weight:600;letter-spacing:-.01em;margin:2px 0 4px;line-height:1.15;color:var(--frost)}
 .dsub{display:flex;gap:6px;flex-wrap:wrap}
 .dsub .pill{font-family:var(--mono);font-size:9.5px;color:var(--mist);background:var(--hair-2);border-radius:6px;padding:2px 7px;letter-spacing:.02em}
+.dsub .pill.wx-live b{color:var(--glacier);font-weight:700;font-size:8px;letter-spacing:.04em}
+.dsub .pill-today{background:var(--amber);color:#241500;font-weight:700}
 .dblurb{font-size:12.5px;line-height:1.5;color:#C7D3E2;margin:8px 0 0}
 .dtip{font-size:12px;line-height:1.45;color:#CBD6E4;margin-top:8px;padding:8px 10px;border-radius:9px;background:rgba(245,166,35,.10);border:1px solid rgba(245,166,35,.26)}
 .dtip b{color:var(--amber);font-weight:600}
@@ -496,6 +505,32 @@ function gmaps(lat,lng){return `https://www.google.com/maps/search/?api=1&query=
 function photosFor(pk){return (pk&&PHOTOS[pk]&&PHOTOS[pk].photos)?PHOTOS[pk].photos:[];}
 const totalKm=Object.values(ROUTE_KM).reduce((a,b)=>a+b,0);
 
+/* ===== LIVE WEATHER (Open-Meteo) + TODAY ===== */
+function dayISO(i){const d=new Date(2026,11,26);d.setDate(d.getDate()+i);const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
+const WX_LOC={0:'cal',1:'cal',2:'cal',3:'mtn',4:'mtn',5:'cal',6:'cal',7:'cal'};
+let WXLIVE={}; try{WXLIVE=JSON.parse(localStorage.getItem('rockies:wx')||'{}');}catch(e){}
+function wmo(c){if(c==null)return'🌡️';if(c===0)return'☀️';if(c<=2)return'🌤️';if(c===3)return'☁️';if(c<=48)return'🌫️';if(c<=67)return'🌧️';if(c<=77)return'🌨️';if(c<=86)return'🌨️';return'⛈️';}
+function wxPill(di){const w=WXLIVE[di];
+  if(w&&w.max!=null)return `<span class="pill wx-live" title="Pronóstico real">${wmo(w.code)} ${Math.round(w.max)}°/${Math.round(w.min)}° <b>live</b></span>`;
+  return `<span class="pill">🌡️ ${TRIP[di].wx}</span>`;}
+function todayIndex(){const now=new Date(),start=new Date(2026,11,26,0,0,0),end=new Date(2027,0,2,23,59,59);
+  if(now<start||now>end)return -1;return Math.floor((now-start)/86400000);}
+const TODAY_I=todayIndex();
+async function loadWeather(){
+  const locs={cal:[51.05,-114.07],mtn:[51.10,-115.45]};
+  try{
+    const got={};
+    for(const k in locs){const[la,lo]=locs[k];
+      const u=`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=America%2FEdmonton&start_date=${dayISO(0)}&end_date=${dayISO(7)}`;
+      const r=await fetch(u);if(!r.ok)continue;const d=await r.json();if(d.daily&&d.daily.time)got[k]=d.daily;}
+    const live={};
+    TRIP.forEach((day,di)=>{const loc=got[WX_LOC[di]];if(!loc)return;const idx=loc.time.indexOf(dayISO(di));if(idx<0)return;
+      const mx=loc.temperature_2m_max[idx],mn=loc.temperature_2m_min[idx];if(mx!=null&&mn!=null)live[di]={max:mx,min:mn,code:loc.weather_code[idx]};});
+    if(Object.keys(live).length){WXLIVE=live;try{localStorage.setItem('rockies:wx',JSON.stringify(live));}catch(e){}renderTrail();reapplyOpen();}
+  }catch(e){/* offline / fuera de rango (>16 días): se queda el promedio estacional */}
+}
+function reapplyOpen(){document.querySelectorAll('.day').forEach(d=>d.classList.toggle('open',+d.dataset.di===openDay));}
+
 /* ===== PANELS (no Leaflet needed) ===== */
 function renderTrail(){
   const trail=$('trail');trail.innerHTML='';
@@ -518,7 +553,7 @@ function renderTrail(){
     if(ROUTE_RETURNKM[di]!=null) sitesHtml+=`<div class="site ret"><div class="s-time"></div><div class="s-ico">🛏</div><div class="s-name">Vuelta al hospedaje</div><span class="s-km">${ROUTE_RETURNKM[di]} km</span></div>`;
     el.innerHTML=`<div class="day-row"><div class="seal">${day.n}</div><div class="day-meta">
       <div class="dtag">${day.tag}</div><div class="dttl">${day.title}</div>
-      <div class="dsub"><span class="pill">${day.date}</span><span class="pill">${day.trans}</span><span class="pill">🌡️ ${day.wx}</span><span class="pill">🧭 ${km}</span></div>
+      <div class="dsub"><span class="pill">${day.date}</span><span class="pill">${day.trans}</span>${wxPill(di)}<span class="pill">🧭 ${km}</span>${di===TODAY_I?'<span class="pill pill-today">● Hoy</span>':''}</div>
       <div class="dblurb">${day.blurb}</div><div class="dtip"><b>Tip ·</b> ${day.tip}</div>${stayHtml}</div></div><div class="sites">${sitesHtml}</div>`;
     trail.appendChild(el);
   });
@@ -704,7 +739,11 @@ function ensureLeaflet(cb){
 }
 buildPanels();
 setNow();
-ensureLeaflet(function(ok){ if(ok){ try{initMap();}catch(e){console.error(e);showMapError();} } else { showMapError(); } });
+loadWeather();
+ensureLeaflet(function(ok){ if(ok){ try{initMap();}catch(e){console.error(e);showMapError();} } else { showMapError(); }
+  if(TODAY_I>=0 && TODAY_I<TRIP.length){ setTimeout(()=>focusDay(TODAY_I),300); }
+});
 </script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
 </body>
 </html>
