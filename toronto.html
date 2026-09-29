@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Toronto · Jime & Moi — Ruta alternativa</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A0F18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Las Rockies">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-167.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
+<link rel="stylesheet" href="planner.css">
+</head>
+<body>
+
+<div id="map"></div>
+<div class="atmos"></div>
+<div class="mapfail" id="mapfail"><h4>El mapa no cargó</h4><p>Tu red bloqueó la librería del mapa, pero el itinerario, los tesoros y la comparación funcionan en el panel de la izquierda. Probá en otra red o WiFi.</p></div>
+
+<header class="hdr">
+  <div class="brand"><a class="mark" href="index.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Ruta Toronto</span></div>
+  <nav class="sections">
+    <a href="index.html"><span class="ic">🏔️</span>Rockies</a>
+    <a class="on" href="toronto.html"><span class="ic">🍁</span>Toronto</a>
+    <a href="inventario.html"><span class="ic">🎒</span>Inventario</a>
+    <a href="costos.html"><span class="ic">💰</span>Costos</a>
+  </nav>
+  <div class="hdr-right">
+    <div class="dates"><b>25 Dic 2026 — 2 Ene 2027</b><br>9 días · Toronto · Niagara · Haliburton</div>
+    <div class="seg" id="viewToggle">
+      <button data-view="sat" class="on">Satélite</button>
+      <button data-view="terr">Terreno</button>
+      <button data-view="dark">Mapa</button>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Ver itinerario">☰</button>
+  </div>
+</header>
+
+<div class="filters" id="filters">
+  <button class="chip on" data-cat="all"><span class="i">✦</span>Todo</button>
+  <button class="chip" data-cat="comer"><span class="i">🍽️</span>Comer</button>
+  <button class="chip" data-cat="animales"><span class="i">🐺</span>Animales</button>
+  <button class="chip" data-cat="actividad"><span class="i">❄️</span>Actividades</button>
+  <button class="chip" data-cat="vistas"><span class="i">🏔️</span>Vistas</button>
+  <button class="chip" data-cat="shops"><span class="i">🛍️</span>Shopping</button>
+  <button class="chip" data-cat="hype"><span class="i">👟</span>Hype</button>
+  <button class="chip" data-cat="viral"><span class="i">📸</span>Virales</button>
+  <button class="chip" data-cat="finde"><span class="i">🎆</span>Año Nuevo</button>
+</div>
+
+<aside class="win" id="win">
+  <div class="titlebar" id="titlebar">
+    <span class="tl-dots"><b class="r" id="dotClose" title="Cerrar">✕</b><b class="y" id="dotMin" title="Minimizar">–</b><b class="g" id="dotMax" title="Agrandar">+</b></span>
+    <span class="tl-title" id="tlTitle">Itinerario</span>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-tab="log">⚓ Plan</button>
+    <button class="tab" data-tab="treasures">✦ Tesoros</button>
+    <button class="tab" data-tab="cold">⚖️ vs Calgary</button>
+  </div>
+  <div class="win-head" id="winHead">
+    <div class="eyebrow">Ruta alternativa · vuelo más barato</div>
+    <h1>Plan <em>Toronto</em></h1>
+    <div class="stats">
+      <div class="stat"><div class="n">9</div><div class="l">Días</div></div>
+      <div class="stat"><div class="n" id="spotStat">—</div><div class="l">Tesoros</div></div>
+      <div class="stat"><div class="n" id="kmStat">—</div><div class="l">Km ruta</div></div>
+      <div class="stat"><div class="n">−4°</div><div class="l">Prom.</div></div>
+    </div>
+    <div class="legline">Ruta: <b>3 noches Toronto</b> → <b>1 Niagara</b> → <b>1 Haliburton</b> → <b>3 Toronto</b> (Año Nuevo). Auto solo del 28 al 30. Lo que se gana y se pierde vs Calgary está en <b>⚖️ vs Calgary</b>.</div>
+  </div>
+  <div class="scroll" id="scroll">
+    <div class="trail" id="trail"></div>
+    <div id="treasures" style="display:none"></div>
+    <div id="cold" class="cold" style="display:none"></div>
+  </div>
+  <div class="win-foot"><button class="btn" id="btnAll">◇ Todo el viaje</button><button class="btn" id="btnSpots">✦ Tesoros</button></div>
+</aside>
+
+<button class="btn reopen" id="reopen">⚓ Itinerario</button>
+
+<div class="now" id="now"><span class="pip"></span><span id="nowText">Viaje completo · <b>9 días · ruta Toronto</b></span></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="toronto-routes.js"></script>
+<script src="toronto-photos.js"></script>
+<script>
+/* ===== DATA ===== */
+const DAYCOL=['#93A4BC','#F5A623','#5FD0D6','#EC8C76','#93A7EC','#82C08A','#C58CEC','#E3C56A','#6FB1E0'];
+const STAY={
+  toronto:{label:"Airbnb · Toronto centro",dates:"25–28 Dic",url:null,todo:true},
+  niagara:{label:"Hotel Fallsview · Niagara",dates:"28–29 Dic",url:null,todo:true},
+  haliburton:{label:"Sir Sam's Inn · Haliburton",dates:"29–30 Dic",url:"https://sirsamsinn.com/",todo:true},
+  toronto2:{label:"Airbnb · Toronto (Año Nuevo)",dates:"30 Dic–2 Ene",url:null,todo:true},
+  flight:{label:"Vuelo de regreso · Air Transat",dates:"2 Ene · 11:50 AM",flight:true}
+};
+const PHOTOS = window.PHOTOS || {};
+const ROUTES = window.ROUTES || {};
+const ROUTE_KM = window.ROUTE_KM || {};
+const ROUTE_SITEKM = window.ROUTE_SITEKM || {};
+const ROUTE_RETURNKM = window.ROUTE_RETURNKM || {};
+
+/* Hospedaje: todavía por reservar. Coordenadas = zona recomendada. */
+const LODGING=[
+ {id:"stay-tor",name:"Airbnb · Toronto (Entertainment District)",lat:43.6455,lng:-79.3905,dates:"25–28 Dic y 30 Dic–2 Ene",url:null,
+  note:"Zona recomendada para buscar: King West / Entertainment District. A pasos de la CN Tower, Union Station (UP Express al aeropuerto en 25 min), el PATH techado y Queen St W. Por reservar."},
+ {id:"stay-nia",name:"Hotel Fallsview · Niagara Falls",lat:43.0833,lng:-79.0830,dates:"28–29 Dic",url:null,
+  note:"Una noche con cuarto con vista a las cataratas iluminadas (zona Fallsview: Embassy Suites, Marriott Fallsview, Hilton). La foto desde la cama vale la pena. Por reservar."},
+ {id:"stay-hal",name:"Sir Sam's Inn & Spa · Haliburton",lat:45.1310,lng:-78.4827,dates:"29–30 Dic",url:"https://sirsamsinn.com/",
+  note:"Inn de lago solo para adultos, abierto en invierno, con chimenea y restaurante. A ~15 min de Winterdance. Alternativa barata: la cabaña de Winterdance en True North Rd (~$175 CAD la noche)."}
+];
+
+const TRIP=[
+ {n:1,date:"Vie 25 Dic",tag:"Liberia → Toronto",title:"Navidad volando",trans:"✈️ Porter + Uber",wx:"−1°/−7°",stay:"toronto",
+  blurb:"Salimos de Liberia a las 3:10 PM en Porter y aterrizamos en Toronto a las 9:25 PM, justo para dormir y arrancar el Boxing Day con todo. Uber al centro (~30 min).",
+  tip:"Porter llega a la Terminal 3 de Pearson. De noche el 25 casi todo está cerrado, así que es día de viaje: cena liviana en el vuelo o algo rápido y a dormir, que mañana se madruga para las rebajas.",
+  sites:[
+   {name:"Aeropuerto de Toronto (YYZ · T3)",lat:43.6893,lng:-79.6195,t:"9:25 PM",fc:"ruta",ic:"✈️",pk:"yyz",note:"Llegada del Porter desde Liberia (sale 3:10 PM). Migración, maletas de mano y Uber al centro (~30 min, ~$60 CAD). Alternativa: UP Express a Union en 25 min (corre hasta la 1 AM)."},
+   {name:"Check-in · Airbnb centro",lat:43.6455,lng:-79.3905,t:"10:30 PM",fc:"hotel",ic:"🛏",pk:"torskyline",note:"Primera noche en Toronto: zona King West / Entertainment District, a pasos de todo. Mañana es Boxing Day — alarma temprano."}
+  ]},
+ {n:2,date:"Sáb 26 Dic",tag:"Toronto",title:"Boxing Day + OVO",trans:"🚶 A pie / TTC",wx:"−1°/−7°",stay:"toronto",
+  blurb:"El día de rebajas más grande del año, en la ciudad de Drake. El Eaton Centre abre a las 8 AM con la tienda OVO adentro; después cheesecake viral, el tailandés más famoso de Toronto, graffitis, Kensington y de noche el mercado navideño europeo del Distillery.",
+  tip:"Eaton Centre en Boxing Day: 8 AM–9:30 PM (horario 2025). Llegá temprano: a media mañana ya hay filas. El Distillery Winter Village cobra entrada desde las 4 PM (~$16 CAD), comprala online. Pai y Kinka no publican horario feriado: confirmá en diciembre.",
+  sites:[
+   {name:"CF Toronto Eaton Centre · Boxing Day",lat:43.6544,lng:-79.3807,t:"8:00 AM",fc:"shops",ic:"🛍️",pk:"eatoncentre",note:"El mall más icónico de Canadá bajo un techo de vidrio de 1977. Boxing Day con los descuentos más fuertes del año — hoy se compra el kit de frío y lo que venga. Adentro está la tienda OVO de Drake."},
+   {name:"Uncle Tetsu · cheesecake japonés",lat:43.6562,lng:-79.3829,t:"11:30 AM",fc:"viral",ic:"🍰",pk:"uncletetsu",note:"El cheesecake japonés esponjoso que se hizo viral en Toronto (595 Bay St, a 3 min del Eaton Centre). Sale caliente del horno, con el sello del tío en la tapa."},
+   {name:"Almuerzo: Pai Northern Thai",lat:43.6479,lng:-79.3887,t:"1:00 PM",fc:"comer",ic:"🍜",pk:"pai",note:"El restaurante tailandés más famoso de Toronto, con Michelin: khao soi y pad thai en un sótano con onda. Reservas por email 30 días antes (downtown@paitoronto.com)."},
+   {name:"Graffiti Alley (Rush Lane)",lat:43.6480,lng:-79.3988,t:"2:30 PM",fc:"viral",ic:"🎨",pk:"graffitialley",note:"Un kilómetro de murales entre Spadina y Portland, detrás de Queen St W. El callejón más fotografiado de la ciudad. Entrada por 513 Queen St W."},
+   {name:"Kensington Market",lat:43.6552,lng:-79.4023,t:"3:30 PM",fc:"shops",ic:"🧥",pk:"kensington_tor",note:"Barrio bohemio de casas victorianas pintadas: vintage, tiendas de discos, cafés y comida del mundo. Pegado a Chinatown."},
+   {name:"Distillery Winter Village",lat:43.6503,lng:-79.3592,t:"6:00 PM",fc:"actividad",ic:"🎄",pk:"distillery",note:"Mercado navideño estilo europeo entre destilerías victorianas de ladrillo: árbol gigante, túnel de luces, vino caliente y puestos. Corre del 12 Nov al 3 Ene (cerrado solo el 25). Entrada desde las 4 PM."},
+   {name:"Cena: Kinka Izakaya",lat:43.6603,lng:-79.3790,t:"8:30 PM",fc:"comer",ic:"🍶",pk:"kinka",note:"La izakaya japonesa más famosa de Toronto (la original, 398 Church St): gritan '¡irasshaimase!' al entrar, karaage, udon y sake. Abierta hasta medianoche los sábados."}
+  ]},
+ {n:3,date:"Dom 27 Dic",tag:"Toronto",title:"Castillo, lujo y zoológico",trans:"🚶 TTC / Uber",wx:"−2°/−8°",stay:"toronto",
+  blurb:"Brunch de fila, el castillo de Casa Loma decorado de Navidad, las tiendas de lujo de Yorkville, la foto con el letrero TORONTO, la steakhouse clásica de la ciudad y de noche el zoológico lleno de linternas.",
+  tip:"Reservá SCHOOL en Resy (abre 2 semanas antes). El zoológico queda a ~35 min en Uber: confirmá el horario de Glow In The Wild del 27. Barberian's: llamá para confirmar el domingo feriado (416-597-0335).",
+  sites:[
+   {name:"Brunch: SCHOOL (Liberty Village)",lat:43.6380,lng:-79.4244,t:"10:00 AM",fc:"comer",ic:"🍳",pk:"school",note:"El brunch de fila de Toronto, en una vieja escuela de Liberty Village: waffles, huevos Benedict y pancakes enormes. Sáb–dom 9 AM–4 PM. Reservar en Resy."},
+   {name:"Casa Loma · Navidad en el castillo",lat:43.6781,lng:-79.4094,t:"12:30 PM",fc:"viral",ic:"🏰",pk:"casaloma",note:"Castillo neogótico de 1914 en plena ciudad: torres, túneles secretos y caballerizas, decorado para las fiestas. En 2025 abrió todos los días de 9:30 AM a 5 PM (cerrado el 25)."},
+   {name:"Yorkville · shopping de lujo",lat:43.6703,lng:-79.3927,t:"2:30 PM",fc:"shops",ic:"💎",pk:"yorkville",note:"Bloor St, la 'milla de lujo' de Canadá: Holt Renfrew, Louis Vuitton, Canada Goose, Aritzia y boutiques en calles victorianas."},
+   {name:"Letrero TORONTO · Nathan Phillips Sq.",lat:43.6525,lng:-79.3835,t:"4:30 PM",fc:"viral",ic:"📸",pk:"torontosign",note:"El letrero 3D iluminado frente al Ayuntamiento futurista. Al atardecer se prende de colores — la foto obligada del viaje."},
+   {name:"Cena: Barberian's Steak House",lat:43.6576,lng:-79.3821,t:"5:30 PM",fc:"comer",ic:"🥩",pk:"barberians",note:"La steakhouse clásica de Toronto desde 1959 (7 Elm St): cortes madurados, bodega enorme y ambiente de otra época. El 'Caesar's' de esta ruta. Confirmá el domingo."},
+   {name:"Toronto Zoo · Glow In The Wild",lat:43.8196,lng:-79.1845,t:"8:00 PM",fc:"animales",ic:"🏮",pk:"torontozoo",note:"El zoológico se llena de más de 2.000 linternas gigantes con forma de animales. La versión Toronto de ZooLights. Temporada hasta el 3 Ene (cerrado 24–25). Confirmá horario."}
+  ]},
+ {n:4,date:"Lun 28 Dic",tag:"Toronto → Niagara",title:"Icewine + cataratas iluminadas",trans:"🚗 Auto · 1h45",wx:"−1°/−6°",stay:"niagara",
+  blurb:"Recogen el auto y bajan por el lago Ontario al Niágara: cata de icewine en Inniskillin, almuerzo en el pueblito de Niagara-on-the-Lake, túneles detrás de las cataratas, el túnel de la planta eléctrica, Clifton Hill, cena girando en la Skylon y el festival de luces más grande de Canadá.",
+  tip:"Llantas de invierno y tanque lleno. Icewine Experience de Inniskillin se reserva en Tock (~$240 para 2–4 personas); la cata simple es más barata. Journey Behind the Falls y el Power Station abren todo el año (~$33 c/u). Reservá la Skylon con ventana hacia las cataratas.",
+  sites:[
+   {name:"Inniskillin · cata de icewine",lat:43.2107,lng:-79.0637,t:"11:00 AM",fc:"comer",ic:"🍷",pk:"inniskillin",note:"La bodega que puso al icewine canadiense en el mapa: vino dulce de uvas congeladas en la planta. Horario de invierno dom–jue 11 AM–5 PM, así que el lunes abre."},
+   {name:"Almuerzo en Niagara-on-the-Lake",lat:43.2560,lng:-79.0733,t:"12:30 PM",fc:"comer",ic:"🍽️",pk:"notl",note:"Pueblito de postal de 1800 con Queen St decorada de Navidad: bistrós, chocolaterías, tiendas de dulces y la torre del reloj."},
+   {name:"Journey Behind the Falls",lat:43.0794,lng:-79.0790,t:"2:30 PM",fc:"vistas",ic:"🌊",pk:"journeyfalls",note:"Bajás 38 m en ascensor y caminás túneles de roca hasta portales DETRÁS de la cortina de agua de Horseshoe Falls. En invierno, todo rodeado de hielo."},
+   {name:"Niagara Parks Power Station + Túnel",lat:43.0746,lng:-79.0789,t:"4:00 PM",fc:"viral",ic:"⚡",pk:"powerstation",note:"Planta hidroeléctrica de 1905 convertida en museo, con un túnel de 670 m que baja hasta el río al pie de las cataratas. Muy fotogénico."},
+   {name:"Clifton Hill + SkyWheel",lat:43.0912,lng:-79.0752,t:"5:30 PM",fc:"actividad",ic:"🎡",pk:"cliftonhill",note:"La calle 'Las Vegas' de Niagara: luces de neón, casas del terror y la rueda SkyWheel (10 AM–medianoche) con vista a las cataratas iluminadas."},
+   {name:"Cena: Skylon Revolving Dining Room",lat:43.0851,lng:-79.0797,t:"7:00 PM",fc:"comer",ic:"🌃",pk:"skylon",note:"Restaurante giratorio a 236 m, justo encima de las cataratas: da una vuelta completa por hora mientras las luces de colores bañan el agua. Abre todo el año. Reservar."},
+   {name:"Winter Festival of Lights",lat:43.0683,lng:-79.0707,t:"9:00 PM",fc:"actividad",ic:"✨",pk:"wfol",note:"3 millones de luces y 8 km de figuras sobre el Niagara Parkway y Dufferin Islands. Gratis, todas las noches de 5 PM a medianoche. Se recorre en auto."}
+  ]},
+ {n:5,date:"Mar 29 Dic",tag:"Niagara → Haliburton",title:"Cataratas de día + lobos",trans:"🚗 Auto · ~5h",wx:"−5°/−15°",stay:"haliburton",
+  blurb:"La vista de las cataratas congeladas con luz de día y rumbo al norte, a las Highlands de Haliburton: bosques, lagos helados y el centro de lobos, donde una manada vive en 7 acres de bosque y la mirás a través de vidrio.",
+  tip:"El 29–30 el Wolf Centre usa horario de fin de semana (10 AM–4:30 PM, ~$13 CAD). Son ~5 h de manejo (la 400 al norte): salí de Niagara a las 8:15 para llegar ~1:30 PM. Paradas de café en ruta (Tim Hortons, obvio). Más al norte hace más frío que en Toronto: capas puestas.",
+  sites:[
+   {name:"Horseshoe Falls · Table Rock",lat:43.0794,lng:-79.0786,t:"7:45 AM",fc:"vistas",ic:"🏞️",pk:"horseshoe",note:"Amanecer (~7:45 AM) en el borde de la catarata, con la bruma congelada cubriendo barandas y árboles de hielo. De día se ve el tamaño real."},
+   {name:"Haliburton Forest Wolf Centre",lat:45.2299,lng:-78.5866,t:"1:30 PM",fc:"animales",ic:"🐺",pk:"wolfcentre",note:"Una manada de lobos grises en un recinto de 7 acres de bosque, observada por ventanales de vidrio unidireccional. Museo y cine sobre lobos. La versión Ontario del santuario de Yamnuska."},
+   {name:"Check-in · Sir Sam's Inn",lat:45.1310,lng:-78.4827,t:"4:30 PM",fc:"hotel",ic:"🛏",pk:"sirsams",note:"Inn de lago para adultos con chimenea, spa y cena. Noche de cabaña en el bosque canadiense nevado."},
+   {name:"Cena: McKeck's Tap & Grill",lat:45.0464,lng:-78.5093,t:"7:00 PM",fc:"comer",ic:"🍔",pk:"mckecks",note:"El pub de todo el año del pueblito de Haliburton: hamburguesas, cerveza local y ambiente de cabaña. Alternativa: cenar en Sir Sam's. Llamá antes (feriados)."}
+  ]},
+ {n:6,date:"Mié 30 Dic",tag:"Haliburton → Toronto",title:"Trineo de huskies + outlets",trans:"🚗 Auto · ~3h30",wx:"−6°/−16°",stay:"toronto2",
+  blurb:"La aventura del viaje: manejar tu propio trineo tirado por huskies por los bosques de Haliburton con Winterdance. De vuelta a Toronto, parada en Vaughan Mills para el último round de compras y devolución del auto.",
+  tip:"Winterdance suele arrancar temporada a mediados de diciembre (depende de la nieve) y se agota: reservá YA el tour de 2 horas o medio día (~$355 CAD + HST por persona). De Winterdance a Vaughan Mills son ~3h20 por la 400, que igual es el camino a Toronto. El mall abre 10 AM–9 PM.",
+  sites:[
+   {name:"Winterdance Dogsled Tours",lat:45.1731,lng:-78.4180,t:"9:30 AM",fc:"animales",ic:"🛷",pk:"winterdance",note:"Manejás tu propio trineo con huskies de carrera por senderos del bosque, con un musher que te enseña. De los tours de trineo más premiados de Canadá. La versión Ontario de Snowy Owl."},
+   {name:"Vaughan Mills",lat:43.8255,lng:-79.5383,t:"3:30 PM",fc:"shops",ic:"🛍️",pk:"vaughanmills",note:"Mall tipo outlet enorme sobre la autopista 400: Nike, Adidas, Roots, Canada Goose outlet, Bass Pro. Descuentos post-Navidad."},
+   {name:"Postre: Bang Bang Ice Cream",lat:43.6463,lng:-79.4194,t:"8:30 PM",fc:"viral",ic:"🍦",pk:"bangbang",note:"La heladería viral de Ossington: helado metido en una 'hong kong waffle' o sándwich de galleta. Fila incluso en invierno. Buena zona para cenar en Ossington."}
+  ]},
+ {n:7,date:"Jue 31 Dic",tag:"Toronto",title:"Año Nuevo en la ciudad",trans:"🚶 A pie / TTC",wx:"−2°/−8°",stay:"toronto2",
+  blurb:"Último día del año: el sándwich más famoso de Toronto en el St. Lawrence Market, compras en Yorkdale (con otra OVO), cena con vista a 54 pisos y los fuegos artificiales sobre el lago a medianoche.",
+  tip:"Yorkdale cierra temprano el 31 (~6 PM) y no abre el 1. Canoe hace menú de Año Nuevo (~$295 p/p en 2025) y se agota: reservá en OpenTable apenas salga. Los fuegos son en el puerto (Harbourfront), no en Nathan Phillips Square. El TTC fue gratis desde las 7 PM.",
+  sites:[
+   {name:"St. Lawrence Market · Carousel Bakery",lat:43.6487,lng:-79.3715,t:"9:00 AM",fc:"comer",ic:"🥪",pk:"stlawrence",note:"Uno de los mejores mercados del mundo. En el piso de arriba, Carousel Bakery sirve el sándwich de peameal bacon, ícono de Toronto. El 31 abre 8 AM–4 PM (cerrado 26 y 1)."},
+   {name:"Yorkdale Shopping Centre",lat:43.7256,lng:-79.4523,t:"11:30 AM",fc:"shops",ic:"👟",pk:"yorkdale",note:"El mall de lujo más rentable de Canadá: ala de lujo (Gucci, Louis Vuitton) y otra tienda OVO. El 31 cierra temprano."},
+   {name:"Cena de Año Nuevo: Canoe",lat:43.6474,lng:-79.3811,t:"7:00 PM",fc:"finde",ic:"🥂",pk:"canoe",note:"Cocina canadiense de autor en el piso 54 de la TD Tower, con toda la ciudad iluminada abajo. Menú de Año Nuevo con champagne. Alternativa: 360 en la CN Tower."},
+   {name:"Fuegos de Año Nuevo · Harbourfront",lat:43.6398,lng:-79.3811,t:"11:30 PM",fc:"finde",ic:"🎆",pk:"harbourfront",note:"La fiesta oficial de la ciudad: escenario con DJs desde las 10 PM y 10 minutos de fuegos sobre el puerto a medianoche. Gratis. A 15 min a pie de Canoe. ¡Feliz 2027!"}
+  ]},
+ {n:8,date:"Vie 1 Ene",tag:"Toronto",title:"Tiburones y la torre",trans:"🚶 A pie",wx:"−2°/−8°",stay:"toronto2",
+  blurb:"Primer día del 2027 sin alarma: el acuario con el túnel de tiburones, un último round en el Eaton Centre (abre al mediodía) y la CN Tower al atardecer con piso de vidrio a 342 m.",
+  tip:"El 1 de enero casi todo cierra, pero Ripley's (9 AM–9 PM) y la CN Tower (11 AM–8 PM) abren (horarios 2026). El Eaton Centre abrió 12–7 PM. Comprá CN Tower con horario al atardecer (~4:50 PM).",
+  sites:[
+   {name:"Ripley's Aquarium of Canada",lat:43.6424,lng:-79.3860,t:"11:00 AM",fc:"animales",ic:"🦈",pk:"ripleys",note:"Túnel transparente de 96 m con tiburones y rayas pasando por encima, medusas iluminadas y pozas para tocar rayas. Abre los 365 días."},
+   {name:"Eaton Centre · último round",lat:43.6544,lng:-79.3807,t:"1:30 PM",fc:"shops",ic:"🛍️",pk:"eatoncentre",note:"Abrió 12–7 PM el 1 de enero de 2026. Lo que no alcanzó el Boxing Day."},
+   {name:"CN Tower · piso de vidrio",lat:43.6426,lng:-79.3871,t:"4:30 PM",fc:"vistas",ic:"🗼",pk:"cntower",note:"553 m. Piso de vidrio a 342 m y el SkyPod a 447 m: el lago congelado, la ciudad y el atardecer. La versión grande de la Calgary Tower."},
+   {name:"Cena: 360 en la CN Tower",lat:43.6427,lng:-79.3872,t:"6:30 PM",fc:"comer",ic:"🍽️",pk:"360",note:"Restaurante giratorio en la cima: la cena incluye la subida a la torre. Confirmá que abre el 1 de enero."}
+  ]},
+ {n:9,date:"Sáb 2 Ene",tag:"Toronto → Liberia",title:"Salida fácil",trans:"🚆 UP Express · 25 min",wx:"−3°/−9°",stay:"flight",
+  blurb:"El UP Express sale de Union cada 15 min y te deja en Pearson en 25 minutos. Air Transat a las 11:50 AM, aterrizando en Liberia a las 4:35 PM.",
+  tip:"Air Transat sale de la Terminal 3 (mostradores 501–534). Llegá 2h30 antes por ser internacional: tomá el UP Express a las 8:45 AM.",
+  sites:[
+   {name:"Union Station · UP Express",lat:43.6447,lng:-79.3801,t:"8:45 AM",fc:"ruta",ic:"🚆",pk:"union",note:"Estación de tren de 1927 con salón monumental. El UP Express al aeropuerto sale cada 15 min (~$13 CAD)."},
+   {name:"Aeropuerto YYZ · T3 → Liberia",lat:43.6893,lng:-79.6195,t:"11:50 AM",fc:"ruta",ic:"✈️",pk:"yyz",note:"Air Transat YYZ 11:50 AM → LIR 4:35 PM. Incluye 1 carry-on gratis. ¡Hasta la próxima, Canadá!"}
+  ]}
+];
+
+/* Tesoros — highlights extra, siempre en el mapa */
+const SPOTS=[
+ {id:"ovo",name:"OVO · Eaton Centre",city:"Toronto",cat:"hype",lat:43.6540,lng:-79.3805,ic:"🦉",pk:"ovo",note:"La marca de Drake en su ciudad. Tienda dentro del Eaton Centre (y otra en Yorkdale). El flagship viejo de Dundas W cerró en 2021."},
+ {id:"hhof",name:"Hockey Hall of Fame",city:"Toronto",cat:"actividad",lat:43.6470,lng:-79.3773,ic:"🏒",pk:"hhof",note:"El salón de la fama del hockey en un banco de 1885: la Copa Stanley original, simuladores para tirar al arco y la historia del deporte de Canadá."},
+ {id:"leafs",name:"Partido de los Maple Leafs",city:"Toronto",cat:"actividad",lat:43.6434,lng:-79.3791,ic:"🥅",pk:"leafs",note:"Si los Leafs juegan en casa esos días, un partido en el Scotiabank Arena es LA experiencia canadiense. Revisá el calendario en noviembre."},
+ {id:"ferry",name:"Ferry a las islas · skyline",city:"Toronto",cat:"vistas",lat:43.6401,lng:-79.3753,ic:"⛴️",pk:"ferry",note:"El ferry a Ward's Island corre todo el año: 15 min de travesía con la mejor vista del skyline de Toronto y la CN Tower sobre el lago."},
+ {id:"samjames",name:"Sam James Coffee Bar",city:"Toronto",cat:"comer",lat:43.6480,lng:-79.3842,ic:"☕",pk:"samjames",note:"Café de especialidad de culto, en el PATH (150 King St W). Alternativa: Pilot Coffee en Union Station."},
+ {id:"pilot",name:"Pilot Coffee · Union",city:"Toronto",cat:"comer",lat:43.6453,lng:-79.3806,ic:"☕",pk:"pilot",note:"Tostadores locales favoritos de Toronto, dentro de Union Station. Lun–vie 7–6, fin de semana 9–4."},
+ {id:"chinatown",name:"Chinatown (Spadina)",city:"Toronto",cat:"comer",lat:43.6529,lng:-79.3981,ic:"🥟",pk:"chinatown",note:"Uno de los Chinatowns más grandes de Norteamérica: dim sum, dumplings y panaderías de Hong Kong baratísimas, pegado a Kensington."},
+ {id:"butterfly",name:"Butterfly Conservatory",city:"Niagara",cat:"animales",lat:43.1371,lng:-79.0555,ic:"🦋",pk:"butterfly",note:"Selva tropical techada con 2.000 mariposas volando libres. 26°C adentro en pleno invierno. A 10 min de las cataratas."},
+ {id:"dufferin",name:"Dufferin Islands (luces)",city:"Niagara",cat:"vistas",lat:43.0683,lng:-79.0707,ic:"✨",pk:"wfol",note:"El corazón del Festival de Luces: islitas con túneles y figuras iluminadas, a 5 min en auto de Horseshoe Falls."},
+ {id:"falls_night",name:"Cataratas iluminadas",city:"Niagara",cat:"viral",lat:43.0870,lng:-79.0725,ic:"🌈",pk:"fallsnight",note:"Todas las noches las cataratas se bañan de colores. Mejor vista: desde el Queen Victoria Park o el cuarto del hotel Fallsview."},
+ {id:"wolfhowl",name:"Haliburton Forest",city:"Haliburton",cat:"vistas",lat:45.2390,lng:-78.5750,ic:"🌲",pk:"haliburtonforest",note:"80.000 acres de bosque privado con lagos helados alrededor del Wolf Centre. El paisaje de cabaña canadiense de libro."}
+];
+
+const FCLBL={ruta:"Ruta / traslado",shops:"Shopping",comer:"Gastronomía",hotel:"Hospedaje",vistas:"Vista / paisaje",animales:"Fauna",actividad:"Actividad",finde:"Año Nuevo",hype:"Streetwear / hype",viral:"Spot viral"};
+const FCCOL={comer:'#F5A623',hype:'#5FD0D6',viral:'#93A7EC',vistas:'#82C08A',animales:'#C58CEC',actividad:'#5FD0D6',finde:'#F5A623',shops:'#E3C56A',hotel:'#93A4BC',ruta:'#93A4BC'};
+
+/* Qué se mantiene vs Calgary */
+const BALANCE=[
+ ["Boxing Day de rebajas","Chinook Centre","Eaton Centre (8 AM) + Vaughan Mills + Yorkdale","up"],
+ ["Streetwear / hype","LESS 17, From Another (OVO)","OVO en la ciudad de Drake (Eaton Centre y Yorkdale)","up"],
+ ["Japonés que es BOMBA","Ryuko","Kinka Izakaya","eq"],
+ ["Steakhouse clásica","Modern Steak, Caesar's","Barberian's (desde 1959)","eq"],
+ ["Brunch famoso","OEB (Soul in a Bowl)","SCHOOL + peameal en St. Lawrence","eq"],
+ ["Torre con piso de vidrio","Calgary Tower (190 m)","CN Tower (342 m el piso de vidrio)","up"],
+ ["Luces navideñas en el zoo","ZooLights","Glow In The Wild (2.000 linternas)","eq"],
+ ["Lobos","Yamnuska Wolfdog Sanctuary","Haliburton Forest Wolf Centre (lobos de verdad)","eq"],
+ ["Trineo de huskies","Snowy Owl (Kananaskis)","Winterdance (Haliburton)","eq"],
+ ["Cena top de Año Nuevo","River Café","Canoe, piso 54","up"],
+ ["Fuegos de medianoche","Olympic Plaza","Harbourfront, sobre el lago","eq"],
+ ["Mercado navideño","—","Distillery Winter Village","plus"],
+ ["Cataratas / hielo","Johnston Canyon, Grotto","Niagara: detrás de las cataratas + icewine","plus"],
+ ["Montañas nevadas","Banff, Canmore, Lake Louise","No hay Rocosas: es bosque y lagos helados","down"],
+ ["Góndola + aguas termales","Sulphur Mtn, Upper Hot Springs","Se van (a Jime no le llamaban)","eq"]
+];
+const BAL_HTML=`
+<div class="lead">La duda era no perder lo que queríamos de Calgary. Casi todo tiene su versión en Toronto, a veces mejor. Lo único que de verdad se pierde son <b>las Rocosas</b>; a cambio ganamos <b>las cataratas del Niágara</b> y un vuelo <b>~$400 más barato</b> para los dos.</div>
+<div class="bal">${BALANCE.map(([k,c,t,s])=>`<div class="brow ${s}"><div class="bk">${k}</div><div class="bc"><small>Calgary</small>${c}</div><div class="bt"><small>Toronto</small>${t}</div><div class="bs">${s==='up'?'▲ mejor':s==='plus'?'＋ extra':s==='down'?'▼ se pierde':'＝ igual'}</div></div>`).join('')}</div>
+<div class="cblock"><h4>✈️ Vuelos (29 Sep)</h4><div class="cnote"><b>Toronto:</b> Porter LIR 3:10 PM → YYZ 9:25 PM (25 Dic) + Air Transat YYZ 11:50 AM → LIR 4:35 PM (2 Ene). Con carry-ons, ~$1.412 para 2 (≈ ₡641k al tipo de cambio real). <b>Calgary:</b> desde ~$1.840 para 2 (≈ ₡835k). Los precios en vivo están en <a href="https://rockies-fare-watch.vercel.app" style="color:var(--glacier)">Fare Watch</a>.</div></div>
+<div class="cblock"><h4>🌡️ Clima</h4><div class="tempcards">
+  <div class="tcard"><div class="tcity2">Toronto · Niagara</div><div class="ttemp">−1° / −7°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">Más templado que Calgary pero más húmedo: el viento del lago cala. Nieve o aguanieve posible.</div></div>
+  <div class="tcard"><div class="tcity2">Haliburton</div><div class="ttemp">−6° / −16°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">El frío de verdad, parecido a Canmore. Buena nieve para el trineo.</div></div>
+</div><div class="cnote">La lista de ropa es la misma del <a href="inventario.html" style="color:var(--glacier)">Inventario</a>. Sin termas en esta ruta, el traje de baño es opcional (el spa de Sir Sam's).</div></div>
+`;
+
+const CFG={start:[2026,11,25],tz:'America/Toronto',wxKey:'toronto:wx',
+  wxLocs:{tor:[43.65,-79.38],nia:[43.09,-79.08],hal:[45.05,-78.51]},wxDay:{0:'tor',1:'tor',2:'tor',3:'nia',4:'hal',5:'hal',6:'tor',7:'tor',8:'tor'},
+  cities:['Toronto','Niagara','Haliburton'],panel:BAL_HTML,panelTitle:'Toronto vs Calgary',nowText:'9 días · ruta Toronto',
+  center:[44.2,-79.2],zoom:7,stayBtn:'Ver sitio'};
+</script>
+<script src="planner.js"></script>
+<nav class="tabbar">
+  <a href="index.html"><span class="ic">🏔️</span><span>Rockies</span></a>
+  <a class="on" href="toronto.html"><span class="ic">🍁</span><span>Toronto</span></a>
+  <a href="inventario.html"><span class="ic">🎒</span><span>Inventario</span></a>
+  <a href="costos.html"><span class="ic">💰</span><span>Costos</span></a>
+</nav>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+</body>
+</html>
