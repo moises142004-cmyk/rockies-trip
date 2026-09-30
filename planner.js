@@ -52,12 +52,12 @@ function renderTrail(){
     const skm=ROUTE_SITEKM[di]||[];
     let sitesHtml=day.sites.map((s,si)=>{
       const k=skm[si];const kmTag=(k!=null)?`<span class="s-km">${k} km</span>`:'';
-      return `<div class="site" data-di="${di}" data-si="${si}"><div class="s-time">${s.t}</div><div class="s-ico">${s.ic}</div><div class="s-name">${s.name}</div>${kmTag}</div>`;
+      return `<div class="site" data-di="${di}" data-si="${si}"><div class="s-time">${s.t}</div><div class="s-ico">${s.ic}</div><div class="s-name">${s.name}${s.p?`<span class="s-p">💵 ${s.p}</span>`:''}</div>${kmTag}</div>`;
     }).join('');
     if(ROUTE_RETURNKM[di]!=null) sitesHtml+=`<div class="site ret"><div class="s-time"></div><div class="s-ico">🛏</div><div class="s-name">Vuelta al hospedaje</div><span class="s-km">${ROUTE_RETURNKM[di]} km</span></div>`;
     el.innerHTML=`<div class="day-row"><div class="seal">${day.n}</div><div class="day-meta">
       <div class="dtag">${day.tag}</div><div class="dttl">${day.title}</div>
-      <div class="dsub"><span class="pill">${day.date}</span><span class="pill">${day.trans}</span>${wxPill(di)}<span class="pill">🧭 ${km}</span>${di===TODAY_I?'<span class="pill pill-today">● Hoy</span>':''}</div>
+      <div class="dsub"><span class="pill">${day.date}</span><span class="pill">${day.trans}</span>${wxPill(di)}<span class="pill">🧭 ${km}</span>${day.cost?`<span class="pill pill-cost" title="Estimado para 2 sin hospedaje, CAD">💵 ${day.cost} CAD</span>`:''}${di===TODAY_I?'<span class="pill pill-today">● Hoy</span>':''}</div>
       <div class="dblurb">${day.blurb}</div><div class="dtip"><b>Tip ·</b> ${day.tip}</div>${stayHtml}</div></div><div class="sites">${sitesHtml}</div>`;
     trail.appendChild(el);
   });
@@ -74,6 +74,7 @@ function renderTrail(){
 function buildPanels(){
   $('spotStat').textContent=SPOTS.length;
   $('cold').innerHTML=CFG.panel;
+  if(typeof CFG.onPanel==='function')CFG.onPanel();
   renderTrail();
   const tWrap=$('treasures');
   CFG.cities.forEach(city=>{
@@ -99,6 +100,7 @@ function buildPanels(){
     $('treasures').style.display=tab==='treasures'?'':'none';
     $('cold').style.display=tab==='cold'?'':'none';
     $('winHead').style.display=tab==='log'?'':'none';
+    $('scroll').scrollTop=0;
     $('tlTitle').textContent=tab==='log'?'Itinerario':tab==='treasures'?'Cofre de tesoros':CFG.panelTitle;
   });
   $('btnSpots').onclick=()=>{document.querySelector('.tab[data-tab="treasures"]').click();$('scroll').scrollTop=0;if(window.innerWidth<=900)$('win').classList.add('open');};
@@ -199,7 +201,7 @@ function renderDayLayers(){
     const icon=L.divIcon({html,className:'',iconSize:first?[40,40]:[30,30],iconAnchor:first?[20,20]:[15,15]});
     const m=L.marker([s.lat,s.lng],{icon,riseOnHover:true}).addTo(map);
     m._fc=s.fc;m._di=di;m._kind='site';m._s=s;
-    m.bindPopup(popHtml({pc:c,cat:FCLBL[s.fc]||s.fc,name:s.name,ic:s.ic,pk:s.pk,metaLine:`◷ ${s.t} &nbsp;·&nbsp; ${day.wx}`,note:s.note,badge:`Día ${day.n} · ${day.date}`,lat:s.lat,lng:s.lng}),{className:'t-pop',maxWidth:272,minWidth:272,autoPanPadding:[40,90]});
+    m.bindPopup(popHtml({pc:c,cat:FCLBL[s.fc]||s.fc,name:s.name,ic:s.ic,pk:s.pk,metaLine:`◷ ${s.t} &nbsp;·&nbsp; ${day.wx}${s.p?` &nbsp;·&nbsp; 💵 ${s.p}`:''}`,note:s.note,badge:`Día ${day.n} · ${day.date}`,lat:s.lat,lng:s.lng}),{className:'t-pop',maxWidth:272,minWidth:272,autoPanPadding:[40,90]});
     dayMarkers.push(m);mi++;
   });});
   applyVisibility();
