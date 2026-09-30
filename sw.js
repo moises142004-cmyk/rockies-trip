@@ -1,7 +1,7 @@
 /* Service worker — offline support for the Rockies planner.
    App shell is precached; map tiles & photos are cached as you view them
    (cache-first). Supabase API is never cached so Inventario/Costos stay live. */
-const CACHE = 'rockies-v6';
+const CACHE = 'rockies-v7';
 const SHELL = [
   './', 'index.html', 'toronto.html', 'inventario.html', 'costos.html',
   'style.css', 'planner.css', 'planner.js', 'routes.js', 'photos.js', 'toronto-routes.js', 'toronto-photos.js', 'cloud.js', 'manifest.json',

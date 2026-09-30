@@ -99,6 +99,8 @@ window.PHOTOS = {
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/H%C3%B4tel-de-Glace%20Qu%C3%A9bec.jpg?width=1000",caption:"El Hôtel de Glace"},
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Ice-Hotel%20Quebec%20Canada.jpg?width=1000",caption:"Adentro del hotel de hielo"},
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Seat%20in%20a%20suite.%20-%20Ice%20Hotel%20-%20Hotel%20de%20Glace%20-%20Quebec%20%283206960797%29.jpg?width=1000",caption:"Una suite esculpida en hielo"}]},
+ "raptors":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Scotiabank%20Arena%20Toronto%20Carolina%20March%2020%202026.jpg?width=1000",caption:"Scotiabank Arena"}]},
  "yqb":{photos:[
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Qu%C3%A9bec%20-%20a%C3%A9roport%20international%20Jean-Lesage%2020241029-01.jpg?width=1000",caption:"Aeropuerto de Quebec"}]},
  "hys":{photos:[
