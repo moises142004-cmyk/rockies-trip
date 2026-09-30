@@ -102,7 +102,7 @@ const STAY={
   montreal:{label:"Hotel · Viejo Montreal",dates:"28–29 Dic",url:null,todo:true},
   tremblant:{label:"Hotel · villa de Tremblant",dates:"29–30 Dic",url:null,todo:true},
   quebec:{label:"Hotel · Viejo Quebec",dates:"30 Dic–1 Ene",url:null,todo:true},
-  yyz:{label:"Hotel del aeropuerto · Pearson T3",dates:"1–2 Ene",url:null,todo:true},
+  toronto3:{label:"Hotel · al lado de Union Station",dates:"1–2 Ene",url:null,todo:true},
   flight:{label:"Vuelo de regreso · Air Transat",dates:"2 Ene · 11:50 AM",flight:true}
 };
 const PHOTOS = window.PHOTOS || {};
@@ -121,8 +121,8 @@ const LODGING=[
   note:"La villa peatonal al pie de la montaña: casitas de colores, nieve y luces. Fairmont, Westin o Holiday Inn (el más barato). Temporada alta: reservar ya."},
  {id:"stay-qc",name:"Hotel · Viejo Quebec (intramuros)",lat:46.8130,lng:-71.2080,dates:"30 Dic–1 Ene · ~$300/noche",url:null,
   note:"Dentro de las murallas, cerca del Château Frontenac. Si el presupuesto da, una noche en el Frontenac es EL castillo nevado."},
- {id:"stay-yyz",name:"Hotel · Pearson T3 (Sheraton Gateway)",lat:43.6883,lng:-79.6203,dates:"1–2 Ene · ~$220/noche",url:null,
-  note:"Hotel conectado a la Terminal 3: aterrizan de Quebec en la noche y el 2 caminan al mostrador de Air Transat sin estrés."}
+ {id:"stay-union",name:"Hotel · al lado de Union Station",lat:43.6452,lng:-79.3817,dates:"1–2 Ene · ~$220/noche",url:null,
+  note:"Última noche pegados a Union Station (Fairmont Royal York o similar): llegan en tren de Montreal y el 2 toman el UP Express al aeropuerto a pasos del hotel."}
 ];
 
 const TRIP=[
@@ -165,7 +165,7 @@ const TRIP=[
   ]},
  {n:5,date:"Mar 29 Dic",tag:"Montreal → Tremblant",title:"Road trip: lobos y la montaña",trans:"🚗 Auto · 3h",wx:"−8°/−18°",stay:"tremblant",cost:"~$700",
   blurb:"Recogen el auto y arranca el road trip: Parc Omega, un safari en auto entre lobos, alces, bisontes y ciervos que se acercan a la ventana, y subida a las Laurentides hasta Mont-Tremblant, la villa de montaña más linda del este. Cena: A5 Ozaki de verdad.",
-  tip:"En Quebec las llantas de invierno son ley del 1 dic al 15 mar (el alquiler las trae). Pedí auto en el aeropuerto YUL y devolvelo en Quebec City: National/Hertz/Avis suelen no cobrar el one-way entre aeropuertos. Revisá Québec 511 antes de salir.",
+  tip:"En Quebec las llantas de invierno son ley del 1 dic al 15 mar (el alquiler las trae). Alquilá el auto en el centro de Montreal y devolvelo ahí mismo el 1 de enero (sin cargo de one-way). Revisá Québec 511 antes de salir.",
   sites:[
    {name:"Parc Omega · safari en auto",lat:45.6934,lng:-74.9603,t:"10:30 AM",fc:"animales",ic:"🦌",pk:"omega",p:"~$30 c/u",note:"Recorrés 15 km en tu auto entre lobos grises y árticos, alces, bisontes, caribúes y ciervos que comen zanahorias de tu mano (compralas ahí). Los osos hibernan. ~3–4 h."},
    {name:"Villa peatonal de Mont-Tremblant",lat:46.2136,lng:-74.5855,t:"4:00 PM",fc:"vistas",ic:"🏔️",pk:"tremblant",p:"Gratis",note:"Casitas de colores al pie de la montaña nevada, luces, fogatas y actividades gratis de fiestas (Place St-Bernard, 20 dic–3 ene). La 'Banff del este'."},
@@ -178,29 +178,31 @@ const TRIP=[
    {name:"Tremblant Dogsledding",lat:46.1783,lng:-74.5999,t:"9:00 AM",fc:"animales",ic:"🛷",pk:"dogsled",p:"$185 c/u",note:"Tu propio trineo con huskies por senderos del bosque nevado, con guía. La aventura del viaje (la versión este de Snowy Owl)."},
    {name:"Cena: Le Continental",lat:46.8119,lng:-71.2069,t:"7:30 PM",fc:"comer",ic:"🔥",pk:"continental",p:"~$120 p/p",note:"Institución desde 1956 en el Viejo Quebec: flambeados en la mesa, beef Wellington con foie gras, meseros de saco blanco. Abre todos los días."}
   ]},
- {n:7,date:"Jue 31 Dic",tag:"Quebec City",title:"Castillo nevado + Año Nuevo",trans:"🚶 A pie / auto",wx:"−8°/−17°",stay:"quebec",cost:"~$500",
-  blurb:"El día más de postal: el Château Frontenac sobre el río congelado, el tobogán de 1884 a 70 km/h, el barrio Petit-Champlain, la catarata Montmorency congelada (más alta que Niagara) y el Año Nuevo con fuegos artificiales en la ciudad amurallada.",
+ {n:7,date:"Jue 31 Dic",tag:"Quebec City",title:"Castillo nevado + Año Nuevo",trans:"🚶 A pie / auto",wx:"−8°/−17°",stay:"quebec",cost:"~$550",
+  blurb:"El día más de postal: el hotel de hielo, el Château Frontenac sobre el río congelado, el tobogán de 1884 a 70 km/h, el barrio Petit-Champlain, la catarata Montmorency congelada (más alta que Niagara) y el Año Nuevo con fuegos artificiales en la ciudad amurallada.",
   tip:"El festival gratis 'Toboggan' (29–31 dic) hace el conteo y fuegos cerca de la Asamblea Nacional / Grande Allée. Légende no confirmó menú de Año Nuevo aún: reservá en Libro apenas abra. Alternativa: gala del Frontenac ($602 p/p).",
   sites:[
-   {name:"Château Frontenac · Terrasse Dufferin",lat:46.8113,lng:-71.2051,t:"9:30 AM",fc:"vistas",ic:"🏰",pk:"frontenac",p:"Gratis",note:"El hotel más fotografiado del mundo, sobre el río San Lorenzo congelado. La terraza de madera es el mirador."},
-   {name:"Tobogán Au 1884",lat:46.8110,lng:-71.2043,t:"10:15 AM",fc:"actividad",ic:"🛷",pk:"toboggan",p:"$5 c/u",note:"Tobogán de madera en la Terrasse Dufferin desde 1884: bajás a 70 km/h con el castillo al lado. Hay fila en fiestas."},
-   {name:"Petit-Champlain + Paillard",lat:46.8114,lng:-71.2034,t:"11:00 AM",fc:"shops",ic:"🛍️",pk:"petitchamplain",p:"~$20 p/p",note:"El barrio más viejo de Norteamérica: calles de piedra con luces, tiendas de artesanos y el escalera 'rompecuellos'. Pasteles en Paillard (Saint-Jean)."},
-   {name:"Chute Montmorency congelada",lat:46.8870,lng:-71.1493,t:"2:00 PM",fc:"vistas",ic:"🧊",pk:"montmorency",p:"$10.42 + teleférico $14.95 c/u",note:"Catarata de 83 m (30 más alta que Niagara) que en invierno forma el 'pan de azúcar', un cono de hielo gigante. A 15 min del centro."},
+   {name:"Hôtel de Glace (Valcartier)",lat:46.9447,lng:-71.4758,t:"10:00 AM",fc:"museo",ic:"🧊",pk:"icehotel",p:"$25.99 c/u",note:"El único hotel de hielo de Norteamérica: habitaciones esculpidas, capilla y bar donde servís en vasos de hielo. Se reconstruye cada invierno con otro tema. A 30 min del Viejo Quebec."},
+   {name:"Château Frontenac · Terrasse Dufferin",lat:46.8113,lng:-71.2051,t:"12:30 PM",fc:"vistas",ic:"🏰",pk:"frontenac",p:"Gratis",note:"El hotel más fotografiado del mundo, sobre el río San Lorenzo congelado. La terraza de madera es el mirador."},
+   {name:"Tobogán Au 1884",lat:46.8110,lng:-71.2043,t:"1:00 PM",fc:"actividad",ic:"🛷",pk:"toboggan",p:"$5 c/u",note:"Tobogán de madera en la Terrasse Dufferin desde 1884: bajás a 70 km/h con el castillo al lado. Hay fila en fiestas."},
+   {name:"Petit-Champlain + Paillard",lat:46.8114,lng:-71.2034,t:"1:45 PM",fc:"shops",ic:"🛍️",pk:"petitchamplain",p:"~$20 p/p",note:"El barrio más viejo de Norteamérica: calles de piedra con luces, tiendas de artesanos y el escalera 'rompecuellos'. Pasteles en Paillard (Saint-Jean)."},
+   {name:"Chute Montmorency congelada",lat:46.8870,lng:-71.1493,t:"3:45 PM",fc:"vistas",ic:"🧊",pk:"montmorency",p:"$10.42 + teleférico $14.95 c/u",note:"Catarata de 83 m (30 más alta que Niagara) que en invierno forma el 'pan de azúcar', un cono de hielo gigante. A 15 min del centro. Al caer la tarde la iluminan de colores."},
    {name:"Cena de Año Nuevo: Légende ⭐",lat:46.8169,lng:-71.2101,t:"7:30 PM",fc:"finde",ic:"🥂",pk:"legende",p:"~$150 p/p",note:"1 estrella Michelin, hermano del Tanière³: cocina boreal con caza, hongos y plantas del bosque de Quebec. Abre todos los días desde las 5 PM."},
    {name:"Fuegos de Año Nuevo · Toboggan Festival",lat:46.8087,lng:-71.2143,t:"11:30 PM",fc:"finde",ic:"🎆",pk:"qcfireworks",p:"Gratis",note:"El festival gratis de fin de año: conciertos, conteo y fuegos sobre la ciudad amurallada. ¡Feliz 2027!"}
   ]},
- {n:8,date:"Vie 1 Ene",tag:"Quebec City → Toronto",title:"Hotel de hielo + vuelo a Toronto",trans:"🚗 30 min + ✈️ 1h40",wx:"−8°/−16°",stay:"yyz",cost:"~$660",
-  blurb:"Primer día del 2027: el Hôtel de Glace, un hotel entero de hielo y nieve con capilla y bar de hielo, devolución del auto y vuelo corto a Toronto para dormir pegados a la Terminal 3.",
-  tip:"Hôtel de Glace abre desde el 26 dic (según el clima): $25.99 c/u. Vuelos YQB→YYZ con Air Canada/Porter, 1h40, ~$150–250 c/u: tomá uno de la tarde, NO el de las 5 AM del 2.",
+ {n:8,date:"Vie 1 Ene",tag:"Quebec City → Montreal → Toronto",title:"De vuelta: auto + tren",trans:"🚗 3h + 🚆 VIA Rail 5h",wx:"−8°/−16°",stay:"toronto3",cost:"~$450",
+  blurb:"Primer día del 2027: manejo tranquilo por la autopista 40 de vuelta a Montreal, se devuelve el auto y tren VIA Rail a Toronto. Si el tren llega a tiempo, cierre con los Raptors contra los Clippers a 5 minutos de Union Station.",
+  tip:"Salí de Quebec a las 9 AM (~3h a Montreal). Tren de la 1:22 PM, que llega a las 6:45 PM (horario típico; los feriados puede cambiar: confirmalo al comprar). VIA Montreal→Toronto: ~$85–250 c/u.",
   sites:[
-   {name:"Hôtel de Glace (Valcartier)",lat:46.9447,lng:-71.4758,t:"11:00 AM",fc:"museo",ic:"🧊",pk:"icehotel",p:"$25.99 c/u",note:"El único hotel de hielo de Norteamérica: habitaciones esculpidas, capilla y bar donde servís en vasos de hielo. Se reconstruye cada invierno con otro tema."},
-   {name:"Aeropuerto de Quebec (YQB)",lat:46.7930,lng:-71.3846,t:"3:00 PM",fc:"ruta",ic:"✈️",pk:"yqb",p:"~$200 c/u",note:"Devolución del auto y vuelo a Toronto (Air Canada o Porter)."},
-   {name:"Hotel Pearson T3",lat:43.6883,lng:-79.6203,t:"7:00 PM",fc:"hotel",ic:"🛏",pk:"yyz",p:"~$220/noche",note:"Conectado a la Terminal 3. Cena tranquila y a dormir."}
+   {name:"Devolver auto · centro de Montreal",lat:45.5000,lng:-73.5666,t:"12:15 PM",fc:"ruta",ic:"🚗",pk:"oldmtl",p:"Incluido en el auto",note:"Se devuelve el auto en el centro, junto a la Gare Centrale. Almuerzo rápido en la estación o en el Viejo Montreal."},
+   {name:"VIA Rail · Montreal → Toronto",lat:43.6447,lng:-79.3801,t:"1:22 PM",fc:"ruta",ic:"🚆",pk:"via",p:"~$130 c/u",note:"Tren de ~5h20 por la orilla del río San Lorenzo y del lago Ontario. Llegada ~6:45 PM a Union Station."},
+   {name:"Raptors vs Clippers (opcional)",lat:43.6434,lng:-79.3791,t:"7:30 PM",fc:"actividad",ic:"🏀",pk:"raptors",p:"~$60–150 c/u",note:"Partido de la NBA en el Scotiabank Arena, a 5 min a pie de Union Station. Solo si el tren llega a tiempo: comprá entradas reembolsables o compralas en el tren."}
   ]},
- {n:9,date:"Sáb 2 Ene",tag:"Toronto → Liberia",title:"Salida fácil",trans:"🚶 A pie a la T3",wx:"−3°/−9°",stay:"flight",cost:"$0",
-  blurb:"Del hotel al mostrador caminando. Air Transat a las 11:50 AM y aterrizan en Liberia a las 4:35 PM.",
-  tip:"Air Transat: Terminal 3, mostradores 501–534. Incluye 1 carry-on gratis.",
+ {n:9,date:"Sáb 2 Ene",tag:"Toronto → Liberia",title:"Salida fácil",trans:"🚆 UP Express · 25 min",wx:"−3°/−9°",stay:"flight",cost:"~$25",
+  blurb:"Del hotel a Union Station caminando y UP Express a Pearson en 25 minutos. Air Transat a las 11:50 AM, aterrizando en Liberia a las 4:35 PM.",
+  tip:"Tomá el UP Express a las 8:45 AM ($12.35 c/u). Air Transat: Terminal 3, mostradores 501–534. Incluye 1 carry-on gratis.",
   sites:[
+   {name:"Union Station · UP Express",lat:43.6447,lng:-79.3801,t:"8:45 AM",fc:"ruta",ic:"🚆",pk:"union",p:"$12.35 c/u",note:"El tren al aeropuerto sale cada 15 minutos."},
    {name:"YYZ T3 → Liberia",lat:43.6893,lng:-79.6195,t:"11:50 AM",fc:"ruta",ic:"✈️",pk:"yyz",p:"Ya incluido",note:"Air Transat YYZ 11:50 AM → LIR 4:35 PM. ¡Hasta la próxima, Canadá!"}
   ]}
 ];
@@ -228,8 +230,8 @@ const FCCOL={comer:'#F5A623',hype:'#5FD0D6',viral:'#93A7EC',vistas:'#82C08A',ani
 
 /* Presupuesto estimado para 2, en CAD (comida incluye impuesto + propina aprox.) */
 const COSTS=[
- ["🛏","Hospedaje · 8 noches","Toronto 3 · Montreal 1 · Tremblant 1 · Quebec 2 · aeropuerto 1",2120],
- ["🚆","Transporte","VIA Rail $300 · auto 3 días + llantas + one-way $400 · gasolina $100 · vuelo Quebec→Toronto $400 · UP/Uber $150",1350],
+ ["🛏","Hospedaje · 8 noches","Toronto 3 · Montreal 1 · Tremblant 1 · Quebec 2 · Toronto 1",2120],
+ ["🚆","Transporte","VIA Rail ida y vuelta $600 · auto 3 días con llantas de invierno $330 · gasolina $140 · UP Express / Uber $120",1190],
  ["🎟️","Actividades y museos","ROM, Casa Loma, CN Tower, Glow, AURA, Parc Omega, huskies, tobogán, Montmorency, Hôtel de Glace",915],
  ["🍽️","Comida heavy hitters","Quetzal, Linny's, Damas, La Forge (A5), Le Continental, Légende (Año Nuevo) + wagyu gyukatsu, SCHOOL, Schwartz's",2220],
  ["☕","Resto de comidas y cafés","Desayunos, snacks, cafés, 9 días",400]
@@ -248,17 +250,17 @@ const BALANCE=[
  ["Castillo","—","Casa Loma + Château Frontenac","plus"],
  ["Año Nuevo","Calgary, Olympic Plaza","Quebec City amurallada con fuegos","up"],
  ["Góndola + aguas termales","Sulphur Mtn, Upper Hot Springs","Se van (no les llamaban)","eq"],
- ["Manejo en nieve","~450 km en montaña","~700 km, pero el tramo largo va en tren","down"]
+ ["Manejo en nieve","~450 km en montaña","~1.000 km en 3 días (Toronto↔Montreal va en tren)","down"]
 ];
 const RATES={usd:0.705,crc:320.7}; /* CAD → USD / CRC, 30 Sep 2026; se actualiza en vivo al abrir */
 const fmtN=n=>Math.round(n).toLocaleString('en-US');
 const BAL_HTML=`
-<div class="lead">Nueva ruta para compensar las Rocosas: <b>3 días de Toronto</b>, tren a <b>Montreal</b> y road trip de invierno por <b>Parc Omega</b> (lobos), <b>Mont-Tremblant</b> (la villa de montaña del este) y <b>Quebec City</b>, la ciudad amurallada nevada, para el Año Nuevo. El tramo largo va en tren y la vuelta en un vuelo de 1h40.</div>
+<div class="lead">Ruta para compensar las Rocosas: <b>3 días de Toronto</b>, tren a <b>Montreal</b> y road trip de invierno en círculo por <b>Parc Omega</b> (lobos), <b>Mont-Tremblant</b> (la villa de montaña del este) y <b>Quebec City</b> para el Año Nuevo, de vuelta a Montreal y tren a Toronto. Sin vuelos internos.</div>
 <div class="cblock"><h4>💰 Presupuesto estimado para 2</h4><div id="budget" class="budget"></div>
 <div class="cnote">Estimado a precios 2025–26. La comida incluye ~30% de impuesto y propina. <b>No incluye</b> los vuelos Costa Rica ↔ Toronto (van en <a href="https://rockies-fare-watch.vercel.app" style="color:var(--glacier)">Fare Watch</a>) ni compras. Para bajarlo: Airbnb en vez de hotel en Quebec, y Año Nuevo en Le Continental en vez de Légende.</div></div>
 <div class="cblock"><h4>⚖️ Qué se gana y qué se pierde vs Calgary</h4></div>
 <div class="bal">${BALANCE.map(([k,c,t,s])=>`<div class="brow ${s}"><div class="bk">${k}</div><div class="bc"><small>Calgary</small>${c}</div><div class="bt"><small>Ruta este</small>${t}</div><div class="bs">${s==='up'?'▲ mejor':s==='plus'?'＋ extra':s==='down'?'▼ peor':'＝ igual'}</div></div>`).join('')}</div>
-<div class="cblock"><h4>✈️ Vuelos</h4><div class="cnote"><b>Ida:</b> Porter LIR 3:10 PM → YYZ 9:25 PM (25 dic). <b>Vuelta:</b> Air Transat YYZ 11:50 AM → LIR 4:35 PM (2 ene). ~$1.412 USD para 2 con carry-ons. <b>Ojo:</b> Air Transat abre en diciembre un vuelo directo Quebec → San José (1 por semana). Si cae el 1 o 2 de enero, se ahorran el vuelo a Toronto y la noche del aeropuerto.</div></div>
+<div class="cblock"><h4>✈️ Vuelos</h4><div class="cnote"><b>Ida:</b> Porter LIR 3:10 PM → YYZ 9:25 PM (25 dic). <b>Vuelta:</b> Air Transat YYZ 11:50 AM → LIR 4:35 PM (2 ene). ~$1.412 USD para 2 con carry-ons. <b>Ojo:</b> Air Transat abre en diciembre un vuelo directo Quebec → San José (1 por semana). Si cae el 1 o 2 de enero, podrían volver directo desde Quebec.</div></div>
 <div class="cblock"><h4>🌡️ Clima</h4><div class="tempcards">
   <div class="tcard"><div class="tcity2">Toronto · Montreal</div><div class="ttemp">−1° / −13°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">Húmedo y con viento del lago o del río: cala más de lo que dice el número.</div></div>
   <div class="tcard"><div class="tcity2">Tremblant · Quebec</div><div class="ttemp">−8° / −18°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">El frío de verdad, parecido a Banff. Nieve casi segura: paisaje de postal.</div></div>
