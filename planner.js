@@ -82,7 +82,7 @@ function buildPanels(){
     const block=document.createElement('div');block.className='tcity';
     block.innerHTML=`<h3>${city} <span class="cnt">${list.length}</span></h3>`+
       list.map(sp=>{const ph=photosFor(sp.pk)[0];
-        const ic=ph?`<img src="${ph.url}" alt="" onerror="this.parentNode.textContent='${sp.ic}'">`:sp.ic;
+        const ic=ph?`<img loading="lazy" src="${ph.url.replace('width=1000','width=120')}" alt="" onerror="this.parentNode.textContent='${sp.ic}'">`:sp.ic;
         return `<div class="tspot" data-id="${sp.id}" style="--cc:${FCCOL[sp.cat]}"><div class="tic">${ic}</div><div><div class="tn">${sp.name}</div><div class="tc">${FCLBL[sp.cat]}</div><div class="tnote">${sp.note}</div></div></div>`;}).join('');
     tWrap.appendChild(block);
   });
@@ -146,7 +146,7 @@ function focusDay(di){
 /* ===== MAP ===== */
 function galHtml(photos){
   if(!photos.length) return '';
-  const imgs=photos.map(p=>`<img src="${p.url}" alt="${(p.caption||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.style.display='none'">`).join('');
+  const imgs=photos.map(p=>`<img src="${p.url.replace('width=1000','width=560')}" alt="${(p.caption||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.style.display='none'">`).join('');
   const nav=photos.length>1?`<button class="nav prev" onclick="this.parentNode.querySelector('.track').scrollBy({left:-272})">‹</button><button class="nav next" onclick="this.parentNode.querySelector('.track').scrollBy({left:272})">›</button><span class="count">1 / ${photos.length}</span>`:'';
   return `<div class="gal"><div class="track">${imgs}</div>${nav}</div>`;
 }
@@ -190,13 +190,13 @@ function renderDayLayers(){
     const c=DAYCOL[di];day.c=c;dayLines[di]=[];
     const path=(ROUTES[di]&&ROUTES[di].length>1)?ROUTES[di]:day.sites.map(s=>[s.lat,s.lng]);
     if(path.length>1){
-      dayLines[di].push(L.polyline(path,{className:'route-glow',color:c,weight:8,opacity:.16,interactive:false}).addTo(map));
-      dayLines[di].push(L.polyline(path,{className:'route-main',color:c,weight:3,opacity:.85,dashArray:'1 9',interactive:false}).addTo(map));
+      dayLines[di].push(L.polyline(path,{className:'route-glow',color:c,weight:9,opacity:.16,interactive:false,smoothFactor:1.5}).addTo(map));
+      dayLines[di].push(L.polyline(path,{className:'route-main',color:c,weight:3,opacity:.85,dashArray:'2 8',lineCap:'round',interactive:false,smoothFactor:1.5}).addTo(map));
     }
   });
   let mi=0;
   TRIP.forEach((day,di)=>{const c=DAYCOL[di];day.sites.forEach((s,si)=>{
-    const first=si===0,delay=(mi*0.04).toFixed(2);
+    const first=si===0,delay=Math.min(mi*0.012,.35).toFixed(2);
     const html=first?`<div class="mk seal-m" style="--c:${c};animation-delay:${delay}s">${day.n}</div>`:`<div class="mk pin" style="--c:${c};animation-delay:${delay}s">${s.ic}</div>`;
     const icon=L.divIcon({html,className:'',iconSize:first?[40,40]:[30,30],iconAnchor:first?[20,20]:[15,15]});
     const m=L.marker([s.lat,s.lng],{icon,riseOnHover:true}).addTo(map);
@@ -207,12 +207,12 @@ function renderDayLayers(){
   applyVisibility();
 }
 function initMap(){
-  map=L.map('map',{zoomControl:true,attributionControl:true,renderer:L.svg(),minZoom:4,maxZoom:17,preferCanvas:false}).setView(CFG.center,CFG.zoom);
+  map=L.map('map',{zoomControl:true,attributionControl:true,renderer:L.canvas({padding:.3}),minZoom:4,maxZoom:17,preferCanvas:true,zoomSnap:.5,wheelPxPerZoomLevel:90}).setView(CFG.center,CFG.zoom);
   layers={
-    sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Imagery © Esri, Maxar'}),
+    sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,updateWhenZooming:false,keepBuffer:1,attribution:'Imagery © Esri, Maxar'}),
     satLabels:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,opacity:.9}),
     terr:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© Esri'}),
-    dark:L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19,subdomains:'abcd',attribution:'© OpenStreetMap, © CARTO'})
+    dark:L.layerGroup([L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18,attribution:'© Esri'}),L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18})])
   };
   SPOTS.forEach(sp=>{const c=FCCOL[sp.cat]||'#93A4BC';sp.c=c;
     const icon=L.divIcon({html:`<div class="mk spot" style="--c:${c}">${sp.ic}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
