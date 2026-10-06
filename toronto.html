@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Toronto → Québec · Jime & Moi</title>
+<title>Toronto + Niagara · Jime & Moi</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,7 @@
 <div class="mapfail" id="mapfail"><h4>El mapa no cargó</h4><p>Tu red bloqueó la librería del mapa, pero el itinerario, los tesoros y el presupuesto funcionan en el panel de la izquierda. Probá en otra red o WiFi.</p></div>
 
 <header class="hdr">
-  <div class="brand"><a class="mark" href="toronto.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Toronto → Québec</span></div>
+  <div class="brand"><a class="mark" href="toronto.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Toronto + Niagara</span></div>
   <nav class="sections">
     <a class="on" href="toronto.html"><span class="ic">🍁</span>Toronto</a>
     <a href="ahorro.html"><span class="ic">🐷</span>Ahorro</a>
@@ -35,7 +35,7 @@
     <a href="costos.html"><span class="ic">💰</span>Costos</a>
   </nav>
   <div class="hdr-right">
-    <div class="dates"><b>25 Dic 2026 — 2 Ene 2027</b><br>9 días · Toronto · Montreal · Tremblant · Quebec</div>
+    <div class="dates"><b>24 Dic 2026 — 2 Ene 2027</b><br>10 días · Toronto · Niagara · nieve</div>
     <div class="seg" id="viewToggle">
       <button data-view="sat" class="on">Satélite</button>
       <button data-view="terr">Terreno</button>
@@ -53,6 +53,7 @@
   <button class="chip" data-cat="vistas"><span class="i">🏔️</span>Vistas</button>
   <button class="chip" data-cat="shops"><span class="i">🛍️</span>Shopping</button>
   <button class="chip" data-cat="hype"><span class="i">👟</span>Hype</button>
+  <button class="chip" data-cat="vintage"><span class="i">🧥</span>Vintage</button>
   <button class="chip" data-cat="viral"><span class="i">📸</span>Virales</button>
   <button class="chip" data-cat="finde"><span class="i">🎆</span>Año Nuevo</button>
   <button class="chip" data-cat="museo"><span class="i">🦖</span>Museos</button>
@@ -69,15 +70,15 @@
     <button class="tab" data-tab="cold">💰 Plan y $</button>
   </div>
   <div class="win-head" id="winHead">
-    <div class="eyebrow">✅ Vuelos comprados · road trip de invierno</div>
-    <h1>Toronto <em>→ Québec</em></h1>
+    <div class="eyebrow">✅ Vuelos comprados · PD790 + TS112</div>
+    <h1>Toronto <em>+ Niagara</em></h1>
     <div class="stats">
-      <div class="stat"><div class="n">9</div><div class="l">Días</div></div>
+      <div class="stat"><div class="n">10</div><div class="l">Días</div></div>
       <div class="stat"><div class="n" id="spotStat">—</div><div class="l">Tesoros</div></div>
       <div class="stat"><div class="n" id="kmStat">—</div><div class="l">Km ruta</div></div>
-      <div class="stat"><div class="n">−7°</div><div class="l">Prom.</div></div>
+      <div class="stat"><div class="n">−5°</div><div class="l">Prom.</div></div>
     </div>
-    <div class="legline">Ruta: <b>3 noches Toronto</b> → tren a <b>Montreal</b> → road trip a <b>Tremblant</b> → <b>2 Quebec City</b> (Año Nuevo) → auto a Montreal + tren a Toronto. Cero vuelos internos. Precios en cada parada y el total en <b>💰 Plan y $</b>.</div>
+    <div class="legline">Base fija en <b>Toronto</b> (9 noches) con 2 días de auto: <b>huskies + snow tubing</b> y <b>Niagara Falls</b>. Parque de diversiones, zoo, acuario, rutas hype y vintage, wagyu A5 y Año Nuevo en el lago. Total en <b>💰 Plan y $</b>.</div>
   </div>
   <div class="scroll" id="scroll">
     <div class="trail" id="trail"></div>
@@ -89,202 +90,113 @@
 
 <button class="btn reopen" id="reopen">⚓ Itinerario</button>
 
-<div class="now" id="now"><span class="pip"></span><span id="nowText">Viaje completo · <b>9 días · Toronto → Quebec</b></span></div>
+<div class="now" id="now"><span class="pip"></span><span id="nowText">Viaje completo · <b>10 días · Toronto + Niagara</b></span></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="toronto-routes.js"></script>
 <script src="toronto-photos.js"></script>
 <script>
 /* ===== DATA ===== */
-const DAYCOL=['#93A4BC','#F5A623','#5FD0D6','#EC8C76','#93A7EC','#82C08A','#C58CEC','#E3C56A','#6FB1E0'];
-const STAY={
-  toronto:{label:"Airbnb · Toronto centro",dates:"25–28 Dic",url:null,todo:true},
-  montreal:{label:"Hotel · Viejo Montreal",dates:"28–29 Dic",url:null,todo:true},
-  tremblant:{label:"Hotel · villa de Tremblant",dates:"29–30 Dic",url:null,todo:true},
-  quebec:{label:"Hotel · Viejo Quebec",dates:"30 Dic–1 Ene",url:null,todo:true},
-  toronto3:{label:"Hotel · al lado de Union Station",dates:"1–2 Ene",url:null,todo:true},
-  flight:{label:"Vuelo de regreso · Air Transat ✅",dates:"2 Ene · 11:50 AM",flight:true}
-};
+const DAYCOL=['#93A4BC','#F5A623','#5FD0D6','#EC8C76','#93A7EC','#82C08A','#C58CEC','#E3C56A','#6FB1E0','#F08FB8'];
+const STAY={"toronto":{"label":"Airbnb · Toronto","dates":"24 dic – 2 ene · 9 noches","url":null,"todo":false},"flight":{"label":"Vuelo de regreso · Air Transat TS112 ✅","dates":"2 Ene · 7:20 PM","flight":true}};
 const PHOTOS = window.PHOTOS || {};
 const ROUTES = window.ROUTES || {};
 const ROUTE_KM = window.ROUTE_KM || {};
 const ROUTE_SITEKM = window.ROUTE_SITEKM || {};
 const ROUTE_RETURNKM = window.ROUTE_RETURNKM || {};
 
-/* Hospedaje: todavía por reservar. Coordenadas = zona recomendada. Precios = estimado por noche para 2 (CAD). */
+/* Hospedaje: Airbnb (ubicación aproximada hasta tener el link). */
 const LODGING=[
- {id:"stay-tor",name:"Airbnb · Toronto (Entertainment District)",lat:43.6455,lng:-79.3905,dates:"25–28 Dic · ~$200/noche",url:null,
-  note:"Zona recomendada: King West / Entertainment District. A pasos de la CN Tower, Union Station (tren al aeropuerto y VIA Rail a Montreal) y Queen St W. Por reservar."},
- {id:"stay-mtl",name:"Hotel · Viejo Montreal",lat:45.5060,lng:-73.5560,dates:"28–29 Dic · ~$250/noche",url:null,
-  note:"Una noche en el Viejo Montreal: calles de piedra, la Basílica a 2 cuadras y todo caminable. Por reservar."},
- {id:"stay-trm",name:"Hotel · villa peatonal de Tremblant",lat:46.2130,lng:-74.5860,dates:"29–30 Dic · ~$400–700/noche",url:null,
-  note:"La villa peatonal al pie de la montaña: casitas de colores, nieve y luces. Fairmont, Westin o Holiday Inn (el más barato). Temporada alta: reservar ya."},
- {id:"stay-qc",name:"Hotel · Viejo Quebec (intramuros)",lat:46.8130,lng:-71.2080,dates:"30 Dic–1 Ene · ~$300/noche",url:null,
-  note:"Dentro de las murallas, cerca del Château Frontenac. Si el presupuesto da, una noche en el Frontenac es EL castillo nevado."},
- {id:"stay-union",name:"Hotel · al lado de Union Station",lat:43.6452,lng:-79.3817,dates:"1–2 Ene · ~$220/noche",url:null,
-  note:"Última noche pegados a Union Station (Fairmont Royal York o similar): llegan en tren de Montreal y el 2 toman el UP Express al aeropuerto a pasos del hotel."}
+ {"id":"stay-tor","name":"Airbnb · Toronto","lat":43.6455,"lng":-79.3905,"dates":"24 dic – 2 ene · 9 noches","url":null,"note":"Base para todo el viaje. La ubicación es aproximada (Entertainment District): pasame el link del Airbnb y la pongo exacta. Llegan a las 6:10 AM, así que pedí check-in temprano o guardá las maletas."}
 ];
 
+/* Itinerario: 24 dic 2026 – 2 ene 2027. Precios = estimado para 2 en CAD, comida con impuesto y propina. */
 const TRIP=[
- {n:1,date:"Vie 25 Dic",tag:"Liberia → Toronto",title:"Navidad volando",trans:"✈️ Porter ✅ + UP Express",wx:"−1°/−7°",stay:"toronto",cost:"~$25",
-  blurb:"Vuelo comprado ✅. Porter sale de Liberia a las 3:10 PM y aterriza en Toronto a las 9:25 PM. Tren UP Express a Union (25 min) y a dormir: mañana es Boxing Day.",
-  tip:"Estar en Liberia (LIR) a las 12:10 PM: 3 h antes por ser internacional, solo carry-on. Pasaporte + eTA/visa a mano. El UP Express corre hasta la 1 AM y cuesta $12.35 por persona. Uber al centro: $35–60.",
-  sites:[
-   {name:"Aeropuerto de Toronto (YYZ · T3)",lat:43.6893,lng:-79.6195,t:"9:25 PM",fc:"ruta",ic:"✈️",pk:"yyz",p:"✈️ comprado · UP Express $12.35 c/u",note:"Llegada del Porter desde Liberia. Migración con maletas de mano y UP Express a Union Station en 25 minutos."},
-   {name:"Check-in · Airbnb centro",lat:43.6455,lng:-79.3905,t:"10:30 PM",fc:"hotel",ic:"🛏",pk:"torskyline",p:"~$200/noche",note:"Base en King West / Entertainment District. Mañana se madruga."}
-  ]},
- {n:2,date:"Sáb 26 Dic",tag:"Toronto",title:"Boxing Day + dinosaurios",trans:"🚶 A pie / TTC",wx:"−1°/−7°",stay:"toronto",cost:"~$470",
-  blurb:"Rebajas de Boxing Day desde las 8 AM (con la tienda OVO de Drake adentro), almuerzo de wagyu empanizado, la sala de dinosaurios del ROM y cena en un 1 estrella Michelin cocinado todo al fuego.",
-  tip:"El ROM abrió el Boxing Day pasado (10–5:30); confirmalo en diciembre. Quetzal libera reservas en OpenTable 30 días antes a medianoche: el 26 de noviembre para esta cena.",
-  sites:[
-   {name:"CF Toronto Eaton Centre · Boxing Day",lat:43.6544,lng:-79.3807,t:"8:00 AM",fc:"shops",ic:"🛍️",pk:"eatoncentre",p:"Gratis",note:"El mall icónico bajo techo de vidrio. Boxing Day 8 AM–9:30 PM (horario 2025), los descuentos más fuertes del año. Adentro está la tienda OVO."},
-   {name:"Sephora · Eaton Centre 💄 (para Jime)",lat:43.6547,lng:-79.3809,t:"9:30 AM",fc:"shops",ic:"💄",pk:"eatoncentre",p:"Presupuesto de Jime",note:"La Sephora del Eaton Centre recién reabrió renovada. Boxing Day = mejores promos del año en sets y perfumes. Tip: inscribite a Beauty Insider antes para puntos y regalos de cumpleaños. Tiempo libre sin prisa hasta el almuerzo."},
-   {name:"Almuerzo: Kyoto Katsugyu (wagyu gyukatsu)",lat:43.6569,lng:-79.3762,t:"11:45 AM",fc:"comer",ic:"🥩",pk:"katsugyu",p:"~$60 p/p",note:"Wagyu empanizado y sellado que terminás vos en una piedra caliente. Tienen Tajima wagyu y un set de A5 Ozaki limitado a 10 por semana: llamá antes para apartarlo. A 5 min del Eaton Centre."},
-   {name:"ROM · sala de dinosaurios",lat:43.6677,lng:-79.3947,t:"1:30 PM",fc:"museo",ic:"🦖",pk:"rom",p:"~$26 c/u",note:"El Royal Ontario Museum: las galerías de dinosaurios (ampliadas en 2025) con esqueletos gigantes de T. rex, saurópodos y el Borealopelta. Además arte, Egipto y la sala de murciélagos. El 'museo de dinosaurios' del viaje."},
-   {name:"Yorkville · shopping de lujo",lat:43.6703,lng:-79.3927,t:"4:30 PM",fc:"shops",ic:"💎",pk:"yorkville",p:"Gratis",note:"Pegado al ROM: Bloor St, la 'milla de lujo' de Canadá (Holt Renfrew, Louis Vuitton, Canada Goose, Aritzia)."},
-   {name:"Cena: Quetzal ⭐ Michelin",lat:43.6565,lng:-79.4069,t:"7:30 PM",fc:"comer",ic:"🔥",pk:"quetzal",p:"~$110 p/p",note:"1 estrella Michelin y #4 de Canada's 100 Best: cocina mexicana hecha toda sobre fuego vivo, en una barra de 8 m frente a las brasas. Abre mié–dom. Uno de los heavy hitters del viaje."}
-  ]},
- {n:3,date:"Dom 27 Dic",tag:"Toronto",title:"Castillo, torre y zoológico de noche",trans:"🚶 TTC / Uber",wx:"−2°/−8°",stay:"toronto",cost:"~$630",
-  blurb:"Brunch de fila, el castillo de Casa Loma de Navidad, la CN Tower al atardecer con piso de vidrio, la deli-steakhouse de moda y de noche el zoológico lleno de linternas gigantes.",
-  tip:"Glow In The Wild: $38 + tax por persona, entradas de 6:00 a 9:15 PM y los días feriados se agotan: comprá online. El zoológico queda a ~35 min en Uber (~$40 por tramo).",
-  sites:[
-   {name:"Brunch: SCHOOL (Liberty Village)",lat:43.6380,lng:-79.4244,t:"10:00 AM",fc:"comer",ic:"🍳",pk:"school",p:"~$40 p/p",note:"El brunch de fila de Toronto en una vieja escuela: waffles, huevos Benedict y pancakes enormes. Reservar en Resy (2 semanas antes)."},
-   {name:"Casa Loma · Navidad en el castillo",lat:43.6781,lng:-79.4094,t:"12:00 PM",fc:"museo",ic:"🏰",pk:"casaloma",p:"$45 + HST c/u",note:"Castillo neogótico de 1914: torres, túneles secretos y caballerizas, decorado para las fiestas. 9:30 AM–5 PM."},
-   {name:"CN Tower · piso de vidrio al atardecer",lat:43.6426,lng:-79.3871,t:"3:45 PM",fc:"vistas",ic:"🗼",pk:"cntower",p:"~$43 c/u",note:"Piso de vidrio a 342 m y el lago Ontario congelado al atardecer (~4:50 PM). Reservá la hora de entrada."},
-   {name:"Cena temprana: Linny's",lat:43.6468,lng:-79.4198,t:"5:30 PM",fc:"comer",ic:"🥪",pk:"linnys",p:"~$110 p/p",note:"#14 de Canada's 100 Best: deli-steakhouse con pastrami cortado a mano ($48) y bife de hueso Ontario ($108). Cena fuerte antes del zoológico."},
-   {name:"Toronto Zoo · Glow In The Wild",lat:43.8196,lng:-79.1845,t:"7:30 PM",fc:"animales",ic:"🏮",pk:"torontozoo",p:"$38 + tax c/u",note:"Más de 2.000 linternas gigantes con forma de animales entre los hábitats del zoológico. La versión Toronto de ZooLights."}
-  ]},
- {n:4,date:"Lun 28 Dic",tag:"Toronto → Montreal",title:"Tren a Montreal + Basílica de luz",trans:"🚆 VIA Rail · 5h",wx:"−5°/−13°",stay:"montreal",cost:"~$680",
-  blurb:"Tren VIA Rail por la orilla del lago hasta Montreal, sin manejar en nieve. Tarde en el Viejo Montreal de piedra, sándwich de smoked meat en la leyenda de 1928, el show de luz AURA dentro de la Basílica y cena siria top.",
-  tip:"VIA Rail sale de Union Station (~5h): Economy ~$100–150 c/u, Business ~$200–300 con comida; reservá temprano. Es lunes: Au Pied de Cochon, Toqué! y Joe Beef cierran. Damas y Nama Omakase sí abren.",
-  sites:[
-   {name:"VIA Rail · Union Station",lat:43.6447,lng:-79.3801,t:"9:30 AM",fc:"ruta",ic:"🚆",pk:"via",p:"~$150 c/u",note:"Toronto → Montreal en ~5h con wifi y paisaje del lago Ontario nevado. Business trae comida y vino."},
-   {name:"Viejo Montreal · Place Jacques-Cartier",lat:45.5079,lng:-73.5530,t:"3:30 PM",fc:"vistas",ic:"🏛️",pk:"oldmtl",p:"Gratis",note:"Calles de piedra del 1700, luces de Navidad y el puerto viejo. Se siente Europa."},
-   {name:"Schwartz's · smoked meat desde 1928",lat:45.5163,lng:-73.5776,t:"4:30 PM",fc:"comer",ic:"🥪",pk:"schwartz",p:"~$25 p/p",note:"La leyenda de Montreal: sándwich de smoked meat apilado. Hay fila, pero avanza rápido. Merienda, no cena."},
-   {name:"AURA · Basílica de Notre-Dame",lat:45.5044,lng:-73.5560,t:"6:00 PM",fc:"museo",ic:"✨",pk:"aura",p:"$33.50 c/u",note:"Show de luz y orquesta de 45 min proyectado dentro de la basílica neogótica más impresionante de Norteamérica. Funciones 6 y 8 PM."},
-   {name:"Cena: Damas",lat:45.5226,lng:-73.6134,t:"8:00 PM",fc:"comer",ic:"🍢",pk:"damas",p:"~$120 p/p",note:"El mejor sirio de Norteamérica según la crítica: cordero, kebbeh y un menú degustación 'un poco de todo'. Abre los lunes. Alternativa wagyu: Nama Omakase ($200 p/p, 16 tiempos con A5)."}
-  ]},
- {n:5,date:"Mar 29 Dic",tag:"Montreal → Tremblant",title:"Road trip: lobos y la montaña",trans:"🚗 Auto · 3h",wx:"−8°/−18°",stay:"tremblant",cost:"~$700",
-  blurb:"Recogen el auto y arranca el road trip: Parc Omega, un safari en auto entre lobos, alces, bisontes y ciervos que se acercan a la ventana, y subida a las Laurentides hasta Mont-Tremblant, la villa de montaña más linda del este. Cena: A5 Ozaki de verdad.",
-  tip:"En Quebec las llantas de invierno son ley del 1 dic al 15 mar (el alquiler las trae). Alquilá el auto en el centro de Montreal y devolvelo ahí mismo el 1 de enero (sin cargo de one-way). Revisá Québec 511 antes de salir.",
-  sites:[
-   {name:"Parc Omega · safari en auto",lat:45.6934,lng:-74.9603,t:"10:30 AM",fc:"animales",ic:"🦌",pk:"omega",p:"~$30 c/u",note:"Recorrés 15 km en tu auto entre lobos grises y árticos, alces, bisontes, caribúes y ciervos que comen zanahorias de tu mano (compralas ahí). Los osos hibernan. ~3–4 h."},
-   {name:"Villa peatonal de Mont-Tremblant",lat:46.2136,lng:-74.5855,t:"4:00 PM",fc:"vistas",ic:"🏔️",pk:"tremblant",p:"Gratis",note:"Casitas de colores al pie de la montaña nevada, luces, fogatas y actividades gratis de fiestas (Place St-Bernard, 20 dic–3 ene). La 'Banff del este'."},
-   {name:"Cena: La Forge · A5 Ozaki 🥩",lat:46.2135,lng:-74.5849,t:"7:00 PM",fc:"comer",ic:"🥩",pk:"laforge",p:"A5 6 oz $224–258",note:"EL wagyu del viaje: A5 Ozaki de Miyazaki (una de las granjas top de Japón), con precio en carta. Tataki 2 oz $90, bife 6 oz $224 o flambeado con whisky Suntory $258. Para dos compartiendo 6 oz + entrada: ~$350–450. Abre martes."}
-  ]},
- {n:6,date:"Mié 30 Dic",tag:"Tremblant → Quebec City",title:"Huskies + ruta a Quebec",trans:"🚗 Auto · ~5h",wx:"−8°/−17°",stay:"quebec",cost:"~$750",
-  blurb:"Mañana en la montaña manejando tu propio trineo de huskies por el bosque nevado. Después, ruta por la autopista 40 a Quebec City para llegar a la ciudad amurallada iluminada y cenar en el clásico de 1956.",
-  tip:"Dog sledding: $185 c/u (1h, a 7 min del resort), reservar 72h antes mínimo. Son ~5h a Quebec City: salí a las 11 AM para manejar casi todo con luz (el sol se pone ~4:15 PM), con parada a almorzar en Trois-Rivières. Si preferís, el trineo de caballos ($72 c/u) queda en Tesoros para la tarde del 29.",
-  sites:[
-   {name:"Tremblant Dogsledding",lat:46.1783,lng:-74.5999,t:"9:00 AM",fc:"animales",ic:"🛷",pk:"dogsled",p:"$185 c/u",note:"Tu propio trineo con huskies por senderos del bosque nevado, con guía. La aventura del viaje (la versión este de Snowy Owl)."},
-   {name:"Cena: Le Continental",lat:46.8119,lng:-71.2069,t:"7:30 PM",fc:"comer",ic:"🔥",pk:"continental",p:"~$120 p/p",note:"Institución desde 1956 en el Viejo Quebec: flambeados en la mesa, beef Wellington con foie gras, meseros de saco blanco. Abre todos los días."}
-  ]},
- {n:7,date:"Jue 31 Dic",tag:"Quebec City",title:"Castillo nevado + Año Nuevo",trans:"🚶 A pie / auto",wx:"−8°/−17°",stay:"quebec",cost:"~$550",
-  blurb:"El día más de postal: el hotel de hielo, el Château Frontenac sobre el río congelado, el tobogán de 1884 a 70 km/h, el barrio Petit-Champlain, la catarata Montmorency congelada (más alta que Niagara) y el Año Nuevo con fuegos artificiales en la ciudad amurallada.",
-  tip:"El festival gratis 'Toboggan' (29–31 dic) hace el conteo y fuegos cerca de la Asamblea Nacional / Grande Allée. Légende no confirmó menú de Año Nuevo aún: reservá en Libro apenas abra. Alternativa: gala del Frontenac ($602 p/p).",
-  sites:[
-   {name:"Hôtel de Glace (Valcartier)",lat:46.9447,lng:-71.4758,t:"10:00 AM",fc:"museo",ic:"🧊",pk:"icehotel",p:"$25.99 c/u",note:"El único hotel de hielo de Norteamérica: habitaciones esculpidas, capilla y bar donde servís en vasos de hielo. Se reconstruye cada invierno con otro tema. A 30 min del Viejo Quebec."},
-   {name:"Château Frontenac · Terrasse Dufferin",lat:46.8113,lng:-71.2051,t:"12:30 PM",fc:"vistas",ic:"🏰",pk:"frontenac",p:"Gratis",note:"El hotel más fotografiado del mundo, sobre el río San Lorenzo congelado. La terraza de madera es el mirador."},
-   {name:"Tobogán Au 1884",lat:46.8110,lng:-71.2043,t:"1:00 PM",fc:"actividad",ic:"🛷",pk:"toboggan",p:"$5 c/u",note:"Tobogán de madera en la Terrasse Dufferin desde 1884: bajás a 70 km/h con el castillo al lado. Hay fila en fiestas."},
-   {name:"Petit-Champlain + Paillard",lat:46.8114,lng:-71.2034,t:"1:45 PM",fc:"shops",ic:"🛍️",pk:"petitchamplain",p:"~$20 p/p",note:"El barrio más viejo de Norteamérica: calles de piedra con luces, tiendas de artesanos y el escalera 'rompecuellos'. Pasteles en Paillard (Saint-Jean)."},
-   {name:"Chute Montmorency congelada",lat:46.8870,lng:-71.1493,t:"3:45 PM",fc:"vistas",ic:"🧊",pk:"montmorency",p:"$10.42 + teleférico $14.95 c/u",note:"Catarata de 83 m (30 más alta que Niagara) que en invierno forma el 'pan de azúcar', un cono de hielo gigante. A 15 min del centro. Al caer la tarde la iluminan de colores."},
-   {name:"Cena de Año Nuevo: Légende ⭐",lat:46.8169,lng:-71.2101,t:"7:30 PM",fc:"finde",ic:"🥂",pk:"legende",p:"~$150 p/p",note:"1 estrella Michelin, hermano del Tanière³: cocina boreal con caza, hongos y plantas del bosque de Quebec. Abre todos los días desde las 5 PM."},
-   {name:"Fuegos de Año Nuevo · Toboggan Festival",lat:46.8087,lng:-71.2143,t:"11:30 PM",fc:"finde",ic:"🎆",pk:"qcfireworks",p:"Gratis",note:"El festival gratis de fin de año: conciertos, conteo y fuegos sobre la ciudad amurallada. ¡Feliz 2027!"}
-  ]},
- {n:8,date:"Vie 1 Ene",tag:"Quebec City → Montreal → Toronto",title:"De vuelta: auto + tren",trans:"🚗 3h + 🚆 VIA Rail 5h",wx:"−8°/−16°",stay:"toronto3",cost:"~$450",
-  blurb:"Primer día del 2027: manejo tranquilo por la autopista 40 de vuelta a Montreal, se devuelve el auto y tren VIA Rail a Toronto. Si el tren llega a tiempo, cierre con los Raptors contra los Clippers a 5 minutos de Union Station.",
-  tip:"Salí de Quebec a las 9 AM (~3h a Montreal). Tren de la 1:22 PM, que llega a las 6:45 PM (horario típico; los feriados puede cambiar: confirmalo al comprar). VIA Montreal→Toronto: ~$85–250 c/u.",
-  sites:[
-   {name:"Devolver auto · centro de Montreal",lat:45.5000,lng:-73.5666,t:"12:15 PM",fc:"ruta",ic:"🚗",pk:"oldmtl",p:"Incluido en el auto",note:"Se devuelve el auto en el centro, junto a la Gare Centrale. Almuerzo rápido en la estación o en el Viejo Montreal."},
-   {name:"VIA Rail · Montreal → Toronto",lat:43.6447,lng:-79.3801,t:"1:22 PM",fc:"ruta",ic:"🚆",pk:"via",p:"~$130 c/u",note:"Tren de ~5h20 por la orilla del río San Lorenzo y del lago Ontario. Llegada ~6:45 PM a Union Station."},
-   {name:"Raptors vs Clippers (opcional)",lat:43.6434,lng:-79.3791,t:"7:30 PM",fc:"actividad",ic:"🏀",pk:"raptors",p:"~$60–150 c/u",note:"Partido de la NBA en el Scotiabank Arena, a 5 min a pie de Union Station. Solo si el tren llega a tiempo: comprá entradas reembolsables o compralas en el tren."}
-  ]},
- {n:9,date:"Sáb 2 Ene",tag:"Toronto → Liberia",title:"Salida fácil",trans:"🚆 UP Express · 25 min",wx:"−3°/−9°",stay:"flight",cost:"~$25",
-  blurb:"Del hotel a Union Station caminando y UP Express a Pearson en 25 minutos. Air Transat a las 11:50 AM, aterrizando en Liberia a las 4:35 PM.",
-  tip:"Tomá el UP Express a las 8:45 AM ($12.35 c/u) para estar en Pearson 3 h antes. Air Transat: Terminal 3, mostradores 501–534. Hacé el check-in online 24 h antes.",
-  sites:[
-   {name:"Union Station · UP Express",lat:43.6447,lng:-79.3801,t:"8:45 AM",fc:"ruta",ic:"🚆",pk:"union",p:"$12.35 c/u",note:"El tren al aeropuerto sale cada 15 minutos."},
-   {name:"YYZ T3 → Liberia",lat:43.6893,lng:-79.6195,t:"11:50 AM",fc:"ruta",ic:"✈️",pk:"yyz",p:"✅ Comprado",note:"Air Transat YYZ 11:50 AM → LIR 4:35 PM. ¡Hasta la próxima, Canadá!"}
-  ]}
+ {"n":1,"date":"Jue 24 Dic","tag":"San José → Toronto","title":"Llegada + Nochebuena","trans":"✈️ Porter PD790 ✅ + UP Express","wx":"−1°/−7°","stay":"toronto","cost":"~$105","blurb":"Aterrizan a las 6:10 AM después del vuelo nocturno. Desayuno icónico en el mercado, el iPhone en la Apple del Eaton Centre, siesta y Nochebuena entre las luces del letrero de TORONTO.","tip":"Llegan antes del check-in del Airbnb: pedí check-in temprano o dejá las maletas en un guarda-equipaje cerca de Union (~$10 por maleta). El 24 los malls cierran temprano (~5 PM).","sites":[{"name":"Aeropuerto Pearson (YYZ)","lat":43.6893,"lng":-79.6195,"t":"6:10 AM","fc":"ruta","ic":"✈️","pk":"yyz","p":"UP Express $12.35 c/u","note":"Llega el Porter PD790 desde San José. Migración y UP Express a Union Station en 25 minutos."},{"name":"St. Lawrence Market · Carousel Bakery","lat":43.6487,"lng":-79.3716,"t":"8:30 AM","fc":"comer","ic":"🥓","pk":"stlawrence","p":"~$25 los dos","note":"El sándwich de peameal bacon, el desayuno más icónico de Toronto. El 24 el mercado abre de 7 AM a 4 PM."},{"name":"CF Eaton Centre · Apple + Aritzia","lat":43.6544,"lng":-79.3807,"t":"11:00 AM","fc":"shops","ic":"📱","pk":"eatoncentre","p":"iPhone aparte","note":"Comprá el iPhone 18 Pro hoy y lo usás todo el viaje (13% HST, en Quebec sería ~15%). Aritzia nueva con soft-serve, Sephora y la tienda OVO de Drake."},{"name":"Check-in · Airbnb","lat":43.6455,"lng":-79.3905,"t":"3:00 PM","fc":"hotel","ic":"🛏","pk":"torskyline","p":"Ya pagado","note":"Siesta: vienen de un vuelo nocturno."},{"name":"Nathan Phillips Square · letrero TORONTO","lat":43.6525,"lng":-79.3835,"t":"6:30 PM","fc":"viral","ic":"📸","pk":"nps","p":"Patines ~$10","note":"La foto clásica con el letrero iluminado, la pista de patinaje y las luces navideñas. Patinar es gratis; alquiler de patines ~$10."},{"name":"Cena: Kinton Ramen","lat":43.656,"lng":-79.394,"t":"7:30 PM","fc":"comer","ic":"🍜","pk":"kinton","p":"~$45 los dos","note":"Ramen grande y barato para el primer frío ($15–17 el plato). Confirmá el horario de Nochebuena."}]},
+ {"n":2,"date":"Vie 25 Dic","tag":"Toronto","title":"Navidad con animales","trans":"🚇 TTC (horario de domingo)","wx":"−1°/−7°","stay":"toronto","cost":"~$160","blurb":"Navidad cierra casi toda la ciudad, pero el zoológico abre: osos polares, leopardos de las nieves y pabellones tropicales. Cena en Chinatown, que sí abre.","tip":"El zoo abre el 25 de 11 AM a 4 PM. Comprá online con 3+ días de anticipación (5% menos). TTC: Línea 2 a Kennedy + bus 86A (~1h15), o Uber ~$45 por tramo.","sites":[{"name":"Toronto Zoo","lat":43.8177,"lng":-79.1859,"t":"11:00 AM","fc":"animales","ic":"🐻‍❄️","pk":"torontozoo","p":"~$65 los dos","note":"Osos polares, lobos árticos, leopardos de las nieves y cinco pabellones tropicales bajo techo para calentarse."},{"name":"Cena: Chinatown · Mother's Dumplings","lat":43.6559,"lng":-79.399,"t":"6:00 PM","fc":"comer","ic":"🥟","pk":"chinatown","p":"~$35 los dos","note":"Dumplings de cerdo y cebollino y pancake de cebolla. Chinatown es de lo poco que abre en Navidad: confirmá ese día."}]},
+ {"n":3,"date":"Sáb 26 Dic","tag":"Toronto","title":"Boxing Day + streetwear","trans":"🚶 A pie / TTC","wx":"−1°/−7°","stay":"toronto","cost":"~$150","blurb":"El día de rebajas más grande del año. Eaton Centre desde temprano, después la ruta streetwear de Spadina y Queen West, vintage barato y cena en el Thai más famoso de Toronto.","tip":"Eaton Centre abrió a las 7 AM el Boxing Day pasado. Pai no toma reservas: llegá a las 5 PM o esperá ~45 min.","sites":[{"name":"Eaton Centre · Boxing Day","lat":43.6544,"lng":-79.3807,"t":"8:00 AM","fc":"shops","ic":"🛍️","pk":"eatoncentre","p":"Shopping aparte","note":"OVO, Aritzia, Lululemon y Sephora con los descuentos más fuertes del año."},{"name":"Almuerzo: Jollibee","lat":43.6573,"lng":-79.3812,"t":"12:00 PM","fc":"comer","ic":"🍗","pk":"yonge","p":"~$25 los dos","note":"El Chickenjoy viral, a pasos del Eaton Centre."},{"name":"Spadina: Livestock · Stüssy · Nomad","lat":43.649,"lng":-79.3962,"t":"1:30 PM","fc":"hype","ic":"👟","pk":"spadina","p":"Gratis entrar","note":"La cuadra hypebeast: Livestock (112 Spadina), Stüssy (241 Spadina) y Nomad (310 Spadina, abajo)."},{"name":"Queen West: Black Market + Value Village","lat":43.6485,"lng":-79.3975,"t":"3:30 PM","fc":"vintage","ic":"🧥","pk":"queenwest","p":"Ropa $5–30","note":"Black Market Vintage (256 Queen W) para camisetas baratas y Value Village Boutique (639 Queen W), un thrift curado."},{"name":"Graffiti Alley","lat":43.6479,"lng":-79.397,"t":"4:45 PM","fc":"viral","ic":"🎨","pk":"queenwest","p":"Gratis","note":"Un callejón entero pintado detrás de Queen West. Fotos antes de que oscurezca."},{"name":"Cena: Pai Northern Thai","lat":43.6478,"lng":-79.3884,"t":"5:30 PM","fc":"comer","ic":"🍛","pk":"pai","p":"~$105 los dos","note":"Cena linda #1. El Thai más famoso de Toronto (Guía Michelin 2026): pedí el khao soi."}]},
+ {"n":4,"date":"Dom 27 Dic","tag":"Toronto → Vaughan","title":"Vintage + parque de diversiones","trans":"🚇 TTC + bus / Uber","wx":"−2°/−8°","stay":"toronto","cost":"~$205","blurb":"Mañana de vintage en Kensington Market y tacos famosos. En la tarde, Canada's Wonderland vestido de invierno: millones de luces, montañas rusas y patinaje.","tip":"WinterFest abre de 3 a 9 PM (patrón 2025). Comprá entradas online, el patinaje se reserva aparte. TTC Línea 1 hasta Vaughan Metropolitan Centre (~45 min) + Uber/bus 15 min.","sites":[{"name":"Kensington Market · vintage","lat":43.6545,"lng":-79.4007,"t":"10:30 AM","fc":"vintage","ic":"🛍️","pk":"kensington","p":"Prendas $20–200","note":"Courage My Love (14 Kensington), Exile Vintage (62 Kensington), Public Butter y Bungalow en Augusta Ave."},{"name":"Almuerzo: Seven Lives Tacos","lat":43.6545,"lng":-79.4006,"t":"1:00 PM","fc":"comer","ic":"🌮","pk":"kensington","p":"~$30 los dos","note":"Los tacos de pescado Baja y el gobernador más famosos de Toronto. Fila y solo de pie."},{"name":"Canada's Wonderland · WinterFest","lat":43.843,"lng":-79.5395,"t":"3:30 PM","fc":"actividad","ic":"🎢","pk":"wonderland","p":"~$100 los dos","note":"El parque que Jime quería: ~7 millones de luces, 20+ juegos abiertos, patinaje sobre el lago y mercado navideño."}]},
+ {"n":5,"date":"Lun 28 Dic","tag":"Toronto → Barrie","title":"Huskies + snow tubing","trans":"🚗 Auto día 1 · 1h30","wx":"−4°/−13°","stay":"toronto","cost":"~$550","blurb":"El día de nieve de verdad: manejar un trineo tirado por huskies y después tirarse en donas de nieve por un cerro de 10 pisos. Cena divertida al volver.","tip":"Recogé el auto temprano (menores de 25 pagan recargo). Reservá los huskies (Windrift, 705-835-5781) y el tubing de Snow Valley online: se agotan y en sitio no venden.","sites":[{"name":"Windrift Adventures · huskies","lat":44.645,"lng":-79.625,"t":"9:30 AM","fc":"animales","ic":"🐺","pk":"dogsled","p":"~$280 los dos","note":"Trineo tirado por huskies de 1 hora, en Moonstone. Es el más cercano a Toronto. Precio estimado: confirmalo al reservar."},{"name":"Almuerzo en ruta","lat":44.5,"lng":-79.68,"t":"12:30 PM","fc":"comer","ic":"☕","pk":"timhortons","p":"~$30 los dos","note":"Tim Hortons: el double-double y Timbits."},{"name":"Snow Valley · snow tubing","lat":44.3909,"lng":-79.7869,"t":"1:30 PM","fc":"actividad","ic":"🛷","pk":"snowtubing","p":"~$100 los dos","note":"14 bajadas en donas de nieve. Sesiones de 2 horas, y de noche se ilumina con LEDs."},{"name":"Cena: Kinka Izakaya","lat":43.661,"lng":-79.3787,"t":"7:30 PM","fc":"comer","ic":"🏮","pk":"kinka","p":"~$115 los dos","note":"Cena linda #2. Izakaya ruidoso y divertido: te reciben gritando. Salmón aburi y bibimbap."}]},
+ {"n":6,"date":"Mar 29 Dic","tag":"Toronto → Niagara Falls","title":"Cataratas, mariposas y Clifton Hill","trans":"🚗 Auto día 2 · 1h30","wx":"0°/−6°","stay":"toronto","cost":"~$205","blurb":"Las cataratas con niebla congelada, un conservatorio tropical con 2.000 mariposas, la rueda de la fortuna y el arcade de Clifton Hill, y de noche el Festival de Luces con fuegos artificiales sobre las cataratas.","tip":"Fuegos artificiales a las 8 PM todas las noches del 25 dic al 4 ene (patrón 2025). El Festival de Luces es gratis. Parqueá en el lote de Table Rock o en Clifton Hill (~$30).","sites":[{"name":"Horseshoe Falls · Table Rock","lat":43.0796,"lng":-79.0789,"t":"10:45 AM","fc":"vistas","ic":"🌊","pk":"niagara","p":"Gratis","note":"El mirador del borde de la catarata. En invierno la niebla se congela en los árboles."},{"name":"Butterfly Conservatory","lat":43.1355,"lng":-79.0466,"t":"12:00 PM","fc":"animales","ic":"🦋","pk":"butterfly","p":"~$56 los dos","note":"Selva tropical bajo vidrio con miles de mariposas, a 26° en pleno invierno. Abre todo el año."},{"name":"Almuerzo: Clifton Hill","lat":43.0911,"lng":-79.074,"t":"1:30 PM","fc":"comer","ic":"🍔","pk":"cliftonhill","p":"~$40 los dos","note":"Algo rápido en la calle de las atracciones."},{"name":"Clifton Hill · Fun Pass + SkyWheel","lat":43.0917,"lng":-79.0738,"t":"2:30 PM","fc":"actividad","ic":"🎡","pk":"skywheel","p":"~$79 los dos","note":"Fun Pass ($35 c/u): SkyWheel con cabinas calefaccionadas, castillo embrujado, Ghost Blasters y minigolf bajo techo. Más el arcade Great Canadian Midway."},{"name":"Winter Festival of Lights","lat":43.088,"lng":-79.07,"t":"5:00 PM","fc":"viral","ic":"✨","pk":"wfol","p":"Gratis","note":"8 km de luces sobre el Niagara Parkway y Fallsview, del 14 nov al 10 ene."},{"name":"Fuegos sobre las cataratas","lat":43.0855,"lng":-79.0764,"t":"8:00 PM","fc":"finde","ic":"🎆","pk":"horseshoe","p":"Gratis","note":"Fuegos artificiales sobre las cataratas iluminadas, desde Queen Victoria Park. Después, 1h30 de regreso."}]},
+ {"n":7,"date":"Mié 30 Dic","tag":"Toronto","title":"Día hype + la cena de wagyu","trans":"🚇 TTC Línea 1","wx":"−2°/−8°","stay":"toronto","cost":"~$280","blurb":"Devolvés el auto y se van de compras de verdad: el mall top (OVO flagship) para los dos y Yorkville para Kith y la reventa de sneakers. Cierran con la cena cara del viaje: wagyu A5.","tip":"Kyoto Katsugyu: vos pedís el A5 Ozaki (6 oz, $120) y Jime el wagyu Tajima ($45). Cada uno lo sella en su piedra caliente. Llegá temprano o reservá.","sites":[{"name":"Yorkdale · OVO flagship + Aritzia","lat":43.7255,"lng":-79.4522,"t":"10:30 AM","fc":"shops","ic":"🦉","pk":"yorkdale","p":"Shopping aparte","note":"El mall premium de Toronto: OVO flagship, la Aritzia gigante y todo lo de Jime."},{"name":"Kith Toronto + Kith Treats","lat":43.6713,"lng":-79.3912,"t":"2:00 PM","fc":"hype","ic":"🧢","pk":"yorkville","p":"Kith Treats ~$15","note":"Dos pisos de Kith en Yorkville, con su barra de cereal y helado."},{"name":"Capsule + Out This World","lat":43.6705,"lng":-79.3915,"t":"3:15 PM","fc":"hype","ic":"👟","pk":"yorkville","p":"Mirar es gratis","note":"Capsule (69 Yorkville) para sneakers y OTW en Bloor para reventa de Jordan 1."},{"name":"Cena splurge: Kyoto Katsugyu (A5)","lat":43.6563,"lng":-79.377,"t":"6:30 PM","fc":"comer","ic":"🥩","pk":"katsugyu","p":"~$215 los dos","note":"Gyukatsu de wagyu A5 Ozaki que sellás vos en la piedra. La cena más cara del viaje y la más TikTok."}]},
+ {"n":8,"date":"Jue 31 Dic","tag":"Toronto","title":"Año Nuevo en el lago","trans":"🚶 A pie · TTC gratis desde 7 PM","wx":"−2°/−8°","stay":"toronto","cost":"~$165","blurb":"Mercado navideño europeo de día, siesta, cena jamaiquina en una casona de colores y Año Nuevo en el lago: patinaje, conciertos y fuegos a medianoche.","tip":"Distillery es gratis antes de las 4 PM. Reservá Chubby's YA en OpenTable: Año Nuevo se llena. El TTC es gratis desde las 7 PM del 31 hasta las 8 AM del 1.","sites":[{"name":"Distillery Winter Village","lat":43.6503,"lng":-79.3592,"t":"11:00 AM","fc":"viral","ic":"🎄","pk":"distillery","p":"Gratis antes de 4 PM","note":"Mercado navideño entre destilerías victorianas. BeaverTails y chocolate caliente (~$30 los dos)."},{"name":"Cena: Chubby's Jamaican Kitchen","lat":43.6447,"lng":-79.3999,"t":"7:00 PM","fc":"comer","ic":"🌴","pk":"chubbys","p":"~$125 los dos","note":"Cena linda #3. Jerk chicken y oxtail en una casona de 1890 llena de color en King West."},{"name":"Waterfront · Natrel Rink","lat":43.6389,"lng":-79.382,"t":"10:00 PM","fc":"finde","ic":"⛸️","pk":"harbourfront","p":"Gratis","note":"Patinaje frente al lago con la CN Tower de fondo. Conciertos desde las 10 PM."},{"name":"Fuegos de Año Nuevo","lat":43.64,"lng":-79.376,"t":"12:00 AM","fc":"finde","ic":"🎆","pk":"torskyline","p":"Gratis","note":"Fuegos sobre el puerto a medianoche. ¡Feliz 2027!"}]},
+ {"n":9,"date":"Vie 1 Ene","tag":"Toronto","title":"Acuario + CN Tower","trans":"🚶 A pie","wx":"−3°/−9°","stay":"toronto","cost":"~$175","blurb":"Mañana lenta después de Año Nuevo. Tiburones pasando sobre ustedes en el túnel del acuario, patinaje bajo la autopista y comida barata.","tip":"El 1 de enero muchos lugares abren tarde o cierran (Yorkdale y St. Lawrence cierran). Ripley's: $5 menos después de las 5 PM. CN Tower ($47 c/u) es opcional si sobra plata.","sites":[{"name":"Craig's Cookies · Union","lat":43.6453,"lng":-79.3806,"t":"12:30 PM","fc":"comer","ic":"🍪","pk":"union","p":"~$10 los dos","note":"Galletas virales de Toronto en Union Station."},{"name":"Ripley's Aquarium","lat":43.6424,"lng":-79.386,"t":"1:30 PM","fc":"animales","ic":"🦈","pk":"ripleys","p":"~$93 los dos","note":"Túnel con tiburones, medusas iluminadas y rayas que podés tocar."},{"name":"The Bentway · patinaje","lat":43.6371,"lng":-79.4061,"t":"5:00 PM","fc":"actividad","ic":"⛸️","pk":"bentway","p":"Patines ~$13","note":"Pista en forma de 8 bajo la autopista Gardiner. Gratis, con alquiler de patines."},{"name":"Cena: Smoke's Poutinerie","lat":43.6468,"lng":-79.3953,"t":"7:00 PM","fc":"comer","ic":"🍟","pk":"poutine","p":"~$40 los dos","note":"La poutine canadiense obligatoria. Confirmá el horario del 1 de enero."}]},
+ {"n":10,"date":"Sáb 2 Ene","tag":"Toronto → San José","title":"Último thrift + vuelo de noche","trans":"🚆 UP Express · 25 min","wx":"−3°/−9°","stay":"flight","cost":"~$80","blurb":"Tienen el día casi completo: el vuelo sale a las 7:20 PM. Último peameal, vintage en West Queen West, helado viral y UP Express al aeropuerto.","tip":"Estar en Pearson a las 4:20 PM (3 h antes). Si el checkout del Airbnb es temprano, dejá las maletas guardadas. Air Transat: mandale los datos a Kiwi 24 h antes.","sites":[{"name":"St. Lawrence Market","lat":43.6487,"lng":-79.3716,"t":"9:30 AM","fc":"comer","ic":"🥓","pk":"stlawrence","p":"~$25 los dos","note":"Último peameal bacon (el mercado abre normal el 2)."},{"name":"West Queen West · vintage","lat":43.642,"lng":-79.43,"t":"11:00 AM","fc":"vintage","ic":"🧥","pk":"queenwest","p":"Prendas $30–150","note":"In Vintage We Trust (1580 Queen W), 69 Vintage (1100 Queen W) y Mama Loves You para Jime."},{"name":"Bang Bang Ice Cream","lat":43.6469,"lng":-79.4196,"t":"1:30 PM","fc":"comer","ic":"🍦","pk":"bangbang","p":"~$30 los dos","note":"El sándwich de galleta con helado de Ossington."},{"name":"Union → UP Express","lat":43.6453,"lng":-79.3806,"t":"3:45 PM","fc":"ruta","ic":"🚆","pk":"union","p":"$12.35 c/u","note":"Tren al aeropuerto cada 15 min, 25 minutos."},{"name":"YYZ → San José · Air Transat TS112","lat":43.6893,"lng":-79.6195,"t":"7:20 PM","fc":"ruta","ic":"✈️","pk":"yyz","p":"✅ Comprado","note":"Sale 19:20 y llega a SJO 23:50. ¡Hasta la próxima, Canadá!"}]}
 ];
 
-/* Tesoros — highlights extra, siempre en el mapa */
+/* Tesoros — extras siempre en el mapa */
 const SPOTS=[
- {id:"ovo",name:"OVO · Eaton Centre",city:"Toronto",cat:"hype",lat:43.6540,lng:-79.3805,ic:"🦉",pk:"ovo",note:"La marca de Drake en su ciudad, dentro del Eaton Centre (y otra en Yorkdale)."},
- {id:"hys",name:"Hy's Steakhouse · Kobe A5",city:"Toronto",cat:"comer",lat:43.6512,lng:-79.3813,ic:"🥩",pk:"hys",note:"Alternativa wagyu en Toronto: Kobe A5 certificado cortado por onza. ~$300–450 para dos. Sáb solo cena."},
- {id:"distillery",name:"Distillery Winter Village",city:"Toronto",cat:"actividad",lat:43.6503,lng:-79.3592,ic:"🎄",pk:"distillery",note:"Mercado navideño europeo entre destilerías victorianas. Gratis antes de las 4 PM; después $15 c/u. Hasta el 3 ene."},
- {id:"ripleys",name:"Ripley's Aquarium",city:"Toronto",cat:"animales",lat:43.6424,lng:-79.3860,ic:"🦈",pk:"ripleys",note:"Túnel de tiburones al pie de la CN Tower. ~$40–50 c/u. Abre los 365 días."},
- {id:"ago",name:"AGO · Art Gallery of Ontario",city:"Toronto",cat:"museo",lat:43.6536,lng:-79.3925,ic:"🖼️",pk:"ago",note:"El museo de arte de Frank Gehry: escalera de madera en espiral y la galería de vidrio. $30 c/u. Abre el 26 y 27."},
- {id:"hhof",name:"Hockey Hall of Fame",city:"Toronto",cat:"museo",lat:43.6470,lng:-79.3773,ic:"🏒",pk:"hhof",note:"La Copa Stanley original y simuladores. $29.95 c/u, 10–5."},
- {id:"nama",name:"Nama Omakase · A5",city:"Montreal",cat:"comer",lat:45.5033,lng:-73.5620,ic:"🍣",pk:"nama",note:"Omakase de 16 tiempos con A5 wagyu, ~$200 p/p. Abre lun–mié: plan B de la cena del 28."},
- {id:"kondiaronk",name:"Mirador Kondiaronk · Mont Royal",city:"Montreal",cat:"vistas",lat:45.5040,lng:-73.5872,ic:"🌆",pk:"kondiaronk",note:"La vista clásica del skyline de Montreal desde la montaña nevada. Gratis."},
- {id:"biodome",name:"Biodôme",city:"Montreal",cat:"animales",lat:45.5598,lng:-73.5496,ic:"🐧",pk:"biodome",note:"Cuatro ecosistemas bajo techo con pingüinos y linces. $23.25 c/u. Cierra lunes: sirve si llegan el domingo."},
- {id:"sleigh",name:"Trineo de caballos",city:"Tremblant",cat:"actividad",lat:46.2090,lng:-74.5800,ic:"🐴",pk:"sleigh",note:"50 min en trineo tirado por caballos por el bosque, con mantas y chocolate caliente. $72 c/u. Ideal la tarde del 29 al llegar."},
- {id:"chouxgras",name:"Choux Gras · Fairmont",city:"Tremblant",cat:"comer",lat:46.2115,lng:-74.5855,ic:"🦞",pk:"chouxgras",note:"Brasserie del Fairmont: tomahawk de 30 oz y torre de mariscos. Plan B de La Forge."},
- {id:"taniere",name:"Tanière³ ⭐⭐",city:"Quebec City",cat:"comer",lat:46.8135,lng:-71.2045,ic:"🕯️",pk:"taniere",note:"2 estrellas Michelin en bodegas abovedadas de 1600, ~$380 p/p. Abre jue–dom; reservas 3 meses antes: ya se puede."},
- {id:"aquariumqc",name:"Aquarium du Québec",city:"Quebec City",cat:"animales",lat:46.7507,lng:-71.2951,ic:"🐻‍❄️",pk:"aquariumqc",note:"Osos polares, morsas y focas. $33.50 c/u, 9–4. Confirmar horario del 1 ene."},
- {id:"coteau",name:"Coteau (ex Chez Muffy)",city:"Quebec City",cat:"comer",lat:46.8148,lng:-71.2030,ic:"🌿",pk:"coteau",note:"Estrella verde Michelin en el Auberge Saint-Antoine: 7 tiempos $190. Mar–sáb."}
+ {"id":"haven","name":"HAVEN","city":"Toronto","cat":"hype","lat":43.6527,"lng":-79.3707,"ic":"🖤","pk":"haven","note":"190 Richmond St E, 2º piso. Visvim, Sacai, Stone Island, Neighborhood: la tienda streetwear más seria de Toronto."},
+ {"id":"ovo","name":"OVO · Eaton Centre","city":"Toronto","cat":"hype","lat":43.654,"lng":-79.3805,"ic":"🦉","pk":"ovo","note":"La marca de Drake en su ciudad. El flagship está en Yorkdale (día 7)."},
+ {"id":"otw","name":"Out This World · reventa","city":"Toronto","cat":"hype","lat":43.6697,"lng":-79.3928,"ic":"👟","pk":"yorkville","note":"Reventa de sneakers en Bloor, al lado de Prada: Jordan 1 de $160 a $8.500."},
+ {"id":"supreme","name":"¿Supreme?","city":"Toronto","cat":"hype","lat":43.67,"lng":-79.39,"ic":"🟥","pk":"yorkville","note":"No hay tienda Supreme en Canadá. Para Supreme: reventa en OTW u OD Toronto."},
+ {"id":"courage","name":"Courage My Love","city":"Toronto","cat":"vintage","lat":43.6533,"lng":-79.4003,"ic":"💍","pk":"kensington","note":"14 Kensington Ave. Vintage legendario desde hace 50 años: ropa, joyería, botones."},
+ {"id":"publicbutter","name":"Public Butter","city":"Toronto","cat":"vintage","lat":43.655,"lng":-79.4015,"ic":"🧢","pk":"kensington","note":"177 Augusta. Ropa de los 60 a los 90, $30–200."},
+ {"id":"ivwt","name":"In Vintage We Trust","city":"Toronto","cat":"vintage","lat":43.6402,"lng":-79.4383,"ic":"🏈","pk":"queenwest","note":"1580 Queen W. El mejor vintage deportivo, de bandas y militar."},
+ {"id":"vvflag","name":"Value Village · Bloor","city":"Toronto","cat":"vintage","lat":43.6594,"lng":-79.441,"ic":"♻️","pk":"queenwest","note":"1319 Bloor W. Thrift grande de verdad, $5–30 la prenda."},
+ {"id":"aritzia","name":"Aritzia · Eaton Centre","city":"Toronto","cat":"shops","lat":43.6548,"lng":-79.3806,"ic":"🛍️","pk":"eatoncentre","note":"La tienda nueva más grande del centro (abril 2026), con café y soft-serve adentro."},
+ {"id":"outlets","name":"Toronto Premium Outlets","city":"Halton Hills","cat":"shops","lat":43.6195,"lng":-79.9466,"ic":"🏷️","pk":"outlets","note":"Outlets a ~50 min en auto. Solo vale la pena si sobra un rato con el auto."},
+ {"id":"shinji","name":"Shinji · A5 por onza","city":"Toronto","cat":"comer","lat":43.6497,"lng":-79.3803,"ic":"🥩","pk":"hys","note":"Alternativa al splurge: 4 oz de A5 ($112) + kamameshi de wagyu ($45) ≈ $220 los dos. Kobe certificado $54/oz. Cierra domingos."},
+ {"id":"tetsu","name":"Uncle Tetsu","city":"Toronto","cat":"comer","lat":43.6573,"lng":-79.3842,"ic":"🍰","pk":"union","note":"598 Bay St. El cheesecake japonés esponjoso, ~$12–15 entero."},
+ {"id":"banhmi","name":"Banh Mi Boys","city":"Toronto","cat":"comer","lat":43.6487,"lng":-79.3966,"ic":"🥖","pk":"queenwest","note":"392 Queen W. Banh mi de kalbi, ~$11."},
+ {"id":"haydns","name":"Haydn's · Stackt Market","city":"Toronto","cat":"comer","lat":43.6403,"lng":-79.4027,"ic":"🔥","pk":"union","note":"La comida viral #1 de 2025 según blogTO, en el mercado de contenedores."},
+ {"id":"glow","name":"Glow in the Wild · Zoo","city":"Toronto","cat":"animales","lat":43.8177,"lng":-79.1859,"ic":"🏮","pk":"torontozoo","note":"Faroles gigantes de animales en el zoo de noche. Jue–dom, de 6 a 9:15 PM, $38 + impuestos."},
+ {"id":"riverdale","name":"Riverdale Farm","city":"Toronto","cat":"animales","lat":43.6672,"lng":-79.3612,"ic":"🐄","pk":"riverdale","note":"Granja gratis en Cabbagetown, abierta todos los días: vacas, cerdos, cabras. (High Park Zoo y sus capibaras están cerrados hasta 2027.)"},
+ {"id":"birdkingdom","name":"Bird Kingdom","city":"Niagara Falls","cat":"animales","lat":43.0961,"lng":-79.0656,"ic":"🦜","pk":"birdkingdom","note":"El aviario bajo techo más grande del mundo, abierto 365 días, ~$16 c/u. Si les sobra tiempo en Niagara."},
+ {"id":"journey","name":"Journey Behind the Falls","city":"Niagara Falls","cat":"vistas","lat":43.079,"lng":-79.079,"ic":"🌊","pk":"niagara","note":"Túneles detrás de la catarata (~$33 c/u). En invierno la plataforma de abajo cierra por hielo."},
+ {"id":"chicopee","name":"Chicopee · tubing de noche","city":"Kitchener","cat":"actividad","lat":43.4085,"lng":-80.4247,"ic":"🌙","pk":"snowtubing","note":"Plan B del tubing: cerro iluminado de noche, ~$34 c/u. Jue–dom."},
+ {"id":"casaloma","name":"Casa Loma · Holiday Lights","city":"Toronto","cat":"viral","lat":43.678,"lng":-79.4094,"ic":"🏰","pk":"casaloma","note":"El castillo iluminado de noche, ~$50 c/u. Opcional."},
+ {"id":"cntower","name":"CN Tower","city":"Toronto","cat":"vistas","lat":43.6426,"lng":-79.3871,"ic":"🗼","pk":"cntower","note":"$47 c/u. El 31 abre hasta la 1 AM. Opcional si sobra presupuesto."},
+ {"id":"rom","name":"ROM · dinosaurios","city":"Toronto","cat":"museo","lat":43.6677,"lng":-79.3948,"ic":"🦖","pk":"rom","note":"~$26 c/u. Cerrado el 25. Entrá por Queen's Park (la entrada de Bloor está en obras)."}
 ];
 
-const FCLBL={ruta:"Ruta / traslado",shops:"Shopping",comer:"Gastronomía",hotel:"Hospedaje",vistas:"Vista / paisaje",animales:"Fauna",actividad:"Actividad",finde:"Año Nuevo",hype:"Streetwear / hype",viral:"Spot viral",museo:"Museo"};
-const FCCOL={comer:'#F5A623',hype:'#5FD0D6',viral:'#93A7EC',vistas:'#82C08A',animales:'#C58CEC',actividad:'#5FD0D6',finde:'#F5A623',shops:'#E3C56A',hotel:'#93A4BC',ruta:'#93A4BC',museo:'#EC8C76'};
+const FCLBL={ruta:"Ruta / traslado",shops:"Shopping",comer:"Gastronomía",hotel:"Hospedaje",vistas:"Vista / paisaje",animales:"Fauna",actividad:"Actividad",finde:"Año Nuevo",hype:"Streetwear / hype",vintage:"Vintage / thrift",viral:"Spot viral",museo:"Museo"};
+const FCCOL={comer:'#F5A623',hype:'#5FD0D6',vintage:'#F08FB8',viral:'#93A7EC',vistas:'#82C08A',animales:'#C58CEC',actividad:'#5FD0D6',finde:'#F5A623',shops:'#E3C56A',hotel:'#93A4BC',ruta:'#93A4BC',museo:'#EC8C76'};
 
-/* Presupuesto estimado para 2, en CAD (comida incluye impuesto + propina aprox.) */
+/* Presupuesto para 2, en CAD (alineado con la página de Ahorro) */
 const COSTS=[
- ["🛏","Hospedaje · 8 noches","Toronto 3 · Montreal 1 · Tremblant 1 · Quebec 2 · Toronto 1",2120],
- ["🚆","Transporte","VIA Rail ida y vuelta $600 · auto 3 días con llantas de invierno $330 · gasolina $140 · UP Express / Uber $120",1190],
- ["🎟️","Actividades y museos","ROM, Casa Loma, CN Tower, Glow, AURA, Parc Omega, huskies, tobogán, Montmorency, Hôtel de Glace",915],
- ["🍽️","Comida heavy hitters","Quetzal, Linny's, Damas, La Forge (A5), Le Continental, Légende (Año Nuevo) + wagyu gyukatsu, SCHOOL, Schwartz's",2220],
- ["☕","Resto de comidas y cafés","Desayunos, snacks, cafés, 9 días",400]
+ ["🛏","Hospedaje · Airbnb 9 noches","₡440.000 · a pagar desde el 15 dic",1369],
+ ["🍽️","Comida","₡380.000 · splurge de wagyu ~$215 + 3 cenas lindas ~$345 + comida barata el resto",1182],
+ ["🎟️","Actividades","Zoo $65 · Wonderland $100 · huskies $280 · tubing $100 · Niagara $135 · acuario $93",776],
+ ["🚗","Auto 2 días","₡190.000 · incluye recargo por menores de 25, gasolina y parqueo en Niagara",591],
+ ["🚆","UP Express + TTC","Aeropuerto ida y vuelta $50 + ~2 viajes por día cada uno",170]
 ];
-const BALANCE=[
- ["Montañas nevadas","Banff, Canmore, Lake Louise","Mont-Tremblant (Laurentides) + Viejo Quebec nevado","eq"],
- ["Road trip escénico","Calgary → Canmore → Banff","Montreal → Parc Omega → Tremblant → Quebec","eq"],
- ["Cataratas / hielo","Johnston Canyon","Montmorency congelada (más alta que Niagara) + Hôtel de Glace","up"],
- ["Lobos y fauna","Yamnuska Wolfdog Sanctuary","Parc Omega: lobos, alces, bisontes, ciervos a la ventana","up"],
- ["Trineo de huskies","Snowy Owl (Kananaskis)","Tremblant Dogsledding (+ trineo de caballos opcional)","eq"],
- ["Wagyu","—","A5 Ozaki en La Forge (+ gyukatsu en Toronto)","plus"],
- ["Dinosaurios","—","ROM, galerías de dinosaurios","plus"],
- ["Boxing Day de rebajas","Chinook Centre","Eaton Centre (8 AM) + OVO + Sephora 💄","up"],
- ["Zoo de noche","ZooLights","Glow In The Wild (2.000 linternas)","eq"],
- ["Restaurantes top","Pigeonhole, Caesar's, River Café","Quetzal ⭐, Linny's, Damas, Légende ⭐, Le Continental","up"],
- ["Castillo","—","Casa Loma + Château Frontenac","plus"],
- ["Año Nuevo","Calgary, Olympic Plaza","Quebec City amurallada con fuegos","up"],
- ["Góndola + aguas termales","Sulphur Mtn, Upper Hot Springs","Se van (no les llamaban)","eq"],
- ["Manejo en nieve","~450 km en montaña","~1.000 km en 3 días (Toronto↔Montreal va en tren)","down"]
-];
-const RATES={usd:0.705,crc:320.7}; /* CAD → USD / CRC, 30 Sep 2026; se actualiza en vivo al abrir */
+const RATES={usd:0.705,crc:321.4}; /* CAD → USD / CRC; se actualiza en vivo al abrir */
 const fmtN=n=>Math.round(n).toLocaleString('en-US');
 const BAL_HTML=`
-<div class="lead"><b>Este es el viaje</b> — vuelos Costa Rica ↔ Toronto ya comprados ✅. <b>3 días de Toronto</b>, tren a <b>Montreal</b> y road trip de invierno en círculo por <b>Parc Omega</b> (lobos), <b>Mont-Tremblant</b> (la villa de montaña del este) y <b>Quebec City</b> para el Año Nuevo, de vuelta a Montreal y tren a Toronto. Sin vuelos internos.</div>
-<div class="cblock"><h4>💰 Presupuesto estimado para 2</h4><div id="budget" class="budget"></div>
-<div class="cnote">Estimado a precios 2025–26. La comida incluye ~30% de impuesto y propina. <b>No incluye</b> los vuelos Costa Rica ↔ Toronto (ya comprados ✅ — anotá el monto real en <a href="costos.html" style="color:var(--glacier)">💰 Costos</a>) ni compras. Para bajarlo: Airbnb en vez de hotel en Quebec, y Año Nuevo en Le Continental en vez de Légende.</div></div>
-<div class="cblock"><h4>⚖️ Qué se gana y qué se pierde vs Calgary</h4></div>
-<div class="bal">${BALANCE.map(([k,c,t,s])=>`<div class="brow ${s}"><div class="bk">${k}</div><div class="bc"><small>Calgary</small>${c}</div><div class="bt"><small>Ruta este</small>${t}</div><div class="bs">${s==='up'?'▲ mejor':s==='plus'?'＋ extra':s==='down'?'▼ peor':'＝ igual'}</div></div>`).join('')}</div>
-<div class="cblock"><h4>✈️ Vuelos · ✅ comprados</h4><div class="cnote"><b>Ida:</b> Porter LIR 3:10 PM → YYZ 9:25 PM (vie 25 dic). <b>Vuelta:</b> Air Transat YYZ 11:50 AM → LIR 4:35 PM (sáb 2 ene). Solo carry-on + mochila cada uno, sin maleta documentada. Check-in online 24 h antes de cada vuelo.</div></div>
+<div class="lead"><b>El viaje real</b>: vuelos comprados ✅, base fija en Toronto y dos días de auto para la nieve y Niagara. Nada de Montreal ni Quebec esta vez.</div>
+<div class="cblock"><h4>💰 Presupuesto para 2</h4><div id="budget" class="budget"></div>
+<div class="cnote">Igual que en <a href="ahorro.html" style="color:var(--glacier)">🐷 Ahorro</a>. La comida incluye impuesto (13%) y propina (~15%). No incluye el iPhone, el shopping ni el regalo.</div></div>
+<div class="cblock"><h4>✈️ Vuelos · ✅ comprados (Kiwi, tarifa Saver)</h4><div class="cnote">
+<b>Ida:</b> Porter <b>PD790</b> · SJO mié 23 dic 11:55 PM → YYZ jue 24 dic 6:10 AM.<br>
+<b>Vuelta:</b> Air Transat <b>TS112</b> · YYZ sáb 2 ene 7:20 PM → SJO 11:50 PM.<br>
+Tarifa Saver: <b>no se puede cambiar</b>. En Porter hacés el check-in directo con la aerolínea. Para Air Transat, Kiwi pide los datos de pasajeros 24 h antes.</div></div>
+<div class="cblock"><h4>🧳 Ojo con el equipaje</h4><div class="cnote">El e-ticket muestra <b>1 artículo personal cada uno</b> (mochila de 13×31×43 cm) y <b>1 maleta documentada de 23 kg</b> a nombre de Moises. <b>No incluye carry-on de cabina.</b> Con shopping + iPhone, la maleta de 23 kg es para los dos. Revisá en la app de Kiwi que la maleta aplique también a la vuelta. Si van a comprar mucho, cotizá una segunda maleta para la vuelta antes de viajar: en el aeropuerto sale más cara.</div></div>
 <div class="cblock"><h4>📌 Lo que falta reservar</h4><div class="todo-list">
-<div class="tdo hot"><b>Tremblant · hotel 29 dic</b><span>Temporada alta, el más difícil. Ya.</span></div>
-<div class="tdo hot"><b>Hospedajes</b><span>Toronto 25–28 · Montreal 28 · Quebec 30–1 · Union Station 1 ene</span></div>
-<div class="tdo hot"><b>Cena de Año Nuevo · Légende</b><span>En Libro apenas abra el menú. Plan B: Le Continental / gala del Frontenac</span></div>
-<div class="tdo"><b>VIA Rail</b><span>Toronto → Montreal (lun 28) y Montreal → Toronto (vie 1, 1:22 PM)</span></div>
-<div class="tdo"><b>Auto · Montreal centro</b><span>29 dic → 1 ene, devolver en el mismo lugar (llantas de invierno incluidas)</span></div>
-<div class="tdo"><b>Huskies · Tremblant</b><span>$185 c/u, mínimo 72 h antes — mejor ya</span></div>
-<div class="tdo"><b>Glow In The Wild</b><span>Entradas online; los feriados se agotan</span></div>
-<div class="tdo date"><b>Quetzal · 26 nov, 12:00 AM</b><span>OpenTable libera la mesa del 26 dic exactamente 30 días antes</span></div>
+<div class="tdo hot"><b>Airbnb · llegada 6:10 AM del 24</b><span>Pedí check-in temprano o guardá las maletas cerca de Union. Pasame el link para ponerlo exacto en el mapa.</span></div>
+<div class="tdo hot"><b>Huskies · Windrift (lun 28)</b><span>705-835-5781. Dependen de la nieve y se llenan.</span></div>
+<div class="tdo hot"><b>Snow Valley tubing (lun 28)</b><span>Solo online, se agota. Sesión de 2 h, $27–56 c/u.</span></div>
+<div class="tdo hot"><b>Cena de Año Nuevo · Chubby's</b><span>OpenTable, ya. Plan B: Pai temprano.</span></div>
+<div class="tdo"><b>Auto lun 28 → mié 30</b><span>Los dos son menores de 25: hay recargo diario. Licencia de Costa Rica + pasaporte.</span></div>
+<div class="tdo"><b>Wonderland WinterFest (dom 27)</b><span>Entradas y patinaje online. Abre de 3 a 9 PM.</span></div>
+<div class="tdo"><b>Niagara (mar 29)</b><span>Butterfly Conservatory y Clifton Hill Fun Pass online.</span></div>
+<div class="tdo date"><b>Antes del 23 dic</b><span>Los $600 de tu papá: se van esa noche, no el 24.</span></div>
+<div class="tdo date"><b>1 ene · Air Transat</b><span>Mandar los datos de pasajeros a Kiwi (24 h antes).</span></div>
 </div></div>
+<div class="cblock"><h4>🥩 ¿Wagyu o Kobe?</h4><div class="cnote"><b>Kobe es una marca de wagyu</b>: Tajima certificado de Hyogo. Todo Kobe es wagyu, pero casi todo el wagyu A5 no es Kobe. Un <b>A5 de Miyazaki o Kagoshima es la misma raza y el mismo grado</b>, y cuesta la mitad. En Toronto: Kobe ~$53/oz, A5 $28–37/oz. Por eso el plan va con <b>A5 Ozaki en Kyoto Katsugyu</b> (~$215 los dos). Si querés decir "comí Kobe": Shinji, 4 oz por $216 solo la carne.</div></div>
 <div class="cblock"><h4>🌡️ Clima</h4><div class="tempcards">
-  <div class="tcard"><div class="tcity2">Toronto · Montreal</div><div class="ttemp">−1° / −13°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">Húmedo y con viento del lago o del río: cala más de lo que dice el número.</div></div>
-  <div class="tcard"><div class="tcity2">Tremblant · Quebec</div><div class="ttemp">−8° / −18°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">El frío de verdad, parecido a Banff. Nieve casi segura: paisaje de postal.</div></div>
-</div><div class="cnote">La ropa es la misma del <a href="inventario.html" style="color:var(--glacier)">Inventario</a>. Para Quebec: botas con buen agarre (calles en pendiente con hielo).</div></div>
+  <div class="tcard"><div class="tcity2">Toronto</div><div class="ttemp">−1° / −8°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">Viento del lago: se siente más frío que el número.</div></div>
+  <div class="tcard"><div class="tcity2">Barrie · nieve</div><div class="ttemp">−4° / −13°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">El día de huskies y tubing: capas, guantes y medias de lana.</div></div>
+</div><div class="cnote">La ropa está en el <a href="inventario.html" style="color:var(--glacier)">Inventario</a>.</div></div>
 `;
 
 function renderBudget(r){const el=document.getElementById('budget');if(!el)return;const tot=COSTS.reduce((a,c)=>a+c[3],0);
   el.innerHTML=COSTS.map(([i,n,d,v])=>`<div class="brow2"><span class="bi">${i}</span><span class="bn">${n}</span><span class="bv">$${fmtN(v)}</span><span class="bd">${d}</span></div>`).join('')+
   `<div class="btotal"><b>~$${fmtN(tot)} CAD</b><span>≈ $${fmtN(tot*r.usd)} USD · ₡${fmtN(tot*r.crc)}</span></div>`;}
-const CFG={start:[2026,11,25],tz:'America/Toronto',wxKey:'este:wx',
-  wxLocs:{tor:[43.65,-79.38],mtl:[45.50,-73.57],trm:[46.21,-74.59],qc:[46.81,-71.21]},wxDay:{0:'tor',1:'tor',2:'tor',3:'mtl',4:'trm',5:'qc',6:'qc',7:'qc',8:'tor'},
-  cities:['Toronto','Montreal','Tremblant','Quebec City'],panel:BAL_HTML,panelTitle:'Presupuesto y balance',nowText:'9 días · Toronto → Quebec',
-  center:[45.3,-75.8],zoom:6,stayBtn:'Ver sitio',
+const CFG={start:[2026,11,24],tz:'America/Toronto',wxKey:'tor26:wx',
+  wxLocs:{tor:[43.65,-79.38],bar:[44.39,-79.69],nia:[43.09,-79.07]},wxDay:{0:'tor',1:'tor',2:'tor',3:'tor',4:'bar',5:'nia',6:'tor',7:'tor',8:'tor',9:'tor'},
+  cities:['Toronto','Niagara Falls','Kitchener','Halton Hills'],panel:BAL_HTML,panelTitle:'Plan y presupuesto',nowText:'10 días · Toronto + Niagara',
+  center:[43.75,-79.45],zoom:8,stayBtn:'Ver Airbnb',
   onPanel(){renderBudget(RATES);fetch('https://open.er-api.com/v6/latest/CAD').then(r=>r.json()).then(d=>{if(d&&d.rates&&d.rates.USD&&d.rates.CRC)renderBudget({usd:d.rates.USD,crc:d.rates.CRC});}).catch(()=>{});}};
 </script>
 <script src="planner.js"></script>

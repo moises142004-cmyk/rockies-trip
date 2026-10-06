@@ -1,7 +1,7 @@
 {
-  "name": "Jime & Moi — Toronto → Québec",
+  "name": "Jime & Moi — Toronto + Niagara",
   "short_name": "Jime & Moi",
-  "description": "Planner del viaje Toronto → Montreal → Tremblant → Quebec — 25 Dic 2026 / 2 Ene 2027",
+  "description": "Planner del viaje Toronto + Niagara — 24 Dic 2026 / 2 Ene 2027",
   "lang": "es",
   "start_url": "./toronto.html",
   "scope": "./",

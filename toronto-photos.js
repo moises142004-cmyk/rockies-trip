@@ -114,4 +114,62 @@ window.PHOTOS = {
  "biodome":{photos:[
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Montr%C3%A9al%20Biodome%20Pygoscelis%20papua%20.jpg?width=1000",caption:"Pingüinos del Biodôme"},
   {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Biodome%20de%20Montreal.jpg?width=1000",caption:"Biodôme de Montreal"}]},
+ "kinton":{photos:[
+  {url:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Baldwin_Village.JPG/960px-Baldwin_Village.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",caption:"Baldwin Village"}]},
+ "poutine":{photos:[
+  {url:"https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Food_at_WIkimanian_2017_02.jpg/960px-Food_at_WIkimanian_2017_02.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",caption:"Poutine"}]},
+ "timhortons":{photos:[
+  {url:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Tim_Hortons%2C_Kingsville%2C_Ontario%2C_2025-06-29.jpg/960px-Tim_Hortons%2C_Kingsville%2C_Ontario%2C_2025-06-29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",caption:"Tim Hortons"}]},
+ "bangbang":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Ossington_Ave_map.png?width=1000",caption:"Ossington Avenue"}]},
+ "bentway":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/The_Bentway_near_Garrison_Common_2023.jpg?width=1000",caption:"The Bentway"}]},
+ "birdkingdom":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/DSC09756_-_Bird_Kingdom_%2836408930553%29.jpg?width=1000",caption:"Bird Kingdom"}]},
+ "butterfly":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Niagara_Parks_Butterfly_Conservatory_building%2C_2010_B.jpg?width=1000",caption:"Niagara Parks Butterfly Conservatory"}]},
+ "chinatown":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Chinatown_Toronto.JPG?width=1000",caption:"Chinatown, Toronto"}]},
+ "cliftonhill":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/View_from_Skylon_Tower_2023m.jpg?width=1000",caption:"Clifton Hill, Niagara Falls"}]},
+ "harbourfront":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Harbourfront-Centre.jpg?width=1000",caption:"Harbourfront Centre"}]},
+ "haven":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/King_Street_East_and_historicl_Little_Trinity_Church%2C_Corktown..jpg?width=1000",caption:"Corktown, Toronto"}]},
+ "horseshoe":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/3Falls_Niagara.jpg?width=1000",caption:"Niagara Falls"}]},
+ "kensington":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Kensington_Market_Toronto_August_2017_01.jpg?width=1000",caption:"Kensington Market"}]},
+ "kinka":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Wellesley_St_East_at_Church_St_2023.jpg?width=1000",caption:"Church and Wellesley"}]},
+ "niagara":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_view_of_the_Canadian_Falls_%28Horseshoe_Falls%29_and_the_Hornblower_Niagara_Cruises_boat%3B_Niagara_Falls.JPG?width=1000",caption:"Horseshoe Falls"}]},
+ "nps":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Nathan_Philips_Square%2C_2022.jpg?width=1000",caption:"Nathan Phillips Square"}]},
+ "outlets":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Toronto_Premium_Outlets.jpg?width=1000",caption:"Toronto Premium Outlets"}]},
+ "pai":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/King_Street_West_at_night_2021.jpg?width=1000",caption:"Toronto Entertainment District"}]},
+ "queenwest":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Queen_Street_East_Sign.jpg?width=1000",caption:"Queen Street (Toronto)"}]},
+ "riverdale":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Riverdale_Farm%2C_Toronto%2C_June_16_2025_%2812%29.jpg?width=1000",caption:"Riverdale Farm"}]},
+ "skywheel":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Niagara_Falls_Skywheel_by_night_03.jpg?width=1000",caption:"Niagara SkyWheel"}]},
+ "snowtubing":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Tubing_on_Pleasant_Lake_MN.jpg?width=1000",caption:"Tubing (recreation)"}]},
+ "spadina":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Spadina_Ave_view_from_The_Daniels_Building_2022.jpg?width=1000",caption:"Spadina Avenue"}]},
+ "stlawrence":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/St_Lawerence_South_Market_Exterior_202112.jpg?width=1000",caption:"St. Lawrence Market"}]},
+ "union":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Toronto_-_ON_-_Union_Station.jpg?width=1000",caption:"Union Station (Toronto)"}]},
+ "wfol":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Niagara-Parkway-.jpg?width=1000",caption:"Winter Festival of Lights"}]},
+ "wonderland":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/A_very_Canadian_Canada%27s_Wonderland_%2841514872810%29.jpg?width=1000",caption:"Canada's Wonderland"}]},
+ "yonge":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Sankofa_Square_Toronto%2C_May_30_2026_%2801%29.jpg?width=1000",caption:"Sankofa Square"}]},
+ "yorkdale":{photos:[
+  {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Yorkdale_Shopping_Centre_Logo.svg?width=1000",caption:"Yorkdale Shopping Centre"}]}
 };

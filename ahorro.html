@@ -191,10 +191,10 @@ const DEF={
   costs:[
     {id:'airbnb',ic:'🛏',n:'Airbnb',v:440000,on:true,pre:true},
     {id:'carro',ic:'🚗',n:'Carro',v:190000,on:true,pre:true},
-    {id:'via',ic:'🚆',n:'VIA Rail ida y vuelta',v:190000,on:true,pre:true,flag:'No estaba en tu lista: tren Toronto ↔ Montreal, ~CAD 600 para 2'},
     {id:'regalo',ic:'🎁',n:'Regalo de Navidad',v:200000,on:true,pre:true},
-    {id:'tours',ic:'🎟️',n:'Tours y actividades',v:150000,on:true},
-    {id:'comida',ic:'🍽️',n:'Comida',v:420000,on:true}
+    {id:'tours',ic:'🎟️',n:'Tours y actividades',v:250000,on:true,flag:'Zoo, Wonderland, huskies, tubing, Niagara, acuario (~CAD 776)'},
+    {id:'transp',ic:'🚆',n:'UP Express + TTC',v:55000,on:true,flag:'Tren al aeropuerto ida y vuelta + metro (~CAD 170)'},
+    {id:'comida',ic:'🍽️',n:'Comida',v:380000,on:true}
   ],
   buffer:10, gdic:null, dext:null,
   ing:0, sal:0, sal2:null, papa:500, jime:200000, venta:80000, card:300,
@@ -211,6 +211,10 @@ function load(){
   ['ing','sal','sal2','gdic','dext','papa','jime','venta','card'].forEach(k=>{const v=num(k);if(v!=null)s[k]=v;});
   if(h.toString())history.replaceState(null,'',location.pathname);
   DEF.costs.forEach(c=>{if(!s.costs.find(x=>x.id===c.id))s.costs.push(Object.assign({},c));});
+  /* v3: itinerario nuevo (Toronto + Niagara): sin VIA Rail, comida 380 mil, actividades reales */
+  if((s.ver||0)<3){s.costs=s.costs.filter(c=>c.id!=='via');
+    const set=(id,v,flag)=>{const c=s.costs.find(x=>x.id===id);if(c){c.v=v;if(flag)c.flag=flag;}};
+    set('comida',380000);set('tours',250000,DEF.costs.find(c=>c.id==='tours').flag);s.ver=3;}
   save(s);return s;
 }
 function save(s){let ok=true;try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){ok=false;}
@@ -277,9 +281,9 @@ function render(){
   if(r.gdic)steps.push(['out','Diciembre','Tu vida normal de diciembre (alquiler, tarjeta, cuotas)',r.gdic]);
   steps.push(['out','Desde el 15 de diciembre','Empiezan los pagos: '+S.costs.filter(c=>c.on&&c.pre).map(c=>c.n.split(' ')[0]).join(', '),r.pre]);
   steps.push(['in','Antes de viajar','Lo de Jime + tu iPhone viejo a tu papá',(+S.jime||0)+(+S.venta||0)]);
-  steps.push(['in','24 de diciembre','Los $'+S.papa+' de tu papá — plata para gastar allá',r.papaCRC]);
-  if(S.phone!=='none')steps.push(['out','26 dic · Toronto','iPhone 18 Pro en la Apple del Eaton Centre (C$'+Math.round(r.pCAD).toLocaleString('en-US')+' con HST)',r.pCRC]);
-  steps.push(['out','25 dic – 2 ene','Comida y tours durante el viaje',S.costs.filter(c=>c.on&&!c.pre).reduce((a,c)=>a+(+c.v||0),0)]);
+  steps.push(['in','Antes del 23 de diciembre','Los $'+S.papa+' de tu papá: se van esa noche (SJO 11:55 PM)',r.papaCRC]);
+  if(S.phone!=='none')steps.push(['out','24 dic · Toronto','iPhone 18 Pro en la Apple del Eaton Centre (C$'+Math.round(r.pCAD).toLocaleString('en-US')+' con HST)',r.pCRC]);
+  steps.push(['out','24 dic – 2 ene','Comida, tours y transporte durante el viaje',S.costs.filter(c=>c.on&&!c.pre).reduce((a,c)=>a+(+c.v||0),0)]);
   if(+S.card)steps.push(['in','Enero','Los $'+S.card+' de tarjeta se pagan con el salario de enero',null]);
   document.getElementById('timeline').innerHTML=steps.map(([k,w,t,a])=>`<div class="st ${k}"><div class="dot"></div><div><div class="w">${w}</div><div class="what">${t}</div></div><div class="amt ${k}">${a!=null?(k==='in'?'+':'−')+fmt(a):''}</div></div>`).join('');
 
