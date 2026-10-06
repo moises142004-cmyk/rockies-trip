@@ -171,7 +171,7 @@
   </div>
 
   <div class="foot" style="margin-top:26px;text-align:center"><button class="btn ghost" id="resetBtn">↺ Volver a los números base</button></div>
-  <div class="private">🔒 Tus ingresos y gastos personales se guardan solo en este dispositivo, no en el código ni en la nube.<br>Para cargarlos en otro teléfono, abrí tu link personal.</div>
+  <div class="private"><span id="savedPip" style="color:var(--good)">● Guardado en este dispositivo</span><br>Cerrar la pestaña no borra nada. Solo se pierde si borrás los datos del sitio o usás incógnito.<br>🔒 Tus ingresos y gastos personales se guardan solo en este dispositivo, no en el código ni en la nube.<br>Para cargarlos en otro teléfono, abrí tu link personal.</div>
 </div>
 
 <nav class="tabbar">
@@ -213,7 +213,8 @@ function load(){
   DEF.costs.forEach(c=>{if(!s.costs.find(x=>x.id===c.id))s.costs.push(Object.assign({},c));});
   save(s);return s;
 }
-function save(s){try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){}}
+function save(s){let ok=true;try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){ok=false;}
+  const el=document.getElementById('savedPip');if(el){el.textContent=ok?'● Guardado en este dispositivo · '+new Date().toLocaleTimeString('es-CR',{hour:'2-digit',minute:'2-digit'}):'⚠ Este navegador no deja guardar (¿modo incógnito?)';el.style.color=ok?'var(--good)':'var(--bad)';}}
 const fmt=n=>(n<0?'−':'')+'₡'+Math.round(Math.abs(n)).toLocaleString('es-CR');
 const fmtK=n=>{const a=Math.abs(n),sg=n<0?'−':'';return a>=1e6?sg+'₡'+(a/1e6).toFixed(2).replace('.',',')+' M':sg+'₡'+Math.round(a/1000).toLocaleString('es-CR')+' mil';};
 const sal2=()=>S.sal2!=null?S.sal2:(S.sal||0)*2;
@@ -243,7 +244,7 @@ function render(){
   const res=r.result;
   const tag=document.getElementById('resultTag');
   tag.className='rtag '+(res>=0?'ok':'bad');
-  tag.textContent=res>=0?`✓ te sobran ${fmt(res)}`:`✕ te faltan ${fmt(-res)}`;
+  tag.textContent=res>=0?`✓ ${fmt(res)} libres para tus cosas · ≈ CAD ${Math.round(res/S.rCad).toLocaleString('en-US')}`:`✕ te faltan ${fmt(-res)}`;
   const pct=S.ing?(+S.plan||0)/S.ing*100:null;
   const bar=document.getElementById('meterBar');
   const cov=r.needCom?Math.min(1,(r.inflow+r.saved)/r.needCom):1;
