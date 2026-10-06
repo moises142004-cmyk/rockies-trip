@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ahorro · Jime & Moi — Toronto → Québec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A0F18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Jime & Moi">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<style>
+.hero{position:relative;overflow:hidden;background:linear-gradient(155deg,rgba(245,166,35,.16),rgba(15,23,37,.78) 58%);border:1px solid var(--hair);border-radius:20px;padding:22px 22px 20px;backdrop-filter:blur(18px)}
+.hero .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--mist)}
+.hero .big{font-family:var(--disp);font-size:clamp(46px,11vw,84px);font-weight:700;letter-spacing:-.035em;line-height:.92;margin:10px 0 6px}
+.hero .big small{font-size:.32em;font-weight:500;color:var(--mist);letter-spacing:0;margin-left:8px}
+.hero .sub{font-size:14px;color:#C7D3E2;line-height:1.5;max-width:620px}
+.hero .sub b{color:var(--frost)}
+.meter{margin-top:16px}
+.meter .track{height:10px;border-radius:6px;background:var(--hair-2);overflow:hidden}
+.meter .track i{display:block;height:100%;border-radius:6px;transition:width .35s,background .35s}
+.meter .legend{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--mist-dim);margin-top:6px;letter-spacing:.06em}
+.verdict{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:6px 11px;border-radius:999px;border:1px solid}
+.verdict.ok{color:var(--good);border-color:rgba(130,192,138,.4);background:rgba(130,192,138,.08)}
+.verdict.mid{color:var(--warn);border-color:rgba(227,197,106,.4);background:rgba(227,197,106,.08)}
+.verdict.bad{color:var(--bad);border-color:rgba(236,140,118,.45);background:rgba(236,140,118,.08)}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.scn{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:13px 14px;cursor:pointer;transition:.16s;text-align:left;color:inherit;font:inherit}
+.scn:hover{border-color:rgba(255,255,255,.22)}
+.scn.on{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset}
+.scn .t{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+.scn .v{font-family:var(--disp);font-size:24px;font-weight:700;margin:6px 0 2px;letter-spacing:-.02em}
+.scn .d{font-size:11.5px;color:var(--mist);line-height:1.4}
+
+.flow{background:var(--panel);border:1px solid var(--hair);border-radius:16px;padding:16px;backdrop-filter:blur(16px)}
+.stack{display:flex;height:34px;border-radius:9px;overflow:hidden;background:var(--hair-2)}
+.stack span{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9.5px;color:#0A0F18;font-weight:700;white-space:nowrap;overflow:hidden;transition:width .35s;min-width:0}
+.keys{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px}
+.key{display:flex;align-items:center;gap:7px;font-size:12px;color:#C7D3E2}
+.key i{width:10px;height:10px;border-radius:3px;flex:none}
+.key b{font-family:var(--mono);font-weight:400;color:var(--frost);font-size:11.5px}
+
+.rows{display:flex;flex-direction:column;gap:6px}
+.row{display:grid;grid-template-columns:30px 1fr 150px 28px;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--hair-2);border-radius:11px;background:rgba(255,255,255,.02)}
+.row.off{opacity:.45}
+.row .ic{font-size:16px;text-align:center}
+.row .nm{font-size:13.5px;color:var(--frost);line-height:1.3}
+.row .nm small{display:block;font-size:11px;color:var(--mist);margin-top:2px}
+.row .nm .flag{color:var(--amber)}
+.row input{width:100%;text-align:right;font-family:var(--mono)}
+.row .tg{appearance:none;width:22px;height:22px;border-radius:6px;border:1px solid var(--hair);background:transparent;cursor:pointer;color:var(--mist);font-size:12px}
+.row .tg.on{background:var(--amber);border-color:var(--amber);color:#241500}
+.subtot{display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px 0;font-family:var(--mono);font-size:11px;color:var(--mist)}
+.subtot b{font-family:var(--disp);font-size:18px;color:var(--frost)}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.seg2{display:flex;flex-wrap:wrap;gap:6px}
+.seg2 button{appearance:none;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mist);background:transparent;border:1px solid var(--hair);border-radius:999px;padding:7px 11px;transition:.14s}
+.seg2 button.on{background:var(--frost);color:var(--abyss);border-color:var(--frost);font-weight:700}
+.note{font-size:12px;color:var(--mist);line-height:1.5;margin-top:10px}
+.note b{color:#C7D3E2}
+
+.tl{display:flex;flex-direction:column;gap:0;position:relative;margin-left:6px}
+.tl::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--amber),var(--glacier))}
+.st{position:relative;display:grid;grid-template-columns:16px 1fr auto;gap:12px;padding:9px 0;align-items:start}
+.st .dot{width:16px;height:16px;border-radius:50%;background:var(--abyss);border:3px solid var(--amber);margin-top:2px;z-index:1}
+.st.in .dot{border-color:var(--glacier)}
+.st .w{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist)}
+.st .what{font-size:13.5px;color:var(--frost);margin-top:2px;line-height:1.4}
+.st .amt{font-family:var(--disp);font-weight:600;font-size:15px;white-space:nowrap}
+.st .amt.in{color:var(--glacier)} .st .amt.out{color:var(--amber)}
+
+.warn{border-left:3px solid var(--bad);background:rgba(236,140,118,.07);border-radius:10px;padding:11px 13px;font-size:12.5px;line-height:1.5;color:#E6D3CC;margin-top:10px}
+.warn b{color:var(--frost)}
+.fx{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.fx .f{flex:1;min-width:130px}
+.fx .hint{flex-basis:100%;font-family:var(--mono);font-size:9.5px;color:var(--mist-dim)}
+.private{font-family:var(--mono);font-size:9.5px;color:var(--mist-dim);letter-spacing:.04em;margin-top:28px;text-align:center;line-height:1.6}
+@media (max-width:720px){
+  .grid{grid-template-columns:1fr}
+  .two{grid-template-columns:1fr}
+  .row{grid-template-columns:26px 1fr 118px 26px;gap:8px}
+}
+</style>
+</head>
+<body class="page">
+<header class="pagehdr">
+  <div class="brand"><a class="mark" href="toronto.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Toronto → Québec</span></div>
+  <nav class="sections">
+    <a href="toronto.html"><span class="ic">🍁</span>Toronto</a>
+    <a class="on" href="ahorro.html"><span class="ic">🐷</span>Ahorro</a>
+    <a href="inventario.html"><span class="ic">🎒</span>Inventario</a>
+    <a href="costos.html"><span class="ic">💰</span>Costos</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="phead">
+    <div class="eyebrow">Plan de ahorro · hasta el 25 de diciembre</div>
+    <h1>Ir <em>tranquilos</em></h1>
+    <p>Todo lo que falta pagar, de dónde sale la plata y cuánto hay que guardar cada mes. Todo es editable. Los montos son en colones.</p>
+  </div>
+
+  <div class="hero">
+    <div class="lbl">Tenés que ahorrar</div>
+    <div class="big"><span id="perMonth">₡0</span><small id="perMonthLbl">/ mes</small></div>
+    <div class="sub" id="heroSub"></div>
+    <div class="meter"><div class="track"><i id="meterBar"></i></div>
+      <div class="legend"><span>0% del ingreso</span><span id="meterPct">—</span><span>50%</span></div></div>
+    <div id="verdict" class="verdict ok"></div>
+  </div>
+
+  <div class="section-title">El iPhone decide todo</div>
+  <div class="grid" id="scenarios"></div>
+
+  <div class="section-title">De dónde sale la plata</div>
+  <div class="flow">
+    <div class="stack" id="stack"></div>
+    <div class="keys" id="keys"></div>
+  </div>
+
+  <div class="section-title">Calendario de la plata</div>
+  <div class="flow"><div class="tl" id="timeline"></div></div>
+
+  <div class="two" style="margin-top:6px">
+    <div>
+      <div class="section-title">Lo que falta pagar <span class="cnt" id="costCnt"></span></div>
+      <div class="rows" id="costRows"></div>
+      <div class="subtot"><span>Viaje + colchón</span><b id="costTot">₡0</b></div>
+      <div class="warn" id="planWarn"></div>
+    </div>
+    <div>
+      <div class="section-title">Lo que entra</div>
+      <div class="rows" id="inRows"></div>
+      <div class="subtot"><span>Entradas extra</span><b id="inTot">₡0</b></div>
+
+      <div class="section-title">iPhone</div>
+      <div class="flow">
+        <label>Modelo</label>
+        <div class="seg2" id="phoneModel"></div>
+        <label style="margin-top:12px">Cómo pagarlo</label>
+        <div class="seg2" id="phoneMode"></div>
+        <div class="note" id="phoneNote"></div>
+      </div>
+
+      <div class="section-title">Meses y tipo de cambio</div>
+      <div class="flow">
+        <label>Meses para ahorrar antes del viaje</label>
+        <div class="seg2" id="monthsSeg"></div>
+        <div class="fx" style="margin-top:14px">
+          <div class="f"><label>Dólar compra (lo que te pagan)</label><input id="rBuy" type="number" step="0.01" inputmode="decimal"></div>
+          <div class="f"><label>Dólar venta (lo que pagás)</label><input id="rSell" type="number" step="0.01" inputmode="decimal"></div>
+          <div class="hint">BCCR referencia, 5 oct 2026: compra ₡455,71 · venta ₡462,08</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot" style="margin-top:26px;text-align:center"><button class="btn ghost" id="resetBtn">↺ Volver a los números base</button></div>
+  <div class="private">🔒 Tus ingresos se guardan solo en este dispositivo, no en el código ni en la nube.<br>Para cargarlos en otro teléfono, abrí tu link personal.</div>
+</div>
+
+<nav class="tabbar">
+  <a href="toronto.html"><span class="ic">🍁</span><span>Toronto</span></a>
+  <a class="on" href="ahorro.html"><span class="ic">🐷</span><span>Ahorro</span></a>
+  <a href="inventario.html"><span class="ic">🎒</span><span>Inventario</span></a>
+  <a href="costos.html"><span class="ic">💰</span><span>Costos</span></a>
+</nav>
+
+<script>
+/* Trip costs are not personal; income figures are NOT stored in this file.
+   They come from the URL hash (#ing=...&sal=...) or this device's localStorage. */
+const KEY='rockies:ahorro:v1';
+const PHONES={none:{n:'Sin iPhone',usd:0},i17:{n:'iPhone 17',usd:1189},i17p:{n:'iPhone 17 Pro',usd:1479}};
+const DEF={
+  costs:[
+    {id:'airbnb',ic:'🛏',n:'Airbnb',v:440000,on:true},
+    {id:'carro',ic:'🚗',n:'Carro',v:190000,on:true},
+    {id:'tours',ic:'🎟️',n:'Tours y actividades',v:150000,on:true},
+    {id:'comida',ic:'🍽️',n:'Comida',v:350000,on:true},
+    {id:'regalo',ic:'🎁',n:'Regalo de Navidad',v:200000,on:true},
+    {id:'via',ic:'🚆',n:'VIA Rail ida y vuelta',v:190000,on:true,flag:'No estaba en tu lista: Toronto ↔ Montreal, ~CAD 600 para 2'}
+  ],
+  buffer:10,
+  ing:0, sal:0, agui:null, papa:500, jime:200000,
+  phone:'i17', mode:'cero', months:2,
+  rBuy:455.71, rSell:462.08
+};
+let S=load();
+
+function load(){
+  let s=JSON.parse(JSON.stringify(DEF));
+  try{const raw=localStorage.getItem(KEY);if(raw)s=Object.assign(s,JSON.parse(raw));}catch(e){}
+  const h=new URLSearchParams(location.hash.slice(1));
+  const num=k=>h.has(k)&&!isNaN(+h.get(k))?+h.get(k):null;
+  if(num('ing')!=null)s.ing=num('ing');
+  if(num('sal')!=null)s.sal=num('sal');
+  if(num('agui')!=null)s.agui=num('agui');
+  if(num('papa')!=null)s.papa=num('papa');
+  if(num('jime')!=null)s.jime=num('jime');
+  if(h.toString())history.replaceState(null,'',location.pathname);
+  // make sure new default cost lines exist for older saves
+  DEF.costs.forEach(c=>{if(!s.costs.find(x=>x.id===c.id))s.costs.push(Object.assign({},c));});
+  save(s);return s;
+}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){}}
+const fmt=n=>'₡'+Math.round(n).toLocaleString('es-CR');
+const fmtK=n=>Math.abs(n)>=1e6?'₡'+(n/1e6).toFixed(2).replace('.',',')+' M':'₡'+Math.round(n/1000).toLocaleString('es-CR')+' mil';
+const agui=()=>S.agui!=null?S.agui:S.sal;
+
+function calc(phone=S.phone,mode=S.mode){
+  const trip=S.costs.filter(c=>c.on).reduce((a,c)=>a+(+c.v||0),0);
+  const buf=trip*S.buffer/100;
+  const pUSD=PHONES[phone].usd, pCRC=pUSD*S.rSell;
+  const cuota=pCRC/24;
+  const phoneNow= phone==='none'?0 : mode==='contado'?pCRC : 0;
+  const need=trip+buf+phoneNow;
+  const papaCRC=S.papa*S.rBuy;
+  const extra=(+S.jime||0)+papaCRC+(+agui()||0);
+  const gap=Math.max(0,need-extra);
+  const cuotaMonthly= phone!=='none'&&mode==='cero'?cuota:0;
+  const per=gap/S.months + cuotaMonthly;
+  const perNoAgui=(Math.max(0,need-extra+(+agui()||0)))/S.months + cuotaMonthly;
+  return {trip,buf,pUSD,pCRC,cuota,phoneNow,need,papaCRC,extra,gap,per,perNoAgui,cuotaMonthly};
+}
+
+function render(){
+  const r=calc();
+  // hero
+  document.getElementById('perMonth').textContent=fmt(r.per);
+  document.getElementById('perMonthLbl').textContent=S.months===1?'en noviembre':`/ mes · ${S.months} meses`;
+  const pct=S.ing?r.per/S.ing*100:null;
+  const bar=document.getElementById('meterBar');
+  bar.style.width=Math.min(100,(pct||0)*2)+'%';
+  bar.style.background=pct==null?'var(--mist-dim)':pct<25?'linear-gradient(90deg,var(--good),var(--glacier))':pct<40?'linear-gradient(90deg,var(--warn),var(--amber))':'linear-gradient(90deg,var(--amber),var(--bad))';
+  document.getElementById('meterPct').textContent=pct==null?'Cargá tu ingreso →':Math.round(pct)+'% de tu ingreso';
+  const v=document.getElementById('verdict');
+  if(pct==null){v.className='verdict mid';v.textContent='⚠ Falta tu ingreso mensual (abajo, en "Lo que entra")';}
+  else if(pct<25){v.className='verdict ok';v.textContent='✓ Cómodo: te queda margen para vivir';}
+  else if(pct<40){v.className='verdict mid';v.textContent='◐ Ajustado pero posible: sin gastos extra en oct–nov';}
+  else{v.className='verdict bad';v.textContent='✕ Muy apretado: cambiá cómo pagás el iPhone';}
+  const sub=document.getElementById('heroSub');
+  sub.innerHTML=`Faltan <b>${fmt(r.need)}</b> (viaje + 10% de colchón${r.phoneNow?' + iPhone al contado':''}). Jime, tu papá y el aguinaldo cubren <b>${fmt(r.extra)}</b>. El resto, <b>${fmt(r.gap)}</b>, sale de tu sueldo${r.cuotaMonthly?` — más la cuota del iPhone de <b>${fmt(r.cuotaMonthly)}</b>/mes`:''}.`;
+
+  // scenarios
+  const sc=[['none','cero','Solo el viaje','Sin iPhone por ahora'],[S.phone==='none'?'i17':S.phone,'cero','+ iPhone a Tasa Cero','24 cuotas sin intereses'],[S.phone==='none'?'i17':S.phone,'contado','+ iPhone de contado','Pagado antes de viajar']];
+  document.getElementById('scenarios').innerHTML=sc.map(([p,m,t,d])=>{const x=calc(p,m);const on=(S.phone===p&&(p==='none'||S.mode===m));const pc=S.ing?` · ${Math.round(x.per/S.ing*100)}%`:'';
+    return `<button class="scn${on?' on':''}" data-p="${p}" data-m="${m}"><div class="t">${t}</div><div class="v">${fmtK(x.per)}<span style="font-size:13px;color:var(--mist);font-weight:500"> /mes</span></div><div class="d">${d}${pc}</div></button>`;}).join('');
+  document.querySelectorAll('.scn').forEach(b=>b.onclick=()=>{S.phone=b.dataset.p;if(b.dataset.p!=='none')S.mode=b.dataset.m;save();render();});
+
+  // stack
+  const parts=[
+    ['Jime',+S.jime||0,'#C58CEC'],['Papá $'+S.papa,r.papaCRC,'#93A7EC'],['Aguinaldo',+agui()||0,'#5FD0D6'],['Tu ahorro',r.gap,'#F5A623']
+  ].filter(p=>p[1]>0);
+  const tot=parts.reduce((a,p)=>a+p[1],0)||1;
+  document.getElementById('stack').innerHTML=parts.map(([n,v,c])=>`<span style="width:${v/tot*100}%;background:${c}">${v/tot>.12?Math.round(v/tot*100)+'%':''}</span>`).join('');
+  document.getElementById('keys').innerHTML=parts.map(([n,v,c])=>`<div class="key"><i style="background:${c}"></i>${n} <b>${fmtK(v)}</b></div>`).join('');
+
+  // timeline
+  const m=S.months, gapPer=r.gap/m;
+  const labels={1:['Fin de noviembre'],2:['Fin de octubre','Fin de noviembre'],3:['Fin de octubre','Fin de noviembre','1 de diciembre · del salario']}[m];
+  const steps=labels.map(l=>['out',l,'Apartar del sueldo a una cuenta solo para el viaje',gapPer]);
+  if(r.cuotaMonthly)steps.push(['out','Cada mes · 24 meses',PHONES[S.phone].n+' a Tasa Cero (ya incluido arriba)',r.cuotaMonthly]);
+  steps.push(['in','1 de diciembre','Aguinaldo: va completo al viaje. El salario base de diciembre es para tu vida normal de ese mes.',+agui()||0]);
+  steps.push(['in','Antes del 20 de diciembre','Jime + los $'+S.papa+' de tu papá',(+S.jime||0)+r.papaCRC]);
+  steps.push(['out','Antes de viajar','Pagar Airbnb y carro; el resto se lleva en tarjeta/débito',null]);
+  steps.push(['in','25 de diciembre','✈️ Liberia → Toronto, sin deudas del viaje',null]);
+  document.getElementById('timeline').innerHTML=steps.map(([k,w,t,a])=>`<div class="st ${k}"><div class="dot"></div><div><div class="w">${w}</div><div class="what">${t}</div></div><div class="amt ${k}">${a!=null?(k==='in'?'+':'')+fmt(a):''}</div></div>`).join('');
+
+  // costs
+  document.getElementById('costRows').innerHTML=S.costs.map((c,i)=>`<div class="row${c.on?'':' off'}"><div class="ic">${c.ic}</div><div class="nm">${c.n}${c.flag?`<small class="flag">${c.flag}</small>`:''}</div><input type="number" inputmode="numeric" data-ci="${i}" value="${c.v}"><button class="tg${c.on?' on':''}" data-ti="${i}" title="Incluir">${c.on?'✓':''}</button></div>`).join('')+
+   `<div class="row"><div class="ic">🛟</div><div class="nm">Colchón para imprevistos<small>% sobre el viaje: Uber de más, una cena, el cambio de moneda</small></div><input type="number" inputmode="numeric" id="bufIn" value="${S.buffer}"><span style="font-family:var(--mono);font-size:11px;color:var(--mist)">%</span></div>`;
+  document.getElementById('costTot').textContent=fmt(r.trip+r.buf);
+  document.getElementById('costCnt').textContent=S.costs.filter(c=>c.on).length+' cosas';
+  const food=S.costs.find(c=>c.id==='comida');
+  document.getElementById('planWarn').innerHTML=`<b>Ojo con la comida.</b> ${fmtK(food.v)} da ~CAD ${Math.round(food.v/(S.rBuy*0.705)/9)} por día para los dos. El plan del mapa tiene Quetzal, wagyu A5 en La Forge y la cena de Año Nuevo en Légende: solo esas tres se comen casi todo. Subila a ~₡600 mil o cambiá Légende por Le Continental.`;
+
+  // incomes
+  const inc=[
+    ['ing','💼','Ingreso promedio al mes','Solo para medir qué % se va al ahorro',S.ing,'num'],
+    ['agui','🎄','Aguinaldo · 1 de diciembre','"Si Dios quiere." Por defecto = 1 salario base',agui(),'num'],
+    ['papa','👨','Tu papá','En dólares · al tipo de compra',S.papa,'usd'],
+    ['jime','💜','Lo que ahorra Jime','',S.jime,'num']
+  ];
+  document.getElementById('inRows').innerHTML=inc.map(([k,ic,n,s,v,t])=>`<div class="row"><div class="ic">${ic}</div><div class="nm">${n}${s?`<small>${s}</small>`:''}</div><input type="number" inputmode="numeric" data-ik="${k}" value="${v||''}" placeholder="${t==='usd'?'USD':'₡'}"><span style="font-family:var(--mono);font-size:10px;color:var(--mist)">${t==='usd'?'$':''}</span></div>`).join('');
+  document.getElementById('inTot').textContent=fmt(r.extra);
+
+  // phone
+  document.getElementById('phoneModel').innerHTML=Object.entries(PHONES).map(([k,p])=>`<button data-pm="${k}" class="${S.phone===k?'on':''}">${p.n}${p.usd?' · $'+p.usd.toLocaleString('en-US'):''}</button>`).join('');
+  document.getElementById('phoneMode').innerHTML=[['cero','Tasa Cero 24m'],['contado','Contado']].map(([k,n])=>`<button data-md="${k}" class="${S.mode===k?'on':''}" ${S.phone==='none'?'disabled style="opacity:.4"':''}>${n}</button>`).join('');
+  document.getElementById('phoneNote').innerHTML=S.phone==='none'?'Sin iPhone, el viaje sale con margen.':
+    `${PHONES[S.phone].n} en Costa Rica: <b>$${PHONES[S.phone].usd.toLocaleString('en-US')} ≈ ${fmt(r.pCRC)}</b>. A Tasa Cero (BAC, 24 meses) son <b>${fmt(r.cuota)}/mes</b> y el viaje no se toca. ${S.mode==='contado'?'<b>De contado se come el ahorro del viaje:</b> mirá cuánto sube la cifra de arriba.':'Pagá el total de la tarjeta cada mes para que de verdad sea 0%.'}`;
+  document.getElementById('monthsSeg').innerHTML=[[1,'Solo nov'],[2,'Oct + nov'],[3,'Oct + nov + dic']].map(([k,n])=>`<button data-mo="${k}" class="${S.months===k?'on':''}">${n}</button>`).join('');
+  document.getElementById('rBuy').value=S.rBuy;document.getElementById('rSell').value=S.rSell;
+  bind();
+}
+
+function bind(){
+  document.querySelectorAll('[data-ci]').forEach(e=>e.onchange=()=>{S.costs[+e.dataset.ci].v=+e.value||0;save();render();});
+  document.querySelectorAll('[data-ti]').forEach(e=>e.onclick=()=>{const c=S.costs[+e.dataset.ti];c.on=!c.on;save();render();});
+  const bi=document.getElementById('bufIn');bi.onchange=()=>{S.buffer=Math.max(0,+bi.value||0);save();render();};
+  document.querySelectorAll('[data-ik]').forEach(e=>e.onchange=()=>{const k=e.dataset.ik;S[k]=e.value===''?(k==='agui'?null:0):+e.value;save();render();});
+  document.querySelectorAll('[data-pm]').forEach(e=>e.onclick=()=>{S.phone=e.dataset.pm;save();render();});
+  document.querySelectorAll('[data-md]').forEach(e=>e.onclick=()=>{S.mode=e.dataset.md;save();render();});
+  document.querySelectorAll('[data-mo]').forEach(e=>e.onclick=()=>{S.months=+e.dataset.mo;save();render();});
+  ['rBuy','rSell'].forEach(id=>{const e=document.getElementById(id);e.onchange=()=>{S[id]=+e.value||S[id];save();render();};});
+}
+document.getElementById('resetBtn').onclick=()=>{const keep={ing:S.ing,sal:S.sal,agui:S.agui};S=Object.assign(JSON.parse(JSON.stringify(DEF)),keep);save();render();};
+render();
+</script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+</body>
+</html>

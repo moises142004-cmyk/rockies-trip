@@ -1,6 +1,8 @@
 {
   "redirects": [
-    { "source": "/", "destination": "/toronto.html", "permanent": false }
+    { "source": "/", "destination": "/toronto.html", "permanent": false },
+    { "source": "/index.html", "destination": "/toronto.html", "permanent": false },
+    { "source": "/index", "destination": "/toronto.html", "permanent": false }
   ],
   "headers": [
     {

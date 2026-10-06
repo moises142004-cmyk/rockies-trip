@@ -2,7 +2,9 @@
 
 Planner del viaje de invierno **25 Dic 2026 – 2 Ene 2027**: Toronto → Montreal → Tremblant → Quebec City (Año Nuevo) → Toronto. **Vuelos comprados** (Porter LIR→YYZ 25 dic · Air Transat YYZ→LIR 2 ene). La raíz `/` redirige a `toronto.html`.
 
-`index.html` queda como **Plan B archivado** (ruta Calgary + Canmore).
+`index.html` (ruta Calgary) está **escondido**: `/index.html` redirige a Toronto y no aparece en el menú.
+
+- **`ahorro.html` — Ahorro** · plan de ahorro hasta el viaje. Los ingresos NO están en el código: se cargan con un link personal (`#ing=…&sal=…`) y viven en localStorage del dispositivo.
 
 Sitio estático, sin build ni dependencias de servidor. Secciones:
 
