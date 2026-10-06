@@ -27,6 +27,11 @@
 .meter .track{height:10px;border-radius:6px;background:var(--hair-2);overflow:hidden}
 .meter .track i{display:block;height:100%;border-radius:6px;transition:width .35s,background .35s}
 .meter .legend{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--mist-dim);margin-top:6px;letter-spacing:.06em}
+.planin{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 12px}
+.planin label{margin:0}
+.planin input{width:140px;font-family:var(--mono)}
+.rtag{font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:-.01em}
+.rtag.ok{color:var(--good)} .rtag.bad{color:var(--bad)}
 .verdict{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:6px 11px;border-radius:999px;border:1px solid}
 .verdict.ok{color:var(--good);border-color:rgba(130,192,138,.4);background:rgba(130,192,138,.08)}
 .verdict.mid{color:var(--warn);border-color:rgba(227,197,106,.4);background:rgba(227,197,106,.08)}
@@ -110,8 +115,9 @@
   </div>
 
   <div class="hero">
-    <div class="lbl">Para ir cómodo, ahorrá</div>
+    <div class="lbl">Vas a ahorrar</div>
     <div class="big"><span id="perMonth">₡0</span><small id="perMonthLbl">/ mes</small></div>
+    <div class="planin"><label for="planIn">Ahorro por mes</label><input id="planIn" type="number" inputmode="numeric" step="5000"><span id="resultTag" class="rtag"></span></div>
     <div class="sub" id="heroSub"></div>
     <div class="meter"><div class="track"><i id="meterBar"></i></div>
       <div class="legend"><span>0% del ingreso</span><span id="meterPct">—</span><span>50%</span></div></div>
@@ -190,9 +196,9 @@ const DEF={
     {id:'tours',ic:'🎟️',n:'Tours y actividades',v:150000,on:true},
     {id:'comida',ic:'🍽️',n:'Comida',v:420000,on:true}
   ],
-  buffer:10, gdic:null,
+  buffer:10, gdic:null, dext:null,
   ing:0, sal:0, sal2:null, papa:500, jime:200000, venta:80000, card:300,
-  phone:'p256', months:2,
+  phone:'p256', months:2, plan:170000,
   rBuy:455.71, rSell:462.08, rCad:325.8
 };
 let S=load();
@@ -202,7 +208,7 @@ function load(){
   try{const raw=localStorage.getItem(KEY);if(raw)s=Object.assign(s,JSON.parse(raw));}catch(e){}
   const h=new URLSearchParams(location.hash.slice(1));
   const num=k=>h.has(k)&&h.get(k)!==''&&!isNaN(+h.get(k))?+h.get(k):null;
-  ['ing','sal','sal2','gdic','papa','jime','venta','card'].forEach(k=>{const v=num(k);if(v!=null)s[k]=v;});
+  ['ing','sal','sal2','gdic','dext','papa','jime','venta','card'].forEach(k=>{const v=num(k);if(v!=null)s[k]=v;});
   if(h.toString())history.replaceState(null,'',location.pathname);
   DEF.costs.forEach(c=>{if(!s.costs.find(x=>x.id===c.id))s.costs.push(Object.assign({},c));});
   save(s);return s;
@@ -211,6 +217,7 @@ function save(s){try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){}}
 const fmt=n=>(n<0?'−':'')+'₡'+Math.round(Math.abs(n)).toLocaleString('es-CR');
 const fmtK=n=>{const a=Math.abs(n),sg=n<0?'−':'';return a>=1e6?sg+'₡'+(a/1e6).toFixed(2).replace('.',',')+' M':sg+'₡'+Math.round(a/1000).toLocaleString('es-CR')+' mil';};
 const sal2=()=>S.sal2!=null?S.sal2:(S.sal||0)*2;
+const dext=()=>S.dext!=null?S.dext:Math.max(0,(S.ing||0)-(S.sal||0));
 
 function calc(phone=S.phone){
   const on=S.costs.filter(c=>c.on);
@@ -221,45 +228,51 @@ function calc(phone=S.phone){
   const gdic=+S.gdic||0;
   const needMin=trip+pCRC+gdic, needCom=needMin+buf;
   const papaCRC=(+S.papa||0)*S.rBuy, cardCRC=(+S.card||0)*S.rSell;
-  const inflow=sal2()+(+S.jime||0)+papaCRC+(+S.venta||0)+cardCRC;
+  const inflow=sal2()+dext()+(+S.jime||0)+papaCRC+(+S.venta||0)+cardCRC;
   const gapMin=Math.max(0,needMin-inflow), gapCom=Math.max(0,needCom-inflow);
   return {trip,pre,buf,pCAD,pCRC,gdic,needMin,needCom,papaCRC,cardCRC,inflow,gapMin,gapCom,
-    perMin:gapMin/S.months, perCom:gapCom/S.months, spare:inflow-needCom};
+    perMin:gapMin/S.months, perCom:gapCom/S.months, spare:inflow-needCom,
+    saved:(+S.plan||0)*S.months, result:(+S.plan||0)*S.months+inflow-needCom};
 }
 
 function render(){
   const r=calc();
-  document.getElementById('perMonth').textContent=fmt(r.perCom);
-  document.getElementById('perMonthLbl').textContent=S.months===1?'en noviembre':`/ mes · ${S.months===2?'oct + nov':'3 meses'}`;
-  const pct=S.ing?r.perCom/S.ing*100:null;
+  document.getElementById('perMonth').textContent=fmt(+S.plan||0);
+  document.getElementById('perMonthLbl').textContent=S.months===1?'en noviembre':`/ mes · ${S.months===2?'oct + nov':'3 meses'} = ${fmt(r.saved)}`;
+  const pi=document.getElementById('planIn'); if(document.activeElement!==pi)pi.value=S.plan||'';
+  const res=r.result;
+  const tag=document.getElementById('resultTag');
+  tag.className='rtag '+(res>=0?'ok':'bad');
+  tag.textContent=res>=0?`✓ te sobran ${fmt(res)}`:`✕ te faltan ${fmt(-res)}`;
+  const pct=S.ing?(+S.plan||0)/S.ing*100:null;
   const bar=document.getElementById('meterBar');
-  bar.style.width=Math.min(100,(pct||0)*2)+'%';
-  bar.style.background=pct==null?'var(--mist-dim)':pct<25?'linear-gradient(90deg,var(--good),var(--glacier))':pct<40?'linear-gradient(90deg,var(--warn),var(--amber))':'linear-gradient(90deg,var(--amber),var(--bad))';
-  document.getElementById('meterPct').textContent=pct==null?'Cargá tu ingreso abajo':Math.round(pct)+'% de tu ingreso';
+  const cov=r.needCom?Math.min(1,(r.inflow+r.saved)/r.needCom):1;
+  bar.style.width=Math.round(cov*100)+'%';
+  bar.style.background=cov>=1?'linear-gradient(90deg,var(--good),var(--glacier))':cov>=.9?'linear-gradient(90deg,var(--warn),var(--amber))':'linear-gradient(90deg,var(--amber),var(--bad))';
+  document.querySelector('.meter .legend').innerHTML=`<span>Cubierto</span><span>${Math.round(cov*100)}% de lo que hay que pagar</span><span>${pct==null?'':Math.round(pct)+'% de tu ingreso'}</span>`;
   const v=document.getElementById('verdict');
-  if(S.gdic==null){v.className='verdict mid';v.textContent='⚠ Falta un dato: tus gastos normales de diciembre';}
-  else if(pct==null||pct<25){v.className='verdict ok';v.textContent='✓ Cómodo: te queda margen para vivir';}
-  else if(pct<40){v.className='verdict mid';v.textContent='◐ Ajustado pero posible: sin gastos extra en oct–nov';}
-  else{v.className='verdict bad';v.textContent='✕ Muy apretado: bajá el iPhone o el colchón';}
+  if(res<0){v.className='verdict bad';v.textContent=`✕ Para cubrir todo: ${fmt(r.perCom)}/mes — o el iPhone espera`;}
+  else if(S.gdic==null){v.className='verdict mid';v.textContent=`◐ Viaje + iPhone cubiertos. Los ${fmt(res)} que sobran son lo único que queda para tu diciembre`;}
+  else{v.className='verdict ok';v.textContent='✓ Todo cubierto, diciembre incluido';}
   document.getElementById('heroSub').innerHTML=
-    `Hay que cubrir <b>${fmt(r.needCom)}</b>: el viaje, el iPhone en Toronto${r.gdic?', tu diciembre':''} y un ${S.buffer}% de colchón. Ya vienen <b>${fmt(r.inflow)}</b>. `+
-    (r.gapMin>0?`<b>Mínimo para no quedar corto: ${fmt(r.perMin)}/mes.</b>`:`<b>Mínimo: ₡0</b> — con lo que viene ya alcanza; lo de arriba es para ir con colchón.`)+
-    (r.spare>0?` Sobran <b>${fmt(r.spare)}</b>.`:'');
+    `Hay que cubrir <b>${fmt(r.needCom)}</b>: el viaje, el iPhone en Toronto${r.gdic?', tu diciembre':''} y un ${S.buffer}% de colchón. Ya vienen <b>${fmt(r.inflow)}</b> + tus <b>${fmt(r.saved)}</b> de ahorro. `+
+    `Lo justo para ir cómodo serían <b>${fmt(r.perCom)}/mes</b>${r.gapMin>0?`; lo mínimo, ${fmt(r.perMin)}/mes`:''}.`;
 
   const sc=[['none','Sin iPhone','Solo el viaje'],['p256','18 Pro · 256 GB','C$1.749 + 13% HST'],['p512','18 Pro · 512 GB','C$2.049 + 13% HST']];
-  document.getElementById('scenarios').innerHTML=sc.map(([p,t,d])=>{const x=calc(p);const pc=S.ing?` · ${Math.round(x.perCom/S.ing*100)}%`:'';
-    return `<button class="scn${S.phone===p?' on':''}" data-p="${p}"><div class="t">${t}</div><div class="v">${fmtK(x.perCom)}<span style="font-size:13px;color:var(--mist);font-weight:500"> /mes</span></div><div class="d">${d}${pc}</div></button>`;}).join('');
+  document.getElementById('scenarios').innerHTML=sc.map(([p,t,d])=>{const x=calc(p);const rr=x.saved+x.inflow-x.needCom;
+    return `<button class="scn${S.phone===p?' on':''}" data-p="${p}"><div class="t">${t}</div><div class="v" style="color:${rr>=0?'var(--good)':'var(--bad)'}">${rr>=0?'+':''}${fmtK(rr)}</div><div class="d">${rr>=0?'sobran':'faltan'} ahorrando ${fmtK(+S.plan||0)}/mes · ${d}</div></button>`;}).join('');
   document.querySelectorAll('.scn').forEach(b=>b.onclick=()=>{S.phone=b.dataset.p;save();render();});
 
-  const parts=[['Salario + aguinaldo',sal2(),'#5FD0D6'],['Jime',+S.jime||0,'#C58CEC'],['Papá $'+S.papa,r.papaCRC,'#93A7EC'],['Tu iPhone viejo',+S.venta||0,'#82C08A'],['Tarjeta $'+S.card,r.cardCRC,'#E3C56A'],['Tu ahorro',r.gapCom,'#F5A623']].filter(p=>p[1]>0);
+  const parts=[['Salario + aguinaldo',sal2(),'#5FD0D6'],['DreamOS dic',dext(),'#6FB1E0'],['Jime',+S.jime||0,'#C58CEC'],['Papá $'+S.papa,r.papaCRC,'#93A7EC'],['Tu iPhone viejo',+S.venta||0,'#82C08A'],['Tarjeta $'+S.card,r.cardCRC,'#E3C56A'],['Tu ahorro',r.saved,'#F5A623']].filter(p=>p[1]>0);
   const tot=parts.reduce((a,p)=>a+p[1],0)||1;
   document.getElementById('stack').innerHTML=parts.map(([n,v,c])=>`<span style="width:${v/tot*100}%;background:${c}">${v/tot>.1?Math.round(v/tot*100)+'%':''}</span>`).join('');
   document.getElementById('keys').innerHTML=parts.map(([n,v,c])=>`<div class="key"><i style="background:${c}"></i>${n} <b>${fmtK(v)}</b></div>`).join('');
 
-  const m=S.months, per=r.gapCom/m;
+  const m=S.months, per=+S.plan||0;
   const labels={1:['Fin de noviembre'],2:['Fin de octubre','Fin de noviembre'],3:['Fin de octubre','Fin de noviembre','Mediados de diciembre']}[m];
   const steps=labels.map(l=>['out',l,'Apartar a una cuenta solo para el viaje',per]);
   steps.push(['in','29 nov – 1 dic','Salario + aguinaldo, de golpe',sal2()]);
+  if(dext())steps.push(['in','Diciembre','Lo extra de DreamOS del mes',dext()]);
   if(r.gdic)steps.push(['out','Diciembre','Tu vida normal de diciembre (alquiler, tarjeta, cuotas)',r.gdic]);
   steps.push(['out','Desde el 15 de diciembre','Empiezan los pagos: '+S.costs.filter(c=>c.on&&c.pre).map(c=>c.n.split(' ')[0]).join(', '),r.pre]);
   steps.push(['in','Antes de viajar','Lo de Jime + tu iPhone viejo a tu papá',(+S.jime||0)+(+S.venta||0)]);
@@ -271,7 +284,7 @@ function render(){
 
   document.getElementById('costRows').innerHTML=S.costs.map((c,i)=>`<div class="row${c.on?'':' off'}"><div class="ic">${c.ic}</div><div class="nm">${c.n}<small>${c.pre?'Se paga desde el 15 dic':'Se gasta durante el viaje'}${c.flag?` · <span class="flag">${c.flag}</span>`:''}</small></div><input type="number" inputmode="numeric" data-ci="${i}" value="${c.v}"><button class="tg${c.on?' on':''}" data-ti="${i}" title="Incluir">${c.on?'✓':''}</button></div>`).join('')+
    (S.phone!=='none'?`<div class="row"><div class="ic">📱</div><div class="nm">iPhone ${PHONES[S.phone].n}<small>Toronto · C$${PHONES[S.phone].cad.toLocaleString('en-US')} + 13% HST</small></div><input type="number" value="${Math.round(r.pCRC)}" disabled><span></span></div>`:'')+
-   `<div class="row"><div class="ic">🏠</div><div class="nm">Tus gastos normales de diciembre<small>Alquiler, tarjeta de noviembre, cuotas, lo de tu papá… el salario de dic ya no los cubre</small></div><input type="number" inputmode="numeric" id="gdicIn" value="${S.gdic??''}" placeholder="¿cuánto?"><span></span></div>`+
+   `<div class="row"><div class="ic">🏠</div><div class="nm">Tus gastos normales de diciembre<small>Un mes normal: tarjeta, Airbnb de Jime, teléfono, suscripciones… el salario de dic se va al viaje</small></div><input type="number" inputmode="numeric" id="gdicIn" value="${S.gdic??''}" placeholder="¿cuánto?"><span></span></div>`+
    `<div class="row"><div class="ic">🛟</div><div class="nm">Colchón para imprevistos<small>% sobre el viaje</small></div><input type="number" inputmode="numeric" id="bufIn" value="${S.buffer}"><span style="font-family:var(--mono);font-size:11px;color:var(--mist)">%</span></div>`;
   document.getElementById('costTot').textContent=fmt(r.needCom);
   document.getElementById('costCnt').textContent=S.costs.filter(c=>c.on).length+' del viaje';
@@ -284,6 +297,7 @@ function render(){
 
   const inc=[
     ['sal2','💼','Salario + aguinaldo · 29 nov–1 dic','Llega de golpe',sal2(),''],
+    ['dext','🧩','Extra de DreamOS en diciembre','Por defecto: tu promedio menos el salario base',dext(),''],
     ['jime','💜','Lo que ahorra Jime','',S.jime,''],
     ['venta','📱','Tu iPhone viejo → tu papá','',S.venta,''],
     ['papa','👨','Tu papá · 24 dic','En dólares, al tipo de compra',S.papa,'$'],
@@ -302,16 +316,17 @@ function render(){
 }
 
 function bind(){
+  const pi=document.getElementById('planIn');pi.onchange=()=>{S.plan=+pi.value||0;save();render();};
   document.querySelectorAll('[data-ci]').forEach(e=>e.onchange=()=>{S.costs[+e.dataset.ci].v=+e.value||0;save();render();});
   document.querySelectorAll('[data-ti]').forEach(e=>e.onclick=()=>{const c=S.costs[+e.dataset.ti];c.on=!c.on;save();render();});
   const bi=document.getElementById('bufIn');bi.onchange=()=>{S.buffer=Math.max(0,+bi.value||0);save();render();};
   const gi=document.getElementById('gdicIn');gi.onchange=()=>{S.gdic=gi.value===''?null:+gi.value;save();render();};
-  document.querySelectorAll('[data-ik]').forEach(e=>e.onchange=()=>{const k=e.dataset.ik;S[k]=e.value===''?(k==='sal2'?null:0):+e.value;save();render();});
+  document.querySelectorAll('[data-ik]').forEach(e=>e.onchange=()=>{const k=e.dataset.ik;S[k]=e.value===''?((k==='sal2'||k==='dext')?null:0):+e.value;save();render();});
   document.querySelectorAll('[data-pm]').forEach(e=>e.onclick=()=>{S.phone=e.dataset.pm;save();render();});
   document.querySelectorAll('[data-mo]').forEach(e=>e.onclick=()=>{S.months=+e.dataset.mo;save();render();});
   ['rBuy','rSell','rCad'].forEach(id=>{const e=document.getElementById(id);e.onchange=()=>{S[id]=+e.value||S[id];S.cadManual=id==='rCad'?true:S.cadManual;save();render();};});
 }
-document.getElementById('resetBtn').onclick=()=>{const keep={ing:S.ing,sal:S.sal,sal2:S.sal2,gdic:S.gdic};S=Object.assign(JSON.parse(JSON.stringify(DEF)),keep);save();render();};
+document.getElementById('resetBtn').onclick=()=>{const keep={ing:S.ing,sal:S.sal,sal2:S.sal2,gdic:S.gdic,dext:S.dext,plan:S.plan};S=Object.assign(JSON.parse(JSON.stringify(DEF)),keep);save();render();};
 render();
 /* live CAD→CRC (skipped if edited by hand) */
 if(!S.cadManual)fetch('https://open.er-api.com/v6/latest/CAD').then(r=>r.json()).then(d=>{if(d&&d.rates&&d.rates.CRC){S.rCad=Math.round(d.rates.CRC*100)/100;save();render();
