@@ -1,9 +1,9 @@
 {
-  "name": "Jime & Moi — Las Rockies",
-  "short_name": "Las Rockies",
-  "description": "Planner del viaje a las Rockies canadienses — Dic 2026 / Ene 2027",
+  "name": "Jime & Moi — Toronto → Québec",
+  "short_name": "Jime & Moi",
+  "description": "Planner del viaje Toronto → Montreal → Tremblant → Quebec — 25 Dic 2026 / 2 Ene 2027",
   "lang": "es",
-  "start_url": "./index.html",
+  "start_url": "./toronto.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",

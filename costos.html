@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Costos · Jime & Moi — Las Rockies</title>
+<title>Costos · Jime & Moi — Toronto → Québec</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Las Rockies">
+<meta name="apple-mobile-web-app-title" content="Jime & Moi">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-167.png">
 <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
@@ -66,10 +66,10 @@
 </head>
 <body class="page">
 <header class="pagehdr">
-  <div class="brand"><a class="mark" href="index.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Las Rockies</span></div>
+  <div class="brand"><a class="mark" href="toronto.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Toronto → Québec</span></div>
   <nav class="sections">
-    <a href="index.html"><span class="ic">🏔️</span>Rockies</a>
     <a href="toronto.html"><span class="ic">🍁</span>Toronto</a>
+    <a href="index.html"><span class="ic">🏔️</span>Plan B</a>
     <a href="inventario.html"><span class="ic">🎒</span>Inventario</a>
     <a class="on" href="costos.html"><span class="ic">💰</span>Costos</a>
   </nav>
@@ -105,7 +105,7 @@
   </div>
 
   <div class="addbar">
-    <div class="f concept"><label>Concepto</label><input id="aConcept" placeholder="ej. Banff Gondola (2 tickets)" autocomplete="off"></div>
+    <div class="f concept"><label>Concepto</label><input id="aConcept" placeholder="ej. Glow In The Wild (2 entradas)" autocomplete="off"></div>
     <div class="f"><label>Categoría</label><select id="aCat"></select></div>
     <div class="f amt"><label>Monto CAD</label><input id="aAmt" type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal"></div>
     <button class="btn amber" id="addBtn">+ Agregar</button>
@@ -219,8 +219,8 @@ setInterval(()=>{ if(!document.hidden) loadAll(); }, 5000);
 window.addEventListener('focus', loadAll);
 </script>
 <nav class="tabbar">
-  <a href="index.html"><span class="ic">🏔️</span><span>Rockies</span></a>
   <a href="toronto.html"><span class="ic">🍁</span><span>Toronto</span></a>
+  <a href="index.html"><span class="ic">🏔️</span><span>Plan B</span></a>
   <a href="inventario.html"><span class="ic">🎒</span><span>Inventario</span></a>
   <a class="on" href="costos.html"><span class="ic">💰</span><span>Costos</span></a>
 </nav>

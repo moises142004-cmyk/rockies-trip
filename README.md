@@ -1,10 +1,13 @@
-# Jime & Moi — Las Rockies 🏔️
+# Jime & Moi — Toronto → Québec 🍁
 
-Planner del viaje a las Rockies canadienses (Calgary + Canmore, day trips a Banff & Lake Louise), **26 Dic 2026 – 1 Ene 2027**.
+Planner del viaje de invierno **25 Dic 2026 – 2 Ene 2027**: Toronto → Montreal → Tremblant → Quebec City (Año Nuevo) → Toronto. **Vuelos comprados** (Porter LIR→YYZ 25 dic · Air Transat YYZ→LIR 2 ene). La raíz `/` redirige a `toronto.html`.
 
-Sitio estático, sin build ni dependencias de servidor. Tres secciones:
+`index.html` queda como **Plan B archivado** (ruta Calgary + Canmore).
 
-- **`index.html` — Mapa** · itinerario de 7 días (base doble: Calgary + Canmore), rutas que siguen calles reales (geometría OSRM horneada en `routes.js`), marcadores y galerías de fotos reales (`photos.js`) por cada punto.
+Sitio estático, sin build ni dependencias de servidor. Secciones:
+
+- **`toronto.html` — Mapa principal** · itinerario de 9 días, presupuesto y checklist de lo que falta reservar (`toronto-routes.js`, `toronto-photos.js`).
+- **`index.html` — Plan B (Rockies)** · itinerario de 7 días (base doble: Calgary + Canmore), rutas que siguen calles reales (geometría OSRM horneada en `routes.js`), marcadores y galerías de fotos reales (`photos.js`) por cada punto.
 - **`inventario.html` — Inventario** · lista de empaque de invierno; marcar empacado, agregar ítems, marcar "comprado allá". Se guarda en el navegador (localStorage).
 - **`costos.html` — Costos** · presupuesto en CAD con conversión en vivo a USD y colones. Se guarda en localStorage.
 

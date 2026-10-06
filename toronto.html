@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Toronto → Québec · Jime & Moi — Ruta este</title>
+<title>Toronto → Québec · Jime & Moi</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Las Rockies">
+<meta name="apple-mobile-web-app-title" content="Jime & Moi">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-167.png">
 <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
@@ -27,10 +27,10 @@
 <div class="mapfail" id="mapfail"><h4>El mapa no cargó</h4><p>Tu red bloqueó la librería del mapa, pero el itinerario, los tesoros y el presupuesto funcionan en el panel de la izquierda. Probá en otra red o WiFi.</p></div>
 
 <header class="hdr">
-  <div class="brand"><a class="mark" href="index.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Toronto → Québec</span></div>
+  <div class="brand"><a class="mark" href="toronto.html">Jime <em>&amp;</em> Moi</a><span class="dot"></span><span class="sub">Toronto → Québec</span></div>
   <nav class="sections">
-    <a href="index.html"><span class="ic">🏔️</span>Rockies</a>
     <a class="on" href="toronto.html"><span class="ic">🍁</span>Toronto</a>
+    <a href="index.html"><span class="ic">🏔️</span>Plan B</a>
     <a href="inventario.html"><span class="ic">🎒</span>Inventario</a>
     <a href="costos.html"><span class="ic">💰</span>Costos</a>
   </nav>
@@ -69,7 +69,7 @@
     <button class="tab" data-tab="cold">💰 Plan y $</button>
   </div>
   <div class="win-head" id="winHead">
-    <div class="eyebrow">Ruta este · road trip de invierno</div>
+    <div class="eyebrow">✅ Vuelos comprados · road trip de invierno</div>
     <h1>Toronto <em>→ Québec</em></h1>
     <div class="stats">
       <div class="stat"><div class="n">9</div><div class="l">Días</div></div>
@@ -103,7 +103,7 @@ const STAY={
   tremblant:{label:"Hotel · villa de Tremblant",dates:"29–30 Dic",url:null,todo:true},
   quebec:{label:"Hotel · Viejo Quebec",dates:"30 Dic–1 Ene",url:null,todo:true},
   toronto3:{label:"Hotel · al lado de Union Station",dates:"1–2 Ene",url:null,todo:true},
-  flight:{label:"Vuelo de regreso · Air Transat",dates:"2 Ene · 11:50 AM",flight:true}
+  flight:{label:"Vuelo de regreso · Air Transat ✅",dates:"2 Ene · 11:50 AM",flight:true}
 };
 const PHOTOS = window.PHOTOS || {};
 const ROUTES = window.ROUTES || {};
@@ -126,11 +126,11 @@ const LODGING=[
 ];
 
 const TRIP=[
- {n:1,date:"Vie 25 Dic",tag:"Liberia → Toronto",title:"Navidad volando",trans:"✈️ Porter + UP Express",wx:"−1°/−7°",stay:"toronto",cost:"~$25",
-  blurb:"Porter sale de Liberia a las 3:10 PM y aterriza en Toronto a las 9:25 PM. Tren UP Express a Union (25 min) y a dormir: mañana es Boxing Day.",
-  tip:"El UP Express corre hasta la 1 AM y cuesta $12.35 por persona. Uber al centro: $35–60.",
+ {n:1,date:"Vie 25 Dic",tag:"Liberia → Toronto",title:"Navidad volando",trans:"✈️ Porter ✅ + UP Express",wx:"−1°/−7°",stay:"toronto",cost:"~$25",
+  blurb:"Vuelo comprado ✅. Porter sale de Liberia a las 3:10 PM y aterriza en Toronto a las 9:25 PM. Tren UP Express a Union (25 min) y a dormir: mañana es Boxing Day.",
+  tip:"Estar en Liberia (LIR) a las 12:10 PM: 3 h antes por ser internacional, solo carry-on. Pasaporte + eTA/visa a mano. El UP Express corre hasta la 1 AM y cuesta $12.35 por persona. Uber al centro: $35–60.",
   sites:[
-   {name:"Aeropuerto de Toronto (YYZ · T3)",lat:43.6893,lng:-79.6195,t:"9:25 PM",fc:"ruta",ic:"✈️",pk:"yyz",p:"UP Express $12.35 c/u",note:"Llegada del Porter desde Liberia. Migración con maletas de mano y UP Express a Union Station en 25 minutos."},
+   {name:"Aeropuerto de Toronto (YYZ · T3)",lat:43.6893,lng:-79.6195,t:"9:25 PM",fc:"ruta",ic:"✈️",pk:"yyz",p:"✈️ comprado · UP Express $12.35 c/u",note:"Llegada del Porter desde Liberia. Migración con maletas de mano y UP Express a Union Station en 25 minutos."},
    {name:"Check-in · Airbnb centro",lat:43.6455,lng:-79.3905,t:"10:30 PM",fc:"hotel",ic:"🛏",pk:"torskyline",p:"~$200/noche",note:"Base en King West / Entertainment District. Mañana se madruga."}
   ]},
  {n:2,date:"Sáb 26 Dic",tag:"Toronto",title:"Boxing Day + dinosaurios",trans:"🚶 A pie / TTC",wx:"−1°/−7°",stay:"toronto",cost:"~$470",
@@ -201,10 +201,10 @@ const TRIP=[
   ]},
  {n:9,date:"Sáb 2 Ene",tag:"Toronto → Liberia",title:"Salida fácil",trans:"🚆 UP Express · 25 min",wx:"−3°/−9°",stay:"flight",cost:"~$25",
   blurb:"Del hotel a Union Station caminando y UP Express a Pearson en 25 minutos. Air Transat a las 11:50 AM, aterrizando en Liberia a las 4:35 PM.",
-  tip:"Tomá el UP Express a las 8:45 AM ($12.35 c/u). Air Transat: Terminal 3, mostradores 501–534. Incluye 1 carry-on gratis.",
+  tip:"Tomá el UP Express a las 8:45 AM ($12.35 c/u) para estar en Pearson 3 h antes. Air Transat: Terminal 3, mostradores 501–534. Hacé el check-in online 24 h antes.",
   sites:[
    {name:"Union Station · UP Express",lat:43.6447,lng:-79.3801,t:"8:45 AM",fc:"ruta",ic:"🚆",pk:"union",p:"$12.35 c/u",note:"El tren al aeropuerto sale cada 15 minutos."},
-   {name:"YYZ T3 → Liberia",lat:43.6893,lng:-79.6195,t:"11:50 AM",fc:"ruta",ic:"✈️",pk:"yyz",p:"Ya incluido",note:"Air Transat YYZ 11:50 AM → LIR 4:35 PM. ¡Hasta la próxima, Canadá!"}
+   {name:"YYZ T3 → Liberia",lat:43.6893,lng:-79.6195,t:"11:50 AM",fc:"ruta",ic:"✈️",pk:"yyz",p:"✅ Comprado",note:"Air Transat YYZ 11:50 AM → LIR 4:35 PM. ¡Hasta la próxima, Canadá!"}
   ]}
 ];
 
@@ -256,12 +256,22 @@ const BALANCE=[
 const RATES={usd:0.705,crc:320.7}; /* CAD → USD / CRC, 30 Sep 2026; se actualiza en vivo al abrir */
 const fmtN=n=>Math.round(n).toLocaleString('en-US');
 const BAL_HTML=`
-<div class="lead">Ruta para compensar las Rocosas: <b>3 días de Toronto</b>, tren a <b>Montreal</b> y road trip de invierno en círculo por <b>Parc Omega</b> (lobos), <b>Mont-Tremblant</b> (la villa de montaña del este) y <b>Quebec City</b> para el Año Nuevo, de vuelta a Montreal y tren a Toronto. Sin vuelos internos.</div>
+<div class="lead"><b>Este es el viaje</b> — vuelos Costa Rica ↔ Toronto ya comprados ✅. <b>3 días de Toronto</b>, tren a <b>Montreal</b> y road trip de invierno en círculo por <b>Parc Omega</b> (lobos), <b>Mont-Tremblant</b> (la villa de montaña del este) y <b>Quebec City</b> para el Año Nuevo, de vuelta a Montreal y tren a Toronto. Sin vuelos internos.</div>
 <div class="cblock"><h4>💰 Presupuesto estimado para 2</h4><div id="budget" class="budget"></div>
-<div class="cnote">Estimado a precios 2025–26. La comida incluye ~30% de impuesto y propina. <b>No incluye</b> los vuelos Costa Rica ↔ Toronto (van en <a href="https://rockies-fare-watch.vercel.app" style="color:var(--glacier)">Fare Watch</a>) ni compras. Para bajarlo: Airbnb en vez de hotel en Quebec, y Año Nuevo en Le Continental en vez de Légende.</div></div>
+<div class="cnote">Estimado a precios 2025–26. La comida incluye ~30% de impuesto y propina. <b>No incluye</b> los vuelos Costa Rica ↔ Toronto (ya comprados ✅ — anotá el monto real en <a href="costos.html" style="color:var(--glacier)">💰 Costos</a>) ni compras. Para bajarlo: Airbnb en vez de hotel en Quebec, y Año Nuevo en Le Continental en vez de Légende.</div></div>
 <div class="cblock"><h4>⚖️ Qué se gana y qué se pierde vs Calgary</h4></div>
 <div class="bal">${BALANCE.map(([k,c,t,s])=>`<div class="brow ${s}"><div class="bk">${k}</div><div class="bc"><small>Calgary</small>${c}</div><div class="bt"><small>Ruta este</small>${t}</div><div class="bs">${s==='up'?'▲ mejor':s==='plus'?'＋ extra':s==='down'?'▼ peor':'＝ igual'}</div></div>`).join('')}</div>
-<div class="cblock"><h4>✈️ Vuelos</h4><div class="cnote"><b>Ida:</b> Porter LIR 3:10 PM → YYZ 9:25 PM (25 dic). <b>Vuelta:</b> Air Transat YYZ 11:50 AM → LIR 4:35 PM (2 ene). ~$1.412 USD para 2 con carry-ons. <b>Ojo:</b> Air Transat abre en diciembre un vuelo directo Quebec → San José (1 por semana). Si cae el 1 o 2 de enero, podrían volver directo desde Quebec.</div></div>
+<div class="cblock"><h4>✈️ Vuelos · ✅ comprados</h4><div class="cnote"><b>Ida:</b> Porter LIR 3:10 PM → YYZ 9:25 PM (vie 25 dic). <b>Vuelta:</b> Air Transat YYZ 11:50 AM → LIR 4:35 PM (sáb 2 ene). Solo carry-on + mochila cada uno, sin maleta documentada. Check-in online 24 h antes de cada vuelo.</div></div>
+<div class="cblock"><h4>📌 Lo que falta reservar</h4><div class="todo-list">
+<div class="tdo hot"><b>Tremblant · hotel 29 dic</b><span>Temporada alta, el más difícil. Ya.</span></div>
+<div class="tdo hot"><b>Hospedajes</b><span>Toronto 25–28 · Montreal 28 · Quebec 30–1 · Union Station 1 ene</span></div>
+<div class="tdo hot"><b>Cena de Año Nuevo · Légende</b><span>En Libro apenas abra el menú. Plan B: Le Continental / gala del Frontenac</span></div>
+<div class="tdo"><b>VIA Rail</b><span>Toronto → Montreal (lun 28) y Montreal → Toronto (vie 1, 1:22 PM)</span></div>
+<div class="tdo"><b>Auto · Montreal centro</b><span>29 dic → 1 ene, devolver en el mismo lugar (llantas de invierno incluidas)</span></div>
+<div class="tdo"><b>Huskies · Tremblant</b><span>$185 c/u, mínimo 72 h antes — mejor ya</span></div>
+<div class="tdo"><b>Glow In The Wild</b><span>Entradas online; los feriados se agotan</span></div>
+<div class="tdo date"><b>Quetzal · 26 nov, 12:00 AM</b><span>OpenTable libera la mesa del 26 dic exactamente 30 días antes</span></div>
+</div></div>
 <div class="cblock"><h4>🌡️ Clima</h4><div class="tempcards">
   <div class="tcard"><div class="tcity2">Toronto · Montreal</div><div class="ttemp">−1° / −13°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">Húmedo y con viento del lago o del río: cala más de lo que dice el número.</div></div>
   <div class="tcard"><div class="tcity2">Tremblant · Quebec</div><div class="ttemp">−8° / −18°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">El frío de verdad, parecido a Banff. Nieve casi segura: paisaje de postal.</div></div>
@@ -279,8 +289,8 @@ const CFG={start:[2026,11,25],tz:'America/Toronto',wxKey:'este:wx',
 </script>
 <script src="planner.js"></script>
 <nav class="tabbar">
-  <a href="index.html"><span class="ic">🏔️</span><span>Rockies</span></a>
   <a class="on" href="toronto.html"><span class="ic">🍁</span><span>Toronto</span></a>
+  <a href="index.html"><span class="ic">🏔️</span><span>Plan B</span></a>
   <a href="inventario.html"><span class="ic">🎒</span><span>Inventario</span></a>
   <a href="costos.html"><span class="ic">💰</span><span>Costos</span></a>
 </nav>

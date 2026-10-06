@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/", "destination": "/toronto.html", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/(.*)",
