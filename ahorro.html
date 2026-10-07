@@ -192,7 +192,7 @@ const DEF={
     {id:'airbnb',ic:'🛏',n:'Airbnb',v:440000,on:true,pre:true},
     {id:'carro',ic:'🚗',n:'Carro',v:190000,on:true,pre:true},
     {id:'regalo',ic:'🎁',n:'Regalo de Navidad',v:200000,on:true,pre:true},
-    {id:'tours',ic:'🎟️',n:'Tours y actividades',v:250000,on:true,flag:'Zoo, Wonderland, huskies, tubing, Niagara, acuario (~CAD 776)'},
+    {id:'tours',ic:'🎟️',n:'Tours y actividades',v:296000,on:true,flag:'CityPASS x2 (zoo, acuario, CN Tower, Casa Loma, ROM), Wonderland, huskies, tubing, Niagara (~CAD 920)'},
     {id:'transp',ic:'🚆',n:'UP Express + TTC',v:55000,on:true,flag:'Tren al aeropuerto ida y vuelta + metro (~CAD 170)'},
     {id:'comida',ic:'🍽️',n:'Comida',v:380000,on:true}
   ],
@@ -214,7 +214,9 @@ function load(){
   /* v3: itinerario nuevo (Toronto + Niagara): sin VIA Rail, comida 380 mil, actividades reales */
   if((s.ver||0)<3){s.costs=s.costs.filter(c=>c.id!=='via');
     const set=(id,v,flag)=>{const c=s.costs.find(x=>x.id===id);if(c){c.v=v;if(flag)c.flag=flag;}};
-    set('comida',380000);set('tours',250000,DEF.costs.find(c=>c.id==='tours').flag);s.ver=3;}
+    set('comida',380000);set('tours',250000);s.ver=3;}
+  /* v4: CityPASS (suma CN Tower y Casa Loma) → actividades ~CAD 920 */
+  if(s.ver<4){const c=s.costs.find(x=>x.id==='tours');const d=DEF.costs.find(x=>x.id==='tours');if(c){if(c.v===250000)c.v=d.v;c.flag=d.flag;}s.ver=4;}
   save(s);return s;
 }
 function save(s){let ok=true;try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){ok=false;}
@@ -297,11 +299,11 @@ function render(){
   dw.style.display=S.gdic==null?'':'none';
   dw.innerHTML=`<b>Falta este dato.</b> El ₡1,5 M del 29 nov–1 dic es también tu sueldo de diciembre. Si de ahí salen el alquiler, la tarjeta y tus cuotas, eso hay que ahorrarlo antes. Poné cuánto se te va en un mes normal.`;
   const food=S.costs.find(c=>c.id==='comida');
-  { const cadF=food.v/S.rCad, cenas=495, resto=cadF-cenas, dia=Math.round(resto/10);
+  { const cadF=food.v/S.rCad, cenas=610, resto=cadF-cenas, dia=Math.round(resto/10);
     const w=document.getElementById('planWarn');
-    w.innerHTML=dia>=55
-      ? `<b>La comida alcanza.</b> ${fmtK(food.v)} ≈ CAD ${Math.round(cadF)}. Las 4 cenas lindas (wagyu en Kyoto Katsugyu ~$150, Pai ~$105, Kinka ~$115 y Chubby's en Año Nuevo ~$125) suman ~CAD ${cenas}. Quedan ~CAD ${dia} por día para desayunos, almuerzos y snacks de los dos: Tim Hortons, food courts, poutine, dumplings.`
-      : `<b>Ojo con la comida.</b> ${fmtK(food.v)} ≈ CAD ${Math.round(cadF)}. Las 4 cenas lindas suman ~CAD ${cenas} y quedan solo ~CAD ${Math.max(dia,0)} por día para lo demás. Subí la comida o cambiá una cena linda por algo casual.`;
+    w.innerHTML=dia>=50
+      ? `<b>La comida alcanza.</b> ${fmtK(food.v)} ≈ CAD ${Math.round(cadF)}. Lo caro suma ~CAD ${cenas}: wagyu steak en Maxime's ~$150, almuerzo DIY en Kyoto Katsugyu ~$115, Pai ~$105, Kinka ~$115 y Chubby's en Año Nuevo ~$125. Quedan ~CAD ${dia} por día para desayunos, almuerzos y snacks de los dos: Tim Hortons, food courts, poutine, dumplings.`
+      : `<b>Ojo con la comida.</b> ${fmtK(food.v)} ≈ CAD ${Math.round(cadF)}. Lo caro (Maxime's, Katsugyu y las 3 cenas lindas) suma ~CAD ${cenas} y quedan solo ~CAD ${Math.max(dia,0)} por día para lo demás. Subí la comida o cambiá Katsugyu por un almuerzo barato.`;
     w.style.display=''; }
 
   const inc=[

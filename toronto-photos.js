@@ -1,5 +1,10 @@
 /* Real Google Maps photos per place (Toronto + Niagara), hotlinked from lh3.googleusercontent.com. Keyed by pk. */
 window.PHOTOS = {
+ "maximes":{photos:[
+  {url:"https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SzN1dLISeAEhojsQNmROez99FiJsg47N2NWVHMp8_w61_upBoPDY9H6ro1E4_53QAB1K6hixVnA_hd-FA9Y2jEz8dbNH_KZKn-KnJftYKsHNL36H_vncnvI5Fm5p5btFQc4xvZ3-d5DeG0=w900-h600-k-no",caption:"Maxime's · steak"},
+  {url:"https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RdO8YhQRlfEfYh2j4s-I7-gqznaHNaWKQLAUMk6NYPgCRv3JYXaR6f6ai7FzzzrGvWgaEDyl5uSOGBtoUJzcKjF_rpphozaLJENNy61Mp5HA_cyYisPiDhP0_40jewizK-dp_AaAwtSpc=w900-h600-k-no",caption:"Maxime's · cortes"},
+  {url:"https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SwZU7hyXnwLfHYblBCx0Nv6qtts3dCv7DMm2YUVKn1Agz-iFsdF4OXUSnYNobvQx_Ez9k8SJ_UJLp9tOQLhUWQf7l2orVOFWEi-21hY-x9EOtA97JqjYgIg9mkiw3OoXfY4nC0MW5iBtLh=w900-h600-k-no",caption:"Maxime's · el salón"}
+ ]},
  "airbnb":{photos:[
   {url:"https://lh3.googleusercontent.com/grass-cs/ACvplmOzgk2hovOV3jGhouaCFP9A8Sz2Ou0JMcUGdUanyHPOVC0fXGruVRp5JWnqGvpBVsKGFFtJYKx4kRDmYJIrf969i3haqzS4EAMI5dNrvt8spLruMVh6kPF7Nn5VBIwpqu6f8Moq=w900-h600-k-no",caption:"Check-in · Airbnb"},
   {url:"https://lh3.googleusercontent.com/grass-cs/ACvplmOU1w6rvGzYdq22agAV_G9pn1KryauY1Bs1ZMf5u9aQuhdGm2ACA-AMptF-fK-3Dmv4YZgxcOaYoV4c4FTz3P9M90iFs0Iu1pJZc0n7pb3I96I5mPHymMgXY4NOJeWD6a3G4ew8=w900-h600-k-no",caption:"Check-in · Airbnb"},
