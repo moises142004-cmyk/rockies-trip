@@ -6,9 +6,10 @@ window.PHOTOS = {
   {url:"https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SwZU7hyXnwLfHYblBCx0Nv6qtts3dCv7DMm2YUVKn1Agz-iFsdF4OXUSnYNobvQx_Ez9k8SJ_UJLp9tOQLhUWQf7l2orVOFWEi-21hY-x9EOtA97JqjYgIg9mkiw3OoXfY4nC0MW5iBtLh=w900-h600-k-no",caption:"Maxime's · el salón"}
  ]},
  "airbnb":{photos:[
-  {url:"https://lh3.googleusercontent.com/grass-cs/ACvplmOzgk2hovOV3jGhouaCFP9A8Sz2Ou0JMcUGdUanyHPOVC0fXGruVRp5JWnqGvpBVsKGFFtJYKx4kRDmYJIrf969i3haqzS4EAMI5dNrvt8spLruMVh6kPF7Nn5VBIwpqu6f8Moq=w900-h600-k-no",caption:"Check-in · Airbnb"},
-  {url:"https://lh3.googleusercontent.com/grass-cs/ACvplmOU1w6rvGzYdq22agAV_G9pn1KryauY1Bs1ZMf5u9aQuhdGm2ACA-AMptF-fK-3Dmv4YZgxcOaYoV4c4FTz3P9M90iFs0Iu1pJZc0n7pb3I96I5mPHymMgXY4NOJeWD6a3G4ew8=w900-h600-k-no",caption:"Check-in · Airbnb"},
-  {url:"https://lh3.googleusercontent.com/grass-cs/ACvplmOLMlOqmYBZfauQLiCUe5E1DB88rRF5PS5f3sjFbNMVoH_N0Cigfxc2guJSATAtU8kDI0v_uI_AhklZbxFO0cfEnrLwGZ26mUjbv0Je0v0Lyvb0y5vud7wpSw66B5x-Cv-acO5olnP5Erfz=w900-h600-k-no",caption:"Check-in · Airbnb"}]},
+  {url:"https://a0.muscache.com/im/pictures/hosting/Hosting-1685940623584538142/original/8b399bec-72d2-4935-928a-11faa9fdf76f.jpeg?im_w=960",caption:"El cuarto"},
+  {url:"https://a0.muscache.com/im/pictures/hosting/Hosting-1685940623584538142/original/3549abc9-1f46-44f5-8918-a7fae2c9d08f.jpeg?im_w=960",caption:"Sala y cocina"},
+  {url:"https://a0.muscache.com/im/pictures/hosting/Hosting-1685940623584538142/original/45cd48e8-3abc-4b2f-b891-76c8a04a109c.jpeg?im_w=960",caption:"Cocina completa"}
+ ]},
  "aritzia":{photos:[
   {url:"https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnh96Fte89Bmouf6aQn-qqQpXvumFU69uSbJp-680SHcTvncf95taseYpqCQ5PldpcqoM2IuIkb7xKWglqeMv0OLbOi3KUFLX9PMbT2Re_EnnXrNviBT0aj52ZhqAIC4RU-8KmR68m63lzR=w900-h600-k-no",caption:"Aritzia · Eaton Centre"},
   {url:"https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkTbUTJ1YqQ25ZFChxSCgfdZPmdPY_MdQjnHU2TeKgia3b_v3JqGn-z6GWQoChM8vh_sWLfRGyORoMbLPKYiHHBsxPHc_yrLEIofsoSng9myIlQe9N7WiW71iAS_6StTJp7HURF1ofjxEeH=w900-h600-k-no",caption:"Aritzia · Eaton Centre"},
