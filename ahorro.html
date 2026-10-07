@@ -193,7 +193,7 @@ const DEF={
     {id:'carro',ic:'🚗',n:'Carro',v:190000,on:true,pre:true},
     {id:'regalo',ic:'🎁',n:'Regalo de Navidad',v:200000,on:true,pre:true},
     {id:'tours',ic:'🎟️',n:'Tours y actividades',v:206000,on:true,flag:'CityPASS x2 (zoo, acuario, CN Tower, Casa Loma, ROM), Wonderland, tubing, Niagara (~CAD 640)'},
-    {id:'transp',ic:'🚆',n:'UP Express + TTC',v:55000,on:true,flag:'Tren al aeropuerto ida y vuelta + metro (~CAD 170)'},
+    {id:'transp',ic:'🚆',n:'UP Express + TTC',v:71000,on:true,flag:'Airbnb en Mount Dennis: UP Express al aeropuerto y al centro + Línea 5 (~CAD 220)'},
     {id:'comida',ic:'🍽️',n:'Comida',v:380000,on:true}
   ],
   buffer:10, gdic:null, dext:null,
@@ -219,6 +219,8 @@ function load(){
   if(s.ver<4){const c=s.costs.find(x=>x.id==='tours');const d=DEF.costs.find(x=>x.id==='tours');if(c){if(c.v===250000)c.v=296000;c.flag=d.flag;}s.ver=4;}
   /* v5: sin huskies (−CAD 280) */
   if(s.ver<5){const c=s.costs.find(x=>x.id==='tours');const d=DEF.costs.find(x=>x.id==='tours');if(c){if(c.v===296000)c.v=d.v;c.flag=d.flag;}s.ver=5;}
+  /* v6: Airbnb real en Mount Dennis → más UP Express */
+  if(s.ver<6){const c=s.costs.find(x=>x.id==='transp');const d=DEF.costs.find(x=>x.id==='transp');if(c){if(c.v===55000)c.v=d.v;c.flag=d.flag;}s.ver=6;}
   save(s);return s;
 }
 function save(s){let ok=true;try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){ok=false;}
