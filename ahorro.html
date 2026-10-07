@@ -297,8 +297,12 @@ function render(){
   dw.style.display=S.gdic==null?'':'none';
   dw.innerHTML=`<b>Falta este dato.</b> El ₡1,5 M del 29 nov–1 dic es también tu sueldo de diciembre. Si de ahí salen el alquiler, la tarjeta y tus cuotas, eso hay que ahorrarlo antes. Poné cuánto se te va en un mes normal.`;
   const food=S.costs.find(c=>c.id==='comida');
-  document.getElementById('planWarn').innerHTML=`<b>Ojo con la comida.</b> ${fmtK(food.v)} da ~CAD ${Math.round(food.v/S.rCad/9)} por día para los dos. Quetzal, el A5 de La Forge y Légende en Año Nuevo se comen ~CAD 1.000 de eso. Alcanza si el resto de los días es casual (Schwartz's, cafés, food courts) o si cambiás Légende por Le Continental.`;
-  document.getElementById('planWarn').style.display=food.v>=600000?'none':'';
+  { const cadF=food.v/S.rCad, cenas=495, resto=cadF-cenas, dia=Math.round(resto/10);
+    const w=document.getElementById('planWarn');
+    w.innerHTML=dia>=55
+      ? `<b>La comida alcanza.</b> ${fmtK(food.v)} ≈ CAD ${Math.round(cadF)}. Las 4 cenas lindas (wagyu en Kyoto Katsugyu ~$150, Pai ~$105, Kinka ~$115 y Chubby's en Año Nuevo ~$125) suman ~CAD ${cenas}. Quedan ~CAD ${dia} por día para desayunos, almuerzos y snacks de los dos: Tim Hortons, food courts, poutine, dumplings.`
+      : `<b>Ojo con la comida.</b> ${fmtK(food.v)} ≈ CAD ${Math.round(cadF)}. Las 4 cenas lindas suman ~CAD ${cenas} y quedan solo ~CAD ${Math.max(dia,0)} por día para lo demás. Subí la comida o cambiá una cena linda por algo casual.`;
+    w.style.display=''; }
 
   const inc=[
     ['sal2','💼','Salario + aguinaldo · 29 nov–1 dic','Llega de golpe',sal2(),''],
@@ -314,7 +318,7 @@ function render(){
 
   document.getElementById('phoneModel').innerHTML=Object.entries(PHONES).map(([k,p])=>`<button data-pm="${k}" class="${S.phone===k?'on':''}">${p.n}${p.cad?' · C$'+p.cad.toLocaleString('en-US'):''}</button>`).join('');
   document.getElementById('phoneNote').innerHTML=S.phone==='none'?'Sin iPhone, el viaje sale holgado.':
-    `Con 13% de HST (Ontario) son <b>C$${Math.round(r.pCAD).toLocaleString('en-US')} ≈ ${fmt(r.pCRC)}</b>. Compralo en Toronto: en Quebec el impuesto es ~15%. Ojo: tu tarjeta puede cobrar comisión por compra en el exterior, y confirmá que tu operador en Costa Rica te active eSIM por si el modelo canadiense no trae bandeja de SIM.`;
+    `Con 13% de HST (Ontario) son <b>C$${Math.round(r.pCAD).toLocaleString('en-US')} ≈ ${fmt(r.pCRC)}</b>. Ojo: tu tarjeta puede cobrar comisión por compra en el exterior, y confirmá que tu operador en Costa Rica te active eSIM por si el modelo canadiense no trae bandeja de SIM.`;
   document.getElementById('monthsSeg').innerHTML=[[1,'Solo nov'],[2,'Oct + nov'],[3,'Oct + nov + dic']].map(([k,n])=>`<button data-mo="${k}" class="${S.months===k?'on':''}">${n}</button>`).join('');
   ['rBuy','rSell','rCad'].forEach(id=>document.getElementById(id).value=S[id]);
   bind();
