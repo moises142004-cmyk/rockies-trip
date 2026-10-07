@@ -3,7 +3,7 @@
    navigations → the page failed on the 2nd visit). Own pages/scripts are
    network-first (always fresh online, cached copy offline). Map tiles & photos
    are cache-first. Supabase / weather / FX APIs are never cached. */
-const CACHE = 'rockies-v16';
+const CACHE = 'rockies-v17';
 const SHELL = [
   'toronto.html', 'ahorro.html', 'inventario.html', 'costos.html',
   'style.css', 'planner.css', 'planner.js', 'toronto-routes.js', 'toronto-photos.js', 'cloud.js', 'manifest.json',

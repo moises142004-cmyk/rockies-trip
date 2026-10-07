@@ -192,7 +192,7 @@ const DEF={
     {id:'airbnb',ic:'🛏',n:'Airbnb',v:440000,on:true,pre:true},
     {id:'carro',ic:'🚗',n:'Carro',v:190000,on:true,pre:true},
     {id:'regalo',ic:'🎁',n:'Regalo de Navidad',v:200000,on:true,pre:true},
-    {id:'tours',ic:'🎟️',n:'Tours y actividades',v:296000,on:true,flag:'CityPASS x2 (zoo, acuario, CN Tower, Casa Loma, ROM), Wonderland, huskies, tubing, Niagara (~CAD 920)'},
+    {id:'tours',ic:'🎟️',n:'Tours y actividades',v:206000,on:true,flag:'CityPASS x2 (zoo, acuario, CN Tower, Casa Loma, ROM), Wonderland, tubing, Niagara (~CAD 640)'},
     {id:'transp',ic:'🚆',n:'UP Express + TTC',v:55000,on:true,flag:'Tren al aeropuerto ida y vuelta + metro (~CAD 170)'},
     {id:'comida',ic:'🍽️',n:'Comida',v:380000,on:true}
   ],
@@ -216,7 +216,9 @@ function load(){
     const set=(id,v,flag)=>{const c=s.costs.find(x=>x.id===id);if(c){c.v=v;if(flag)c.flag=flag;}};
     set('comida',380000);set('tours',250000);s.ver=3;}
   /* v4: CityPASS (suma CN Tower y Casa Loma) → actividades ~CAD 920 */
-  if(s.ver<4){const c=s.costs.find(x=>x.id==='tours');const d=DEF.costs.find(x=>x.id==='tours');if(c){if(c.v===250000)c.v=d.v;c.flag=d.flag;}s.ver=4;}
+  if(s.ver<4){const c=s.costs.find(x=>x.id==='tours');const d=DEF.costs.find(x=>x.id==='tours');if(c){if(c.v===250000)c.v=296000;c.flag=d.flag;}s.ver=4;}
+  /* v5: sin huskies (−CAD 280) */
+  if(s.ver<5){const c=s.costs.find(x=>x.id==='tours');const d=DEF.costs.find(x=>x.id==='tours');if(c){if(c.v===296000)c.v=d.v;c.flag=d.flag;}s.ver=5;}
   save(s);return s;
 }
 function save(s){let ok=true;try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){ok=false;}
