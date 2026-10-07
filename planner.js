@@ -6,6 +6,8 @@ let openDay=null, activeFilter='all';
 const $=id=>document.getElementById(id);
 const eachMarker=fn=>{dayMarkers.forEach(fn);spotMarkers.forEach(fn);};
 function gmaps(lat,lng){return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;}
+/* request the right size: Google photos (=wW-hH) or Wikimedia (?width=) */
+function sizeImg(u,w,h){return u.includes('googleusercontent.com/')?u.replace(/=w\d+-h\d+[^"']*$/,'')+'=w'+w+'-h'+h+'-k-no':u.replace(/width=\d+/,'width='+w);}
 function photosFor(pk){return (pk&&PHOTOS[pk]&&PHOTOS[pk].photos)?PHOTOS[pk].photos:[];}
 const totalKm=Object.values(ROUTE_KM).reduce((a,b)=>a+b,0);
 
@@ -82,7 +84,7 @@ function buildPanels(){
     const block=document.createElement('div');block.className='tcity';
     block.innerHTML=`<h3>${city} <span class="cnt">${list.length}</span></h3>`+
       list.map(sp=>{const ph=photosFor(sp.pk)[0];
-        const ic=ph?`<img loading="lazy" src="${ph.url.replace('width=1000','width=120')}" alt="" onerror="this.parentNode.textContent='${sp.ic}'">`:sp.ic;
+        const ic=ph?`<img loading="lazy" decoding="async" src="${sizeImg(ph.url,120,120)}" alt="" onerror="this.parentNode.textContent='${sp.ic}'">`:sp.ic;
         return `<div class="tspot" data-id="${sp.id}" style="--cc:${FCCOL[sp.cat]}"><div class="tic">${ic}</div><div><div class="tn">${sp.name}</div><div class="tc">${FCLBL[sp.cat]}</div><div class="tnote">${sp.note}</div></div></div>`;}).join('');
     tWrap.appendChild(block);
   });
@@ -146,7 +148,7 @@ function focusDay(di){
 /* ===== MAP ===== */
 function galHtml(photos){
   if(!photos.length) return '';
-  const imgs=photos.map(p=>`<img src="${p.url.replace('width=1000','width=560')}" alt="${(p.caption||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.style.display='none'">`).join('');
+  const imgs=photos.map(p=>`<img decoding="async" src="${sizeImg(p.url,560,380)}" alt="${(p.caption||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.style.display='none'">`).join('');
   const nav=photos.length>1?`<button class="nav prev" onclick="this.parentNode.querySelector('.track').scrollBy({left:-272})">‹</button><button class="nav next" onclick="this.parentNode.querySelector('.track').scrollBy({left:272})">›</button><span class="count">1 / ${photos.length}</span>`:'';
   return `<div class="gal"><div class="track">${imgs}</div>${nav}</div>`;
 }
@@ -167,10 +169,12 @@ let layers;
 function setView(v){
   curView=v;
   [layers.sat,layers.terr,layers.dark].forEach(l=>map.removeLayer(l));map.removeLayer(layers.satLabels);
-  if(v==='sat'){layers.sat.addTo(map);layers.satLabels.addTo(map);}
+  if(v==='sat'){layers.sat.addTo(map);syncLabels();}
   else if(v==='terr')layers.terr.addTo(map);
   else layers.dark.addTo(map);
 }
+/* street/place labels over satellite only when zoomed in (a 2nd tile layer doubles the per-frame cost) */
+function syncLabels(){if(!map||curView!=='sat')return;const want=map.getZoom()>=11;const has=map.hasLayer(layers.satLabels);if(want&&!has)layers.satLabels.addTo(map);else if(!want&&has)map.removeLayer(layers.satLabels);}
 function applyVisibility(){
   eachMarker(m=>{let show=(activeFilter==='all'||m._fc===activeFilter);if(m._kind==='site'&&openDay!==null)show=show&&(m._di===openDay);show?m.addTo(map):map.removeLayer(m);});
   Object.entries(dayLines).forEach(([k,arr])=>arr.forEach(l=>{const glow=l.options.className==='route-glow';let op;if(openDay===null)op=glow?.16:.85;else op=(+k===openDay)?(glow?.32:1):(glow?.03:.08);l.setStyle({opacity:op});}));
@@ -190,8 +194,8 @@ function renderDayLayers(){
     const c=DAYCOL[di];day.c=c;dayLines[di]=[];
     const path=(ROUTES[di]&&ROUTES[di].length>1)?ROUTES[di]:day.sites.map(s=>[s.lat,s.lng]);
     if(path.length>1){
-      dayLines[di].push(L.polyline(path,{className:'route-glow',color:c,weight:9,opacity:.16,interactive:false,smoothFactor:1.5}).addTo(map));
-      dayLines[di].push(L.polyline(path,{className:'route-main',color:c,weight:3,opacity:.85,dashArray:'2 8',lineCap:'round',interactive:false,smoothFactor:1.5}).addTo(map));
+      /* one solid line per day (the glow + dash pair doubled canvas redraws on every frame) */
+      dayLines[di].push(L.polyline(path,{className:'route-main',color:c,weight:4,opacity:.9,lineCap:'round',lineJoin:'round',interactive:false,smoothFactor:2}).addTo(map));
     }
   });
   let mi=0;
@@ -207,10 +211,10 @@ function renderDayLayers(){
   applyVisibility();
 }
 function initMap(){
-  map=L.map('map',{zoomControl:true,attributionControl:true,renderer:L.canvas({padding:.3}),minZoom:4,maxZoom:17,preferCanvas:true,zoomSnap:.5,wheelPxPerZoomLevel:90}).setView(CFG.center,CFG.zoom);
+  map=L.map('map',{zoomControl:true,attributionControl:true,renderer:L.canvas({padding:.5,tolerance:0}),minZoom:4,maxZoom:17,preferCanvas:true,zoomSnap:.5,wheelPxPerZoomLevel:90}).setView(CFG.center,CFG.zoom);
   layers={
-    sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,updateWhenZooming:false,keepBuffer:1,attribution:'Imagery © Esri, Maxar'}),
-    satLabels:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,opacity:.9}),
+    sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,updateWhenZooming:false,updateWhenIdle:true,keepBuffer:2,attribution:'Imagery © Esri, Maxar'}),
+    satLabels:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,updateWhenZooming:false,updateWhenIdle:true}),
     terr:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© Esri'}),
     dark:L.layerGroup([L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18,attribution:'© Esri'}),L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18})])
   };
@@ -230,6 +234,7 @@ function initMap(){
   });
   renderDayLayers();
   MAP_OK=true;
+  map.on('zoomend',syncLabels);
   map.invalidateSize();fitAll(false);
   setView(curView);
 }

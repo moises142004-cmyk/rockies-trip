@@ -263,3 +263,23 @@ body.win-closed .reopen{display:inline-flex}
 .tdo.date{border-left-color:var(--glacier)}
 .archived{margin-top:10px;font-size:12px;line-height:1.5;padding:9px 11px;border-radius:10px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.28);color:var(--amber)}
 .archived a{color:var(--frost);font-weight:600}
+
+/* ===== PERFORMANCE (map pages) =====
+   backdrop-filter over a live map re-blurs the whole panel on every pan/zoom frame,
+   which was dropping desktop to ~8 fps. Panels get near-opaque fills instead,
+   so the look stays dark-glass without the per-frame cost. */
+.hdr *,.seg,.menu-btn,.filters,.win,.now,.mapfail,.leaflet-control-zoom a,.leaflet-control-attribution,
+.leaflet-popup.t-pop .leaflet-popup-content-wrapper,.gal .nav,.gal .count,.reopen,.btn{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.win{background:rgba(13,20,32,.95)}
+.filters,.seg,.now,.leaflet-control-zoom a,.menu-btn{background:rgba(13,20,32,.92)!important}
+.leaflet-popup.t-pop .leaflet-popup-content-wrapper{background:rgba(13,20,32,.98)}
+/* full-screen vignette over the map forces a composite pass every frame */
+.atmos{display:none}
+/* markers: cheaper shadows, no pop-in animation for 70+ pins */
+.mk{animation:none!important}
+.mk.seal-m{box-shadow:0 0 0 1px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.5)}
+.mk.pin,.mk.spot,.mk.home{box-shadow:0 2px 5px rgba(0,0,0,.5)}
+/* keep the map on its own GPU layer, panels static */
+#map{will-change:transform;contain:strict}
+.win,.filters,.hdr,.now{contain:layout paint}
