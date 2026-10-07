@@ -2,14 +2,14 @@
 
 Planner del viaje de invierno **24 Dic 2026 – 2 Ene 2027**: base en Toronto con días de huskies + snow tubing y Niagara Falls. **Vuelos comprados** (Porter PD790 SJO→YYZ 23–24 dic · Air Transat TS112 YYZ→SJO 2 ene). La raíz `/` redirige a `toronto.html`.
 
-`index.html` (ruta Calgary) está **escondido**: `/index.html` redirige a Toronto y no aparece en el menú.
+`calgary.html` (ruta Calgary, Plan B) está **escondido**: no aparece en el menú. `/` sirve `toronto.html` (rewrite, sin redirect).
 
 - **`ahorro.html` — Ahorro** · plan de ahorro hasta el viaje. Los ingresos NO están en el código: se cargan con un link personal (`#ing=…&sal=…`) y viven en localStorage del dispositivo.
 
 Sitio estático, sin build ni dependencias de servidor. Secciones:
 
 - **`toronto.html` — Mapa principal** · itinerario de 10 días, presupuesto y checklist de lo que falta reservar (`toronto-routes.js`, `toronto-photos.js`).
-- **`index.html` — Plan B (Rockies)** · itinerario de 7 días (base doble: Calgary + Canmore), rutas que siguen calles reales (geometría OSRM horneada en `routes.js`), marcadores y galerías de fotos reales (`photos.js`) por cada punto.
+- **`calgary.html` — Plan B (Rockies, escondido)** · itinerario de 7 días (base doble: Calgary + Canmore), rutas que siguen calles reales (geometría OSRM horneada en `routes.js`), marcadores y galerías de fotos reales (`photos.js`) por cada punto.
 - **`inventario.html` — Inventario** · lista de empaque de invierno; marcar empacado, agregar ítems, marcar "comprado allá". Se guarda en el navegador (localStorage).
 - **`costos.html` — Costos** · presupuesto en CAD con conversión en vivo a USD y colones. Se guarda en localStorage.
 
