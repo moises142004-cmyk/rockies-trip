@@ -226,7 +226,7 @@ const COBRA=[
   {id:'bono',ic:'💰',n:'Bono',v:756000},
   {id:'ahc',ic:'🐷',n:'Ahorro Canadá',v:250000,note:'Incluye ₡200 mil de Jime + ₡50 mil tuyos'},
   {id:'papa',ic:'👨',n:'Regalo de Navidad · papá',v:300000,sup:true},
-  {id:'mant',ic:'🧩',n:'Mantenimientos',v:440000},
+  {id:'mant',ic:'🧩',n:'Mantenimientos',usd:570,v:258147,note:'US$570 al mes · al tipo de cambio de hoy'},
   {id:'pag2',ic:'🌐',n:'Página 2',v:100000}
 ].map(c=>({...c,on:true,sup:!!c.sup}));
 const VIDA=[
@@ -242,6 +242,7 @@ const DEF={cobra:COBRA,vida:VIDA,extra:[],trip:TRIP.map(t=>({id:t.id,on:true})),
 const b64e=o=>{const b=new TextEncoder().encode(JSON.stringify(o));let s='';b.forEach(c=>s+=String.fromCharCode(c));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
 const b64d=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');const bin=atob(s);return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0))));};
 let S;
+function usdSync(s){s.cobra.forEach(c=>{if(c.usd)c.v=Math.round(c.usd*s.rUsd);});}
 function load(){
   let s=JSON.parse(JSON.stringify(DEF));
   try{const raw=localStorage.getItem(KEY);if(raw)s=Object.assign(s,JSON.parse(raw));}catch(e){}
@@ -249,6 +250,8 @@ function load(){
   if(!s.cobra.length)s.cobra=JSON.parse(JSON.stringify(COBRA));
   if(!s.vida.length)s.vida=JSON.parse(JSON.stringify(VIDA));
   COBRA.forEach(d=>{const c=s.cobra.find(x=>x.id===d.id);if(c&&d.note)c.note=d.note;});
+  if((s.dv||0)<2){const d=COBRA.find(x=>x.id==='mant'),c=s.cobra.find(x=>x.id==='mant');if(c&&d)Object.assign(c,{usd:d.usd,v:d.v,note:d.note});s.dv=2;}
+  usdSync(s);
   const h=new URLSearchParams(location.hash.slice(1));
   if(h.has('p')){try{const p=b64d(h.get('p'));
       if(Array.isArray(p.c))s.cobra=p.c.map(([id,ic,n,v,sup])=>({id,ic,n,v:+v||0,sup:!!sup,on:true}));
@@ -388,14 +391,14 @@ function bind(){
   document.querySelectorAll('[data-tt]').forEach(e=>e.onclick=()=>{const t=S.trip[+e.dataset.tt];t.on=!t.on;save();render();});
   document.querySelectorAll('[data-rt]').forEach(e=>e.onclick=()=>{const t=S.trip[+e.dataset.rt];delete t.manual;delete t.v;save();render();});
   const arr=k=>S[k];
-  document.querySelectorAll('[data-p]').forEach(e=>e.onchange=()=>{const [k,i]=e.dataset.p.split(':');arr(k)[+i].v=+e.value||0;save();render();});
+  document.querySelectorAll('[data-p]').forEach(e=>e.onchange=()=>{const [k,i]=e.dataset.p.split(':');const it=arr(k)[+i];it.v=+e.value||0;if(it.usd){delete it.usd;it.note='Editado a mano';}save();render();});
   document.querySelectorAll('[data-pt]').forEach(e=>e.onclick=()=>{const [k,i]=e.dataset.pt.split(':');const c=arr(k)[+i];c.on=!c.on;save();render();});
   document.querySelectorAll('[data-sup]').forEach(e=>e.onclick=()=>{const c=S.cobra[+e.dataset.sup];c.sup=!c.sup;save();render();});
   document.querySelectorAll('[data-del]').forEach(e=>e.onclick=()=>{const [k,i]=e.dataset.del.split(':');arr(k).splice(+i,1);save();render();});
   document.querySelectorAll('[data-seg]').forEach(e=>e.onclick=()=>{S.seguro=e.dataset.seg;const c=S.trip.find(t=>t.id==='carro');if(c){delete c.manual;delete c.v;}save();render();});
   document.querySelectorAll('[data-pm]').forEach(e=>e.onclick=()=>{S.phone=e.dataset.pm;save();render();});
   const bi=document.getElementById('bufIn');if(bi)bi.onchange=()=>{S.buffer=Math.max(0,+bi.value||0);save();render();};
-  ['rUsd','rCad'].forEach(id=>{const e=document.getElementById(id);e.onchange=()=>{S[id]=+e.value||S[id];S.fxManual=true;save();render();};});
+  ['rUsd','rCad'].forEach(id=>{const e=document.getElementById(id);e.onchange=()=>{S[id]=+e.value||S[id];S.fxManual=true;usdSync(S);save();render();};});
 }
 const addItem=(key,nId,vId)=>{const n=document.getElementById(nId).value.trim(),v=+document.getElementById(vId).value;if(!n||!(v>0))return;
   S[key].push({id:'x'+Date.now(),ic:key==='cobra'?'➕':'➖',n,v,on:true,x:true,sup:false});document.getElementById(nId).value='';document.getElementById(vId).value='';save();render();};
@@ -405,7 +408,7 @@ document.getElementById('resetBtn').onclick=()=>{S.trip=TRIP.map(t=>({id:t.id,on
 render();
 /* tipo de cambio en vivo (USD y CAD → colones), salvo que lo hayas editado a mano */
 function fx(){if(S.fxManual)return;fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.json()).then(d=>{if(d&&d.rates&&d.rates.CRC&&d.rates.CAD){
-  S.rUsd=Math.round(d.rates.CRC*100)/100;S.rCad=Math.round(d.rates.CRC/d.rates.CAD*100)/100;save();render();
+  S.rUsd=Math.round(d.rates.CRC*100)/100;S.rCad=Math.round(d.rates.CRC/d.rates.CAD*100)/100;usdSync(S);save();render();
   let when='';try{when=new Date(d.time_last_update_utc).toLocaleDateString('es-CR',{day:'numeric',month:'short'});}catch(e){}
   document.getElementById('fxHint').textContent=`Tipo real del mercado${when?' · '+when:''}: 1 USD = ₡${S.rUsd} · 1 CAD = ₡${S.rCad}. No es el ₡480 al que vendés tus dólares.`;}}).catch(()=>{});}
 fx();
