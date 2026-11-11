@@ -213,10 +213,10 @@ function renderDayLayers(){
 function initMap(){
   map=L.map('map',{zoomControl:true,attributionControl:true,renderer:L.canvas({padding:.5,tolerance:0}),minZoom:4,maxZoom:17,preferCanvas:true,zoomSnap:.5,wheelPxPerZoomLevel:90}).setView(CFG.center,CFG.zoom);
   layers={
-    sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,updateWhenZooming:false,updateWhenIdle:true,keepBuffer:2,attribution:'Imagery © Esri, Maxar'}),
-    satLabels:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,updateWhenZooming:false,updateWhenIdle:true}),
-    terr:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© Esri'}),
-    dark:L.layerGroup([L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18,attribution:'© Esri'}),L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18})])
+    sat:L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,crossOrigin:true,subdomains:['server','services'],updateWhenZooming:false,keepBuffer:4,attribution:'Imagery © Esri, Maxar'}),
+    satLabels:L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,crossOrigin:true,subdomains:['server','services'],updateWhenZooming:false}),
+    terr:L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,crossOrigin:true,subdomains:['server','services'],attribution:'© Esri'}),
+    dark:L.layerGroup([L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18,crossOrigin:true,subdomains:['server','services'],attribution:'© Esri'}),L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18,crossOrigin:true,subdomains:['server','services']})])
   };
   SPOTS.forEach(sp=>{const c=FCCOL[sp.cat]||'#93A4BC';sp.c=c;
     const icon=L.divIcon({html:`<div class="mk spot" style="--c:${c}">${sp.ic}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
