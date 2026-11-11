@@ -18,55 +18,64 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <style>
 .hero{position:relative;overflow:hidden;background:linear-gradient(155deg,rgba(245,166,35,.16),rgba(15,23,37,.78) 58%);border:1px solid var(--hair);border-radius:20px;padding:22px 22px 20px;backdrop-filter:blur(18px)}
+.hero.bad{background:linear-gradient(155deg,rgba(236,140,118,.2),rgba(15,23,37,.8) 58%)}
 .hero .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--mist)}
-.hero .big{font-family:var(--disp);font-size:clamp(46px,11vw,84px);font-weight:700;letter-spacing:-.035em;line-height:.92;margin:10px 0 6px}
-.hero .big small{font-size:.32em;font-weight:500;color:var(--mist);letter-spacing:0;margin-left:8px}
-.hero .sub{font-size:14px;color:#C7D3E2;line-height:1.5;max-width:620px}
+.hero .big{font-family:var(--disp);font-size:clamp(46px,11vw,88px);font-weight:700;letter-spacing:-.035em;line-height:.92;margin:10px 0 8px}
+.hero .big.ok{color:var(--good)} .hero .big.bad{color:var(--bad)}
+.hero .big small{font-size:.28em;font-weight:500;color:var(--mist);letter-spacing:0;margin-left:10px}
+.hero .sub{font-size:14px;color:#C7D3E2;line-height:1.55;max-width:680px}
 .hero .sub b{color:var(--frost)}
 .meter{margin-top:16px}
 .meter .track{height:10px;border-radius:6px;background:var(--hair-2);overflow:hidden}
 .meter .track i{display:block;height:100%;border-radius:6px;transition:width .35s,background .35s}
 .meter .legend{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--mist-dim);margin-top:6px;letter-spacing:.06em}
-.planin{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 12px}
-.planin label{margin:0}
-.planin input{width:140px;font-family:var(--mono)}
-.rtag{font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:-.01em}
-.rtag.ok{color:var(--good)} .rtag.bad{color:var(--bad)}
-.verdict{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:6px 11px;border-radius:999px;border:1px solid}
+.verdict{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:7px 12px;border-radius:12px;border:1px solid;line-height:1.45}
 .verdict.ok{color:var(--good);border-color:rgba(130,192,138,.4);background:rgba(130,192,138,.08)}
 .verdict.mid{color:var(--warn);border-color:rgba(227,197,106,.4);background:rgba(227,197,106,.08)}
 .verdict.bad{color:var(--bad);border-color:rgba(236,140,118,.45);background:rgba(236,140,118,.08)}
+.empty-hero{font-size:14px;color:#C7D3E2;line-height:1.55}
 
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.scn{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:13px 14px;cursor:pointer;transition:.16s;text-align:left;color:inherit;font:inherit}
-.scn:hover{border-color:rgba(255,255,255,.22)}
-.scn.on{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset}
+.scn{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:13px 14px;text-align:left;color:inherit;font:inherit}
 .scn .t{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
-.scn .v{font-family:var(--disp);font-size:24px;font-weight:700;margin:6px 0 2px;letter-spacing:-.02em}
+.scn .v{font-family:var(--disp);font-size:26px;font-weight:700;margin:6px 0 2px;letter-spacing:-.02em}
 .scn .d{font-size:11.5px;color:var(--mist);line-height:1.4}
+.scn .d b{color:#C7D3E2;font-weight:600}
 
 .flow{background:var(--panel);border:1px solid var(--hair);border-radius:16px;padding:16px;backdrop-filter:blur(16px)}
+.barlbl{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin:2px 0 6px}
+.barlbl b{font-family:var(--disp);font-size:15px;letter-spacing:0;text-transform:none;color:var(--frost)}
 .stack{display:flex;height:34px;border-radius:9px;overflow:hidden;background:var(--hair-2)}
+.stack+.barlbl{margin-top:14px}
 .stack span{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9.5px;color:#0A0F18;font-weight:700;white-space:nowrap;overflow:hidden;transition:width .35s;min-width:0}
+.stack span.gap{background:repeating-linear-gradient(45deg,rgba(130,192,138,.25) 0 6px,transparent 6px 12px);color:var(--good)}
+.stack span.short{background:repeating-linear-gradient(45deg,rgba(236,140,118,.35) 0 6px,transparent 6px 12px);color:var(--bad)}
 .keys{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px}
 .key{display:flex;align-items:center;gap:7px;font-size:12px;color:#C7D3E2}
 .key i{width:10px;height:10px;border-radius:3px;flex:none}
 .key b{font-family:var(--mono);font-weight:400;color:var(--frost);font-size:11.5px}
 
+.grp{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist);margin:14px 2px 7px}
+.grp b{font-family:var(--disp);font-size:14px;letter-spacing:0;color:var(--frost);text-transform:none}
 .rows{display:flex;flex-direction:column;gap:6px}
-.row{display:grid;grid-template-columns:30px 1fr 150px 28px;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--hair-2);border-radius:11px;background:rgba(255,255,255,.02)}
+.row{display:grid;grid-template-columns:30px 1fr 140px 28px;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--hair-2);border-radius:11px;background:rgba(255,255,255,.02)}
 .row.off{opacity:.45}
 .row .ic{font-size:16px;text-align:center}
 .row .nm{font-size:13.5px;color:var(--frost);line-height:1.3}
 .row .nm small{display:block;font-size:11px;color:var(--mist);margin-top:2px}
 .row .nm .flag{color:var(--amber)}
+.row .nm a{color:var(--glacier);cursor:pointer;text-decoration:underline}
 .row input{width:100%;text-align:right;font-family:var(--mono)}
 .row .tg{appearance:none;width:22px;height:22px;border-radius:6px;border:1px solid var(--hair);background:transparent;cursor:pointer;color:var(--mist);font-size:12px}
 .row .tg.on{background:var(--amber);border-color:var(--amber);color:#241500}
+.pill{appearance:none;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:2px 7px;margin-left:6px;border:1px solid var(--hair);background:transparent;color:var(--mist);vertical-align:1px}
+.pill.sup{color:var(--warn);border-color:rgba(227,197,106,.5);background:rgba(227,197,106,.08)}
 .subtot{display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px 0;font-family:var(--mono);font-size:11px;color:var(--mist)}
 .subtot b{font-family:var(--disp);font-size:18px;color:var(--frost)}
+.addrow{display:grid;grid-template-columns:1fr 120px auto;gap:8px;margin-top:8px}
+.addrow input{font-family:var(--mono)}
 
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.two{display:grid;grid-template-columns:1.15fr 1fr;gap:16px}
 .seg2{display:flex;flex-wrap:wrap;gap:6px}
 .seg2 button{appearance:none;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mist);background:transparent;border:1px solid var(--hair);border-radius:999px;padding:7px 11px;transition:.14s}
 .seg2 button.on{background:var(--frost);color:var(--abyss);border-color:var(--frost);font-weight:700}
@@ -83,16 +92,17 @@
 .st .amt{font-family:var(--disp);font-weight:600;font-size:15px;white-space:nowrap}
 .st .amt.in{color:var(--glacier)} .st .amt.out{color:var(--amber)}
 
-.warn{border-left:3px solid var(--bad);background:rgba(236,140,118,.07);border-radius:10px;padding:11px 13px;font-size:12.5px;line-height:1.5;color:#E6D3CC;margin-top:10px}
+.warn{border-left:3px solid var(--warn);background:rgba(227,197,106,.07);border-radius:10px;padding:11px 13px;font-size:12.5px;line-height:1.5;color:#E6DCC4;margin-top:10px}
 .warn b{color:var(--frost)}
 .fx{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
 .fx .f{flex:1;min-width:130px}
 .fx .hint{flex-basis:100%;font-family:var(--mono);font-size:9.5px;color:var(--mist-dim)}
 .private{font-family:var(--mono);font-size:9.5px;color:var(--mist-dim);letter-spacing:.04em;margin-top:28px;text-align:center;line-height:1.6}
-@media (max-width:720px){
+.private button{margin-top:10px}
+@media (max-width:760px){
   .grid{grid-template-columns:1fr}
   .two{grid-template-columns:1fr}
-  .row{grid-template-columns:26px 1fr 118px 26px;gap:8px}
+  .row{grid-template-columns:26px 1fr 112px 26px;gap:8px}
 }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
@@ -110,27 +120,28 @@
 
 <div class="wrap">
   <div class="phead">
-    <div class="eyebrow">Plan de ahorro · pagos desde el 15 de diciembre</div>
-    <h1>Ir <em>cómodos</em></h1>
-    <p>Todo lo que hay que pagar, la plata que ya viene y cuánto falta ahorrar en octubre y noviembre para cubrir el resto. Todo es editable. Montos en colones.</p>
+    <div class="eyebrow">Cobrables vs pagables · 15 nov → 15 dic</div>
+    <h1>¿Alcanza <em>la plata</em>?</h1>
+    <p>Todo lo que entra y todo lo que sale del 15 de noviembre al 15 de diciembre, con el viaje adentro. Todo es editable. Montos en colones.</p>
   </div>
 
-  <div class="hero">
-    <div class="lbl">Vas a ahorrar</div>
-    <div class="big"><span id="perMonth">₡0</span><small id="perMonthLbl">/ mes</small></div>
-    <div class="planin"><label for="planIn">Ahorro por mes</label><input id="planIn" type="number" inputmode="numeric" step="5000"><span id="resultTag" class="rtag"></span></div>
+  <div class="hero" id="hero">
+    <div class="lbl" id="heroLbl">Te sobran</div>
+    <div class="big" id="heroBig">₡0</div>
     <div class="sub" id="heroSub"></div>
-    <div class="meter"><div class="track"><i id="meterBar"></i></div>
-      <div class="legend"><span>0% del ingreso</span><span id="meterPct">—</span><span>50%</span></div></div>
+    <div class="meter"><div class="track"><i id="meterBar"></i></div><div class="legend" id="meterLeg"></div></div>
     <div id="verdict" class="verdict ok"></div>
   </div>
 
-  <div class="section-title">El iPhone 18 Pro decide todo</div>
+  <div class="section-title">¿Tenés que generar más plata?</div>
   <div class="grid" id="scenarios"></div>
 
-  <div class="section-title">De dónde sale la plata</div>
+  <div class="section-title">Lo que entra vs lo que sale</div>
   <div class="flow">
-    <div class="stack" id="stack"></div>
+    <div class="barlbl"><span>Entra</span><b id="inLbl">₡0</b></div>
+    <div class="stack" id="stackIn"></div>
+    <div class="barlbl"><span>Sale</span><b id="outLbl">₡0</b></div>
+    <div class="stack" id="stackOut"></div>
     <div class="keys" id="keys"></div>
   </div>
 
@@ -139,40 +150,47 @@
 
   <div class="two" style="margin-top:6px">
     <div>
-      <div class="section-title">Lo que hay que pagar <span class="cnt" id="costCnt"></span></div>
-      <div class="rows" id="costRows"></div>
-      <div class="subtot"><span>Total a cubrir (cómodo)</span><b id="costTot">₡0</b></div>
-      <div class="warn" id="dicWarn"></div>
-      <div class="warn" id="planWarn"></div>
+      <div class="section-title">Pagables <span class="cnt" id="outCnt"></span></div>
+      <div class="flow" style="margin-bottom:6px">
+        <label>🚗 Seguro del auto (Hertz, 4 días)</label>
+        <div class="seg2" id="segSeguro"></div>
+        <div class="note" id="segNote"></div>
+      </div>
+      <div class="grp"><span>✈️ El viaje (tu parte)</span><b id="viajeTot">₡0</b></div>
+      <div class="rows" id="viajeRows"></div>
+      <div class="grp"><span>🏠 Tu vida · 15 nov → 15 dic</span><b id="vidaTot">₡0</b></div>
+      <div class="rows" id="vidaRows"></div>
+      <div class="addrow"><input id="addOutN" placeholder="Otro gasto…" autocomplete="off"><input id="addOutV" type="number" inputmode="numeric" placeholder="₡"><button class="btn ghost" id="addOutB">+ Agregar</button></div>
+      <div class="rows" style="margin-top:10px" id="extraRows"></div>
+      <div class="subtot"><span>Total que sale</span><b id="outTot">₡0</b></div>
+      <div class="warn" id="foodWarn"></div>
     </div>
     <div>
-      <div class="section-title">Lo que entra</div>
+      <div class="section-title">Cobrables</div>
       <div class="rows" id="inRows"></div>
-      <div class="subtot"><span>Plata que ya viene</span><b id="inTot">₡0</b></div>
+      <div class="addrow"><input id="addInN" placeholder="Otro ingreso…" autocomplete="off"><input id="addInV" type="number" inputmode="numeric" placeholder="₡"><button class="btn ghost" id="addInB">+ Agregar</button></div>
+      <div class="subtot"><span>Total que entra</span><b id="inTot">₡0</b></div>
+      <div class="note">Tocá <b>seguro</b> / <b>supuesto</b> para marcar si esa plata es segura o todavía no está confirmada. Lo supuesto se prueba aparte en "¿Tenés que generar más plata?".</div>
 
       <div class="section-title">iPhone 18 Pro · en Toronto</div>
       <div class="flow">
-        <label>Capacidad</label>
         <div class="seg2" id="phoneModel"></div>
         <div class="note" id="phoneNote"></div>
       </div>
 
-      <div class="section-title">Meses y tipo de cambio</div>
+      <div class="section-title">Tipo de cambio</div>
       <div class="flow">
-        <label>Meses para ahorrar</label>
-        <div class="seg2" id="monthsSeg"></div>
-        <div class="fx" style="margin-top:14px">
-          <div class="f"><label>Dólar compra (te pagan)</label><input id="rBuy" type="number" step="0.01" inputmode="decimal"></div>
-          <div class="f"><label>Dólar venta (pagás)</label><input id="rSell" type="number" step="0.01" inputmode="decimal"></div>
+        <div class="fx">
+          <div class="f"><label>1 USD = ? colones</label><input id="rUsd" type="number" step="0.01" inputmode="decimal"></div>
           <div class="f"><label>1 CAD = ? colones</label><input id="rCad" type="number" step="0.01" inputmode="decimal"></div>
-          <div class="hint" id="fxHint">BCCR 5 oct 2026: compra ₡455,71 · venta ₡462,08 · CAD se actualiza en vivo</div>
+          <div class="hint" id="fxHint">Tipo de cambio real del mercado (no el ₡480 al que vendés tus dólares).</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="foot" style="margin-top:26px;text-align:center"><button class="btn ghost" id="resetBtn">↺ Volver a los números base</button></div>
-  <div class="private"><span id="savedPip" style="color:var(--good)">● Guardado en este dispositivo</span><br>Cerrar la pestaña no borra nada. Solo se pierde si borrás los datos del sitio o usás incógnito.<br>🔒 Tus ingresos y gastos personales se guardan solo en este dispositivo, no en el código ni en la nube.<br>Para cargarlos en otro teléfono, abrí tu link personal.</div>
+  <div class="foot" style="margin-top:26px;text-align:center"><button class="btn ghost" id="resetBtn">↺ Volver a los números base del viaje</button></div>
+  <div class="private"><span id="savedPip" style="color:var(--good)">● Guardado en este dispositivo</span><br>🔒 Tus ingresos y gastos personales no están en el código ni en la nube: se cargan con tu link personal y quedan solo en este dispositivo.<br>Cerrar la pestaña no borra nada; solo se pierde si borrás los datos del sitio o usás incógnito.<br><button class="btn ghost" id="copyLink">🔗 Copiar mi link personal (para abrirlo en otro teléfono)</button></div>
 </div>
 
 <nav class="tabbar">
@@ -183,170 +201,199 @@
 </nav>
 
 <script>
-/* Personal figures (income, December expenses) are NOT stored in this file.
-   They come from the URL hash (#sal=...&ing=...&gdic=...) or this device's localStorage. */
-const KEY='rockies:ahorro:v2';
-const PHONES={none:{n:'Sin iPhone',cad:0},p256:{n:'18 Pro · 256 GB',cad:1749},p512:{n:'18 Pro · 512 GB',cad:2049}};
+/* Ingresos y gastos personales NO viven en este archivo (el repo es público).
+   Llegan por el link personal (#p=…) y se guardan solo en el localStorage de este dispositivo.
+   Acá solo están los costos del viaje, que ya son públicos en el itinerario. */
+const KEY='rockies:plata:v1';
 const HST=0.13; /* Ontario */
-const DEF={
-  costs:[
-    {id:'airbnb',ic:'🛏',n:'Airbnb',v:440000,on:true,pre:true},
-    {id:'carro',ic:'🚗',n:'Carro',v:190000,on:true,pre:true},
-    {id:'regalo',ic:'🎁',n:'Regalo de Navidad',v:200000,on:true,pre:true},
-    {id:'tours',ic:'🎟️',n:'Tours y actividades',v:206000,on:true,flag:'CityPASS x2 (zoo, acuario, CN Tower, Casa Loma, ROM), Wonderland, tubing, Niagara (~CAD 640)'},
-    {id:'transp',ic:'🚆',n:'UP Express + TTC',v:71000,on:true,flag:'Airbnb en Mount Dennis: UP Express al aeropuerto y al centro + Línea 5 (~CAD 220)'},
-    {id:'comida',ic:'🍽️',n:'Comida',v:380000,on:true}
-  ],
-  buffer:10, gdic:null, dext:null,
-  ing:0, sal:0, sal2:null, papa:500, jime:200000, venta:80000, card:300,
-  phone:'p256', months:2, plan:170000,
-  rBuy:455.71, rSell:462.08, rCad:325.8
-};
-let S=load();
-
+const PHONES={none:{n:'Sin iPhone',cad:0},p256:{n:'18 Pro · 256 GB',cad:1749},p512:{n:'18 Pro · 512 GB',cad:2049}};
+/* Hertz YYZ, dom 27 dic 10 AM → jue 31 dic 10 AM, edad 20–24, Nissan Versa o similar, total en el mostrador (USD) */
+const CAR={std:{usd:492.06,n:'Mi tarjeta cubre daños · Estándar'},inc:{usd:588.38,n:'Hertz Inclusiva'}};
+const TRIP=[
+  {id:'airbnb',ic:'🛏',n:'Airbnb · 9 noches',v:488000,w:'15 dic',wk:4,flag:'Se cobra el 15 de diciembre'},
+  {id:'carro',ic:'🚗',n:'Auto Hertz · 4 días (27 → 31 dic)',car:1,w:'27 dic · en el mostrador',wk:7,flag:'Versa o Corolla · recargo de menores de 25 incluido · más un depósito retenido'},
+  {id:'gas',ic:'⛽',n:'Gasolina + parqueos',cad:125,var:1,w:'24 dic – 2 ene',wk:8,flag:'~500 km de gasolina (~C$45) + parqueos en Niagara, Casa Loma, Yorkville y Kensington (~C$80)'},
+  {id:'tours',ic:'🎟️',n:'Actividades',cad:560,var:1,w:'Antes del viaje · online',wk:3,flag:'CityPASS x2 ~C$305 · Wonderland ~C$100 · Butterfly + Clifton Hill ~C$135 · trineo ~C$20'},
+  {id:'transp',ic:'🚆',n:'UP Express + TTC',cad:150,var:1,w:'24 dic – 2 ene',wk:8,flag:'Aeropuerto, ir y devolver el auto, y los días sin auto'},
+  {id:'comida',ic:'🍽️',n:'Comida · tu parte',v:200000,var:1,w:'24 dic – 2 ene',wk:8,flag:'El plan para los dos es ~₡380 mil: el resto lo pone Jime'},
+  {id:'regalos',ic:'🎁',n:'Regalos',v:100000,var:1,w:'Diciembre',wk:5},
+  {id:'idp',ic:'🪪',n:'Permiso internacional de conducir',v:49000,w:'Esta semana',wk:1,flag:'Automóvil Club, Sabana Sur (precio 2025, confirmalo)'}
+];
+const DEF={cobra:[],vida:[],extra:[],trip:TRIP.map(t=>({id:t.id,on:true})),seguro:'inc',phone:'none',buffer:10,rUsd:452.89,rCad:319.61,fxManual:false};
+/* ---------- link personal ---------- */
+const b64e=o=>{const b=new TextEncoder().encode(JSON.stringify(o));let s='';b.forEach(c=>s+=String.fromCharCode(c));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
+const b64d=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');const bin=atob(s);return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0))));};
+let S;
 function load(){
   let s=JSON.parse(JSON.stringify(DEF));
   try{const raw=localStorage.getItem(KEY);if(raw)s=Object.assign(s,JSON.parse(raw));}catch(e){}
+  TRIP.forEach(t=>{if(!s.trip.find(x=>x.id===t.id))s.trip.push({id:t.id,on:true});});
   const h=new URLSearchParams(location.hash.slice(1));
-  const num=k=>h.has(k)&&h.get(k)!==''&&!isNaN(+h.get(k))?+h.get(k):null;
-  ['ing','sal','sal2','gdic','dext','papa','jime','venta','card'].forEach(k=>{const v=num(k);if(v!=null)s[k]=v;});
-  if(h.toString())history.replaceState(null,'',location.pathname);
-  DEF.costs.forEach(c=>{if(!s.costs.find(x=>x.id===c.id))s.costs.push(Object.assign({},c));});
-  /* v3: itinerario nuevo (Toronto + Niagara): sin VIA Rail, comida 380 mil, actividades reales */
-  if((s.ver||0)<3){s.costs=s.costs.filter(c=>c.id!=='via');
-    const set=(id,v,flag)=>{const c=s.costs.find(x=>x.id===id);if(c){c.v=v;if(flag)c.flag=flag;}};
-    set('comida',380000);set('tours',250000);s.ver=3;}
-  /* v4: CityPASS (suma CN Tower y Casa Loma) → actividades ~CAD 920 */
-  if(s.ver<4){const c=s.costs.find(x=>x.id==='tours');const d=DEF.costs.find(x=>x.id==='tours');if(c){if(c.v===250000)c.v=296000;c.flag=d.flag;}s.ver=4;}
-  /* v5: sin huskies (−CAD 280) */
-  if(s.ver<5){const c=s.costs.find(x=>x.id==='tours');const d=DEF.costs.find(x=>x.id==='tours');if(c){if(c.v===296000)c.v=d.v;c.flag=d.flag;}s.ver=5;}
-  /* v6: Airbnb real en Mount Dennis → más UP Express */
-  if(s.ver<6){const c=s.costs.find(x=>x.id==='transp');const d=DEF.costs.find(x=>x.id==='transp');if(c){if(c.v===55000)c.v=d.v;c.flag=d.flag;}s.ver=6;}
+  if(h.has('p')){try{const p=b64d(h.get('p'));
+      if(Array.isArray(p.c))s.cobra=p.c.map(([id,ic,n,v,sup])=>({id,ic,n,v:+v||0,sup:!!sup,on:true}));
+      if(Array.isArray(p.g)){s.vida=p.g.map(([id,ic,n,v])=>({id,ic,n,v:+v||0,on:true}));s.extra=[];}
+      if(p.t)Object.entries(p.t).forEach(([id,v])=>{const t=s.trip.find(x=>x.id===id);if(t){t.v=+v;t.manual=true;}});
+    }catch(e){console.warn('link personal inválido',e);}
+    history.replaceState(null,'',location.pathname);}
   save(s);return s;
 }
 function save(s){let ok=true;try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){ok=false;}
   const el=document.getElementById('savedPip');if(el){el.textContent=ok?'● Guardado en este dispositivo · '+new Date().toLocaleTimeString('es-CR',{hour:'2-digit',minute:'2-digit'}):'⚠ Este navegador no deja guardar (¿modo incógnito?)';el.style.color=ok?'var(--good)':'var(--bad)';}}
-const fmt=n=>(n<0?'−':'')+'₡'+Math.round(Math.abs(n)).toLocaleString('es-CR');
-const fmtK=n=>{const a=Math.abs(n),sg=n<0?'−':'';return a>=1e6?sg+'₡'+(a/1e6).toFixed(2).replace('.',',')+' M':sg+'₡'+Math.round(a/1000).toLocaleString('es-CR')+' mil';};
-const sal2=()=>S.sal2!=null?S.sal2:(S.sal||0)*2;
-const dext=()=>S.dext!=null?S.dext:Math.max(0,(S.ing||0)-(S.sal||0));
-
-function calc(phone=S.phone){
-  const on=S.costs.filter(c=>c.on);
-  const trip=on.reduce((a,c)=>a+(+c.v||0),0);
-  const pre=on.filter(c=>c.pre).reduce((a,c)=>a+(+c.v||0),0);
-  const buf=trip*S.buffer/100;
-  const pCAD=PHONES[phone].cad*(1+HST), pCRC=pCAD*S.rCad;
-  const gdic=+S.gdic||0;
-  const needMin=trip+pCRC+gdic, needCom=needMin+buf;
-  const papaCRC=(+S.papa||0)*S.rBuy, cardCRC=(+S.card||0)*S.rSell;
-  const inflow=sal2()+dext()+(+S.jime||0)+papaCRC+(+S.venta||0)+cardCRC;
-  const gapMin=Math.max(0,needMin-inflow), gapCom=Math.max(0,needCom-inflow);
-  return {trip,pre,buf,pCAD,pCRC,gdic,needMin,needCom,papaCRC,cardCRC,inflow,gapMin,gapCom,
-    perMin:gapMin/S.months, perCom:gapCom/S.months, spare:inflow-needCom,
-    saved:(+S.plan||0)*S.months, result:(+S.plan||0)*S.months+inflow-needCom};
+function personalLink(){
+  const p={c:S.cobra.map(c=>[c.id,c.ic,c.n,c.v,c.sup?1:0]),g:S.vida.concat(S.extra).map(c=>[c.id,c.ic,c.n,c.v])};
+  const t={};S.trip.forEach(x=>{if(x.manual)t[x.id]=x.v;});if(Object.keys(t).length)p.t=t;
+  return location.origin+location.pathname+'#p='+b64e(p);
 }
 
+S=load();
+
+/* ---------- números ---------- */
+const fmt=n=>(n<0?'−':'')+'₡'+Math.round(Math.abs(n)).toLocaleString('es-CR');
+const fmtK=n=>{const a=Math.abs(n),sg=n<0?'−':'';return a>=1e6?sg+'₡'+(a/1e6).toFixed(2).replace('.',',')+' M':sg+'₡'+Math.round(a/1000).toLocaleString('es-CR')+' mil';};
+const cad=n=>Math.round(n/S.rCad).toLocaleString('en-US');
+const tdef=id=>TRIP.find(t=>t.id===id);
+function crc(st){const d=tdef(st.id);if(st.manual)return +st.v||0;
+  if(d.car)return CAR[S.seguro].usd*S.rUsd; if(d.cad)return d.cad*S.rCad; if(d.usd)return d.usd*S.rUsd; return d.v;}
+function calc(o={}){
+  const phone=o.phone||S.phone, firm=!!o.firm;
+  const inItems=S.cobra.filter(c=>c.on&&!(firm&&c.sup));
+  const inAll=inItems.reduce((a,c)=>a+(+c.v||0),0);
+  const trip=S.trip.filter(t=>t.on).map(t=>({...tdef(t.id),...t,amt:crc(t)}));
+  const viaje=trip.reduce((a,t)=>a+t.amt,0);
+  const varTot=trip.filter(t=>t.var).reduce((a,t)=>a+t.amt,0);
+  const vida=S.vida.filter(c=>c.on).reduce((a,c)=>a+(+c.v||0),0)+S.extra.filter(c=>c.on).reduce((a,c)=>a+(+c.v||0),0);
+  const buf=varTot*S.buffer/100;
+  const pCAD=PHONES[phone].cad*(1+HST), pCRC=pCAD*S.rCad;
+  const out=viaje+vida+buf+pCRC;
+  return {inAll,trip,viaje,vida,buf,pCAD,pCRC,out,res:inAll-out};
+}
+
+/* ---------- render ---------- */
+const PAL_IN=['#5FD0D6','#6FB1E0','#93A7EC','#C58CEC','#82C08A','#E3C56A','#F08FB8','#93A4BC'];
+const PAL_TRIP=['#F5A623','#F7B955','#EC8C76','#E3C56A','#F08FB8','#F2A07B','#D9A441','#C98A5E'];
 function render(){
-  const r=calc();
-  document.getElementById('perMonth').textContent=fmt(+S.plan||0);
-  document.getElementById('perMonthLbl').textContent=S.months===1?'en noviembre':`/ mes · ${S.months===2?'oct + nov':'3 meses'} = ${fmt(r.saved)}`;
-  const pi=document.getElementById('planIn'); if(document.activeElement!==pi)pi.value=S.plan||'';
-  const res=r.result;
-  const tag=document.getElementById('resultTag');
-  tag.className='rtag '+(res>=0?'ok':'bad');
-  tag.textContent=res>=0?`✓ ${fmt(res)} libres para tus cosas · ≈ CAD ${Math.round(res/S.rCad).toLocaleString('en-US')}`:`✕ te faltan ${fmt(-res)}`;
-  const pct=S.ing?(+S.plan||0)/S.ing*100:null;
-  const bar=document.getElementById('meterBar');
-  const cov=r.needCom?Math.min(1,(r.inflow+r.saved)/r.needCom):1;
-  bar.style.width=Math.round(cov*100)+'%';
-  bar.style.background=cov>=1?'linear-gradient(90deg,var(--good),var(--glacier))':cov>=.9?'linear-gradient(90deg,var(--warn),var(--amber))':'linear-gradient(90deg,var(--amber),var(--bad))';
-  document.querySelector('.meter .legend').innerHTML=`<span>Cubierto</span><span>${Math.round(cov*100)}% de lo que hay que pagar</span><span>${pct==null?'':Math.round(pct)+'% de tu ingreso'}</span>`;
+  const r=calc(), rf=calc({firm:true}), hasIn=S.cobra.length>0;
+  const sup=S.cobra.filter(c=>c.on&&c.sup);
+  /* hero */
+  const hero=document.getElementById('hero'), big=document.getElementById('heroBig');
+  if(!hasIn){
+    document.getElementById('heroLbl').textContent='Costo del viaje (tu parte)';
+    big.className='big';big.innerHTML=`${fmt(r.viaje+r.buf)}<small>≈ CAD ${cad(r.viaje+r.buf)}</small>`;
+    document.getElementById('heroSub').innerHTML=`<span class="empty-hero">Faltan tus ingresos y gastos personales. Abrí tu <b>link personal</b> en este dispositivo para cargarlos.</span>`;
+  }else{
+    hero.classList.toggle('bad',r.res<0);
+    document.getElementById('heroLbl').textContent=r.res>=0?'Te sobran':'Te faltan';
+    big.className='big '+(r.res>=0?'ok':'bad');
+    big.innerHTML=`${fmt(Math.abs(r.res))}<small>≈ CAD ${cad(Math.abs(r.res))}</small>`;
+    document.getElementById('heroSub').innerHTML=`Del 15 nov al 15 dic entran <b>${fmt(r.inAll)}</b> y salen <b>${fmt(r.out)}</b>: el viaje ${fmt(r.viaje)}, tu vida ${fmt(r.vida)}, un ${S.buffer}% de colchón ${fmt(r.buf)}${r.pCRC?` y el iPhone ${fmt(r.pCRC)}`:''}. `+
+      (r.res>=0?`Lo que sobra es para shopping e imprevistos en Toronto.`:`Hay que generar esa plata o mover algo de la lista.`);
+  }
+  const cov=r.out?Math.min(1,r.inAll/r.out):1;
+  const bar=document.getElementById('meterBar');bar.style.width=Math.round(cov*100)+'%';
+  bar.style.background=cov>=1?'linear-gradient(90deg,var(--good),var(--glacier))':cov>=.93?'linear-gradient(90deg,var(--warn),var(--amber))':'linear-gradient(90deg,var(--amber),var(--bad))';
+  document.getElementById('meterLeg').innerHTML=`<span>Cubierto</span><span>${hasIn?Math.round(r.inAll/r.out*100)+'% de lo que sale':'—'}</span><span>100%</span>`;
   const v=document.getElementById('verdict');
-  if(res<0){v.className='verdict bad';v.textContent=`✕ Para cubrir todo: ${fmt(r.perCom)}/mes — o el iPhone espera`;}
-  else if(S.gdic==null){v.className='verdict mid';v.textContent=`◐ Viaje + iPhone cubiertos. Los ${fmt(res)} que sobran son lo único que queda para tu diciembre`;}
-  else{v.className='verdict ok';v.textContent='✓ Todo cubierto, diciembre incluido';}
-  document.getElementById('heroSub').innerHTML=
-    `Hay que cubrir <b>${fmt(r.needCom)}</b>: el viaje, el iPhone en Toronto${r.gdic?', tu diciembre':''} y un ${S.buffer}% de colchón. Ya vienen <b>${fmt(r.inflow)}</b> + tus <b>${fmt(r.saved)}</b> de ahorro. `+
-    `Lo justo para ir cómodo serían <b>${fmt(r.perCom)}/mes</b>${r.gapMin>0?`; lo mínimo, ${fmt(r.perMin)}/mes`:''}.`;
+  if(!hasIn){v.className='verdict mid';v.textContent='◐ Cargá tu link personal para ver si alcanza';}
+  else if(rf.res>=0){v.className='verdict ok';v.textContent=`✓ No tenés que generar más: alcanza aunque no llegue lo supuesto (quedan ${fmtK(rf.res)}).`;}
+  else if(r.res>=0){v.className='verdict mid';v.textContent=`◐ Alcanza solo si llega lo supuesto (${sup.map(c=>c.n).join(', ')}). Si no llega, generá ${fmt(-rf.res)} más.`;}
+  else{v.className='verdict bad';v.textContent=`✕ Generá ${fmt(-r.res)} más o mové algo de la lista.`;}
 
-  const sc=[['none','Sin iPhone','Solo el viaje'],['p256','18 Pro · 256 GB','C$1.749 + 13% HST'],['p512','18 Pro · 512 GB','C$2.049 + 13% HST']];
-  document.getElementById('scenarios').innerHTML=sc.map(([p,t,d])=>{const x=calc(p);const rr=x.saved+x.inflow-x.needCom;
-    return `<button class="scn${S.phone===p?' on':''}" data-p="${p}"><div class="t">${t}</div><div class="v" style="color:${rr>=0?'var(--good)':'var(--bad)'}">${rr>=0?'+':''}${fmtK(rr)}</div><div class="d">${rr>=0?'sobran':'faltan'} ahorrando ${fmtK(+S.plan||0)}/mes · ${d}</div></button>`;}).join('');
-  document.querySelectorAll('.scn').forEach(b=>b.onclick=()=>{S.phone=b.dataset.p;save();render();});
+  /* escenarios */
+  const rp=calc({phone:S.phone==='none'?'p256':S.phone}), rn=calc({phone:'none'});
+  const card=(t,x,d)=>`<div class="scn"><div class="t">${t}</div><div class="v" style="color:${x>=0?'var(--good)':'var(--bad)'}">${x>=0?'+':''}${fmtK(x)}</div><div class="d">${d(x)}</div></div>`;
+  const dd=x=>x>=0?`sobran · ≈ CAD ${cad(x)} para shopping`:`<b>generá ${fmt(-x)} más</b>`;
+  document.getElementById('scenarios').innerHTML=!hasIn?'<div class="scn" style="grid-column:1/-1"><div class="d">Se calcula cuando cargás tu link personal.</div></div>':
+    card('Con todo lo que esperás',r.res,dd)+
+    card(sup.length?'Si no llega lo supuesto':'Sin supuestos',rf.res,x=>sup.length?`sin ${sup.map(c=>c.n).join(', ')} · `+dd(x):dd(x))+
+    card(S.phone==='none'?'Con iPhone 18 Pro (256)':'Sin el iPhone',S.phone==='none'?rp.res:rn.res,x=>S.phone==='none'?`C$1.749 + 13% HST ≈ ${fmtK(calc({phone:'p256'}).pCRC)} · `+dd(x):dd(x));
 
-  const parts=[['Salario + aguinaldo',sal2(),'#5FD0D6'],['DreamOS dic',dext(),'#6FB1E0'],['Jime',+S.jime||0,'#C58CEC'],['Papá $'+S.papa,r.papaCRC,'#93A7EC'],['Tu iPhone viejo',+S.venta||0,'#82C08A'],['Tarjeta $'+S.card,r.cardCRC,'#E3C56A'],['Tu ahorro',r.saved,'#F5A623']].filter(p=>p[1]>0);
-  const tot=parts.reduce((a,p)=>a+p[1],0)||1;
-  document.getElementById('stack').innerHTML=parts.map(([n,v,c])=>`<span style="width:${v/tot*100}%;background:${c}">${v/tot>.1?Math.round(v/tot*100)+'%':''}</span>`).join('');
-  document.getElementById('keys').innerHTML=parts.map(([n,v,c])=>`<div class="key"><i style="background:${c}"></i>${n} <b>${fmtK(v)}</b></div>`).join('');
+  /* barras entra / sale */
+  const max=Math.max(r.inAll,r.out)||1;
+  const inParts=S.cobra.filter(c=>c.on).map((c,i)=>[c.n+(c.sup?' (supuesto)':''),+c.v||0,PAL_IN[i%PAL_IN.length]]);
+  const outParts=[...r.trip.map((t,i)=>[t.n,t.amt,PAL_TRIP[i%PAL_TRIP.length]]),['Tu vida',r.vida,'#6F86A6'],['Colchón',r.buf,'#93A4BC']];
+  if(r.pCRC)outParts.push(['iPhone',r.pCRC,'#5FD0D6']);
+  const seg=(parts)=>parts.filter(p=>p[1]>0).map(([n,x,c])=>`<span title="${n}: ${fmt(x)}" style="width:${x/max*100}%;background:${c}">${x/max>.09?fmtK(x):''}</span>`).join('');
+  const gap=r.inAll-r.out;
+  document.getElementById('stackIn').innerHTML=seg(inParts)+(gap<0&&hasIn?`<span class="short" style="width:${-gap/max*100}%">${-gap/max>.09?'faltan':''}</span>`:'');
+  document.getElementById('stackOut').innerHTML=seg(outParts)+(gap>0?`<span class="gap" style="width:${gap/max*100}%">${gap/max>.09?'sobra':''}</span>`:'');
+  document.getElementById('inLbl').textContent=fmt(r.inAll);document.getElementById('outLbl').textContent=fmt(r.out);
+  document.getElementById('keys').innerHTML=[...inParts,...outParts].filter(p=>p[1]>0).map(([n,x,c])=>`<div class="key"><i style="background:${c}"></i>${n} <b>${fmtK(x)}</b></div>`).join('');
 
-  const m=S.months, per=+S.plan||0;
-  const labels={1:['Fin de noviembre'],2:['Fin de octubre','Fin de noviembre'],3:['Fin de octubre','Fin de noviembre','Mediados de diciembre']}[m];
-  const steps=labels.map(l=>['out',l,'Apartar a una cuenta solo para el viaje',per]);
-  steps.push(['in','29 nov – 1 dic','Salario + aguinaldo, de golpe',sal2()]);
-  if(dext())steps.push(['in','Diciembre','Lo extra de DreamOS del mes',dext()]);
-  if(r.gdic)steps.push(['out','Diciembre','Tu vida normal de diciembre (alquiler, tarjeta, cuotas)',r.gdic]);
-  steps.push(['out','Desde el 15 de diciembre','Empiezan los pagos: '+S.costs.filter(c=>c.on&&c.pre).map(c=>c.n.split(' ')[0]).join(', '),r.pre]);
-  steps.push(['in','Antes de viajar','Lo de Jime + tu iPhone viejo a tu papá',(+S.jime||0)+(+S.venta||0)]);
-  steps.push(['in','Antes del 23 de diciembre','Los $'+S.papa+' de tu papá: se van esa noche (SJO 11:55 PM)',r.papaCRC]);
-  if(S.phone!=='none')steps.push(['out','24 dic · Toronto','iPhone 18 Pro en la Apple del Eaton Centre (C$'+Math.round(r.pCAD).toLocaleString('en-US')+' con HST)',r.pCRC]);
-  steps.push(['out','24 dic – 2 ene','Comida, tours y transporte durante el viaje',S.costs.filter(c=>c.on&&!c.pre).reduce((a,c)=>a+(+c.v||0),0)]);
-  if(+S.card)steps.push(['in','Enero','Los $'+S.card+' de tarjeta se pagan con el salario de enero',null]);
-  document.getElementById('timeline').innerHTML=steps.map(([k,w,t,a])=>`<div class="st ${k}"><div class="dot"></div><div><div class="w">${w}</div><div class="what">${t}</div></div><div class="amt ${k}">${a!=null?(k==='in'?'+':'−')+fmt(a):''}</div></div>`).join('');
+  /* calendario */
+  const steps=[];
+  if(hasIn)steps.push({wk:2,k:'in',w:'15 nov – 15 dic',t:'Entra: '+S.cobra.filter(c=>c.on).map(c=>c.n+(c.sup?' (supuesto)':'')).join(', '),a:r.inAll});
+  if(r.vida)steps.push({wk:2.5,k:'out',w:'15 nov – 15 dic',t:'Tu vida: '+S.vida.concat(S.extra).filter(c=>c.on).map(c=>c.n).join(', '),a:r.vida});
+  const byW={};r.trip.forEach(t=>{(byW[t.w]||(byW[t.w]={wk:t.wk,k:'out',w:t.w,names:[],a:0})).names.push(t.n);byW[t.w].a+=t.amt;});
+  Object.values(byW).forEach(x=>steps.push({...x,t:x.names.join(', ')}));
+  if(r.pCRC)steps.push({wk:6,k:'out',w:'24 dic · Eaton Centre',t:`iPhone ${PHONES[S.phone].n} (C$${Math.round(r.pCAD).toLocaleString('en-US')} con HST)`,a:r.pCRC});
+  if(r.buf)steps.push({wk:9,k:'out',w:'Por si acaso',t:`Colchón del ${S.buffer}% sobre comida, actividades, transporte y regalos`,a:r.buf});
+  document.getElementById('timeline').innerHTML=steps.sort((a,b)=>a.wk-b.wk).map(s=>`<div class="st ${s.k}"><div class="dot"></div><div><div class="w">${s.w}</div><div class="what">${s.t}</div></div><div class="amt ${s.k}">${s.k==='in'?'+':'−'}${fmt(s.a)}</div></div>`).join('');
 
-  document.getElementById('costRows').innerHTML=S.costs.map((c,i)=>`<div class="row${c.on?'':' off'}"><div class="ic">${c.ic}</div><div class="nm">${c.n}<small>${c.pre?'Se paga desde el 15 dic':'Se gasta durante el viaje'}${c.flag?` · <span class="flag">${c.flag}</span>`:''}</small></div><input type="number" inputmode="numeric" data-ci="${i}" value="${c.v}"><button class="tg${c.on?' on':''}" data-ti="${i}" title="Incluir">${c.on?'✓':''}</button></div>`).join('')+
-   (S.phone!=='none'?`<div class="row"><div class="ic">📱</div><div class="nm">iPhone ${PHONES[S.phone].n}<small>Toronto · C$${PHONES[S.phone].cad.toLocaleString('en-US')} + 13% HST</small></div><input type="number" value="${Math.round(r.pCRC)}" disabled><span></span></div>`:'')+
-   `<div class="row"><div class="ic">🏠</div><div class="nm">Tus gastos normales de diciembre<small>Un mes normal: tarjeta, Airbnb de Jime, teléfono, suscripciones… el salario de dic se va al viaje</small></div><input type="number" inputmode="numeric" id="gdicIn" value="${S.gdic??''}" placeholder="¿cuánto?"><span></span></div>`+
-   `<div class="row"><div class="ic">🛟</div><div class="nm">Colchón para imprevistos<small>% sobre el viaje</small></div><input type="number" inputmode="numeric" id="bufIn" value="${S.buffer}"><span style="font-family:var(--mono);font-size:11px;color:var(--mist)">%</span></div>`;
-  document.getElementById('costTot').textContent=fmt(r.needCom);
-  document.getElementById('costCnt').textContent=S.costs.filter(c=>c.on).length+' del viaje';
-  const dw=document.getElementById('dicWarn');
-  dw.style.display=S.gdic==null?'':'none';
-  dw.innerHTML=`<b>Falta este dato.</b> El ₡1,5 M del 29 nov–1 dic es también tu sueldo de diciembre. Si de ahí salen el alquiler, la tarjeta y tus cuotas, eso hay que ahorrarlo antes. Poné cuánto se te va en un mes normal.`;
-  const food=S.costs.find(c=>c.id==='comida');
-  { const cadF=food.v/S.rCad, cenas=610, resto=cadF-cenas, dia=Math.round(resto/10);
-    const w=document.getElementById('planWarn');
-    w.innerHTML=dia>=50
-      ? `<b>La comida alcanza.</b> ${fmtK(food.v)} ≈ CAD ${Math.round(cadF)}. Lo caro suma ~CAD ${cenas}: wagyu steak en Maxime's ~$150, almuerzo DIY en Kyoto Katsugyu ~$115, Pai ~$105, Kinka ~$115 y Chubby's en Año Nuevo ~$125. Quedan ~CAD ${dia} por día para desayunos, almuerzos y snacks de los dos: Tim Hortons, food courts, poutine, dumplings.`
-      : `<b>Ojo con la comida.</b> ${fmtK(food.v)} ≈ CAD ${Math.round(cadF)}. Lo caro (Maxime's, Katsugyu y las 3 cenas lindas) suma ~CAD ${cenas} y quedan solo ~CAD ${Math.max(dia,0)} por día para lo demás. Subí la comida o cambiá Katsugyu por un almuerzo barato.`;
-    w.style.display=''; }
+  /* seguro del auto */
+  document.getElementById('segSeguro').innerHTML=Object.entries(CAR).map(([k,c])=>`<button data-seg="${k}" class="${S.seguro===k?'on':''}">${c.n} · US$${Math.round(c.usd)}</button>`).join('');
+  document.getElementById('segNote').innerHTML=S.seguro==='inc'
+    ?`La <b>Inclusiva</b> cubre daños al auto y deja manejar a Jime. Si BAC te confirma que tu tarjeta cubre daños a autos alquilados en Canadá, pasá a Estándar y ahorrás ${fmt((CAR.inc.usd-CAR.std.usd)*S.rUsd)}.`
+    :`<b>Estándar</b>: los daños al auto los cubre tu tarjeta. Pagá el alquiler con esa tarjeta y no aceptes el seguro del mostrador. Confirmalo con BAC antes.`;
 
-  const inc=[
-    ['sal2','💼','Salario + aguinaldo · 29 nov–1 dic','Llega de golpe',sal2(),''],
-    ['dext','🧩','Extra de DreamOS en diciembre','Por defecto: tu promedio menos el salario base',dext(),''],
-    ['jime','💜','Lo que ahorra Jime','',S.jime,''],
-    ['venta','📱','Tu iPhone viejo → tu papá','',S.venta,''],
-    ['papa','👨','Tu papá · 24 dic','En dólares, al tipo de compra',S.papa,'$'],
-    ['card','💳','A la tarjeta','En dólares · se paga en enero',S.card,'$'],
-    ['ing','📊','Ingreso promedio al mes','Solo para medir el % que ahorrás',S.ing,'']
-  ];
-  document.getElementById('inRows').innerHTML=inc.map(([k,ic,n,s,v,u])=>`<div class="row"><div class="ic">${ic}</div><div class="nm">${n}${s?`<small>${s}</small>`:''}</div><input type="number" inputmode="numeric" data-ik="${k}" value="${v||''}" placeholder="${u||'₡'}"><span style="font-family:var(--mono);font-size:11px;color:var(--mist)">${u}</span></div>`).join('');
-  document.getElementById('inTot').textContent=fmt(r.inflow);
+  /* filas */
+  const rowT=(t,i)=>{const d=tdef(t.id),a=crc(t),base=d.car?`US$${CAR[S.seguro].usd}`:d.cad?`C$${d.cad}`:d.usd?`US$${d.usd}`:'';
+    return `<div class="row${t.on?'':' off'}"><div class="ic">${d.ic}</div><div class="nm">${d.n}<small>${d.w}${base&&!t.manual?' · '+base:''}${t.manual&&(d.cad||d.usd||d.car)?' · editado · <a data-rt="'+i+'">volver al cálculo</a>':''}${d.flag?` · <span class="flag">${d.flag}</span>`:''}</small></div><input type="number" inputmode="numeric" data-t="${i}" value="${Math.round(a)}"><button class="tg${t.on?' on':''}" data-tt="${i}">${t.on?'✓':''}</button></div>`;};
+  document.getElementById('viajeRows').innerHTML=S.trip.map(rowT).join('')+
+    `<div class="row"><div class="ic">🛟</div><div class="nm">Colchón para imprevistos<small>% sobre comida, actividades, transporte, gasolina y regalos = ${fmt(r.buf)}</small></div><input type="number" inputmode="numeric" id="bufIn" value="${S.buffer}"><span style="font-family:var(--mono);font-size:11px;color:var(--mist)">%</span></div>`+
+    (S.phone!=='none'?`<div class="row"><div class="ic">📱</div><div class="nm">iPhone ${PHONES[S.phone].n}<small>Toronto · C$${PHONES[S.phone].cad.toLocaleString('en-US')} + 13% HST</small></div><input type="number" value="${Math.round(r.pCRC)}" disabled><span></span></div>`:'');
+  const rowP=(arr,key)=>(c,i)=>`<div class="row${c.on?'':' off'}"><div class="ic">${c.ic||'•'}</div><div class="nm">${c.n}${key==='cobra'?`<button class="pill${c.sup?' sup':''}" data-sup="${i}">${c.sup?'supuesto':'seguro'}</button>`:''}${c.x?`<small><a data-del="${key}:${i}">borrar</a></small>`:''}</div><input type="number" inputmode="numeric" data-p="${key}:${i}" value="${c.v}"><button class="tg${c.on?' on':''}" data-pt="${key}:${i}">${c.on?'✓':''}</button></div>`;
+  document.getElementById('vidaRows').innerHTML=S.vida.length?S.vida.map(rowP(S.vida,'vida')).join(''):'<div class="note">Se cargan con tu link personal.</div>';
+  document.getElementById('extraRows').innerHTML=S.extra.map(rowP(S.extra,'extra')).join('');
+  document.getElementById('inRows').innerHTML=S.cobra.length?S.cobra.map(rowP(S.cobra,'cobra')).join(''):'<div class="note">Se cargan con tu link personal.</div>';
+  document.getElementById('viajeTot').textContent=fmt(r.viaje+r.buf+r.pCRC);
+  document.getElementById('vidaTot').textContent=fmt(r.vida);
+  document.getElementById('outTot').textContent=fmt(r.out);
+  document.getElementById('inTot').textContent=fmt(r.inAll);
+  document.getElementById('outCnt').textContent=(S.trip.filter(t=>t.on).length+S.vida.filter(c=>c.on).length+S.extra.filter(c=>c.on).length)+' cosas';
 
+  /* comida */
+  const food=S.trip.find(t=>t.id==='comida'), fw=document.getElementById('foodWarn');
+  if(food&&food.on){const f=crc(food);fw.style.display='';
+    fw.innerHTML=f<342000?`<b>Comida: acá está solo tu parte.</b> El plan de comida para los dos es ~₡380 mil (≈ CAD ${cad(380000)}): Maxime's ~$150, Katsugyu ~$115, Pai ~$105, Kinka ~$115 y Amsterdam ~$110 ya suman ~CAD 600. Con tus ${fmtK(f)}, el resto (~${fmtK(380000-f)}) lo tiene que poner Jime. Si no, subí este número.`
+      :`<b>La comida alcanza para los dos.</b> ${fmtK(f)} ≈ CAD ${cad(f)}: las 5 comidas caras suman ~CAD 600 y queda ~CAD ${Math.round((f/S.rCad-600)/10)} por día para lo demás.`;}
+  else fw.style.display='none';
+
+  /* iPhone */
   document.getElementById('phoneModel').innerHTML=Object.entries(PHONES).map(([k,p])=>`<button data-pm="${k}" class="${S.phone===k?'on':''}">${p.n}${p.cad?' · C$'+p.cad.toLocaleString('en-US'):''}</button>`).join('');
-  document.getElementById('phoneNote').innerHTML=S.phone==='none'?'Sin iPhone, el viaje sale holgado.':
-    `Con 13% de HST (Ontario) son <b>C$${Math.round(r.pCAD).toLocaleString('en-US')} ≈ ${fmt(r.pCRC)}</b>. Ojo: tu tarjeta puede cobrar comisión por compra en el exterior, y confirmá que tu operador en Costa Rica te active eSIM por si el modelo canadiense no trae bandeja de SIM.`;
-  document.getElementById('monthsSeg').innerHTML=[[1,'Solo nov'],[2,'Oct + nov'],[3,'Oct + nov + dic']].map(([k,n])=>`<button data-mo="${k}" class="${S.months===k?'on':''}">${n}</button>`).join('');
-  ['rBuy','rSell','rCad'].forEach(id=>document.getElementById(id).value=S[id]);
+  if(S.phone==='none'){const p=calc({phone:'p256'});
+    document.getElementById('phoneNote').innerHTML=!hasIn?'No está en tu lista de gastos.':`No está en tu lista de gastos. ${p.res>=0?`Con el de 256 GB todavía sobrarían ${fmt(p.res)}.`:`Con el de 256 GB (C$1.749 + 13% HST ≈ ${fmt(p.pCRC)}) te faltarían <b>${fmt(-p.res)}</b>.`}`;}
+  else document.getElementById('phoneNote').innerHTML=`Con 13% de HST (Ontario) son <b>C$${Math.round(r.pCAD).toLocaleString('en-US')} ≈ ${fmt(r.pCRC)}</b>. Tu tarjeta puede cobrar comisión por compra en el exterior.`;
+  ['rUsd','rCad'].forEach(id=>{const e=document.getElementById(id);if(document.activeElement!==e)e.value=S[id];});
   bind();
 }
 
 function bind(){
-  const pi=document.getElementById('planIn');pi.onchange=()=>{S.plan=+pi.value||0;save();render();};
-  document.querySelectorAll('[data-ci]').forEach(e=>e.onchange=()=>{S.costs[+e.dataset.ci].v=+e.value||0;save();render();});
-  document.querySelectorAll('[data-ti]').forEach(e=>e.onclick=()=>{const c=S.costs[+e.dataset.ti];c.on=!c.on;save();render();});
-  const bi=document.getElementById('bufIn');bi.onchange=()=>{S.buffer=Math.max(0,+bi.value||0);save();render();};
-  const gi=document.getElementById('gdicIn');gi.onchange=()=>{S.gdic=gi.value===''?null:+gi.value;save();render();};
-  document.querySelectorAll('[data-ik]').forEach(e=>e.onchange=()=>{const k=e.dataset.ik;S[k]=e.value===''?((k==='sal2'||k==='dext')?null:0):+e.value;save();render();});
+  document.querySelectorAll('[data-t]').forEach(e=>e.onchange=()=>{const t=S.trip[+e.dataset.t];t.v=+e.value||0;t.manual=true;save();render();});
+  document.querySelectorAll('[data-tt]').forEach(e=>e.onclick=()=>{const t=S.trip[+e.dataset.tt];t.on=!t.on;save();render();});
+  document.querySelectorAll('[data-rt]').forEach(e=>e.onclick=()=>{const t=S.trip[+e.dataset.rt];delete t.manual;delete t.v;save();render();});
+  const arr=k=>S[k];
+  document.querySelectorAll('[data-p]').forEach(e=>e.onchange=()=>{const [k,i]=e.dataset.p.split(':');arr(k)[+i].v=+e.value||0;save();render();});
+  document.querySelectorAll('[data-pt]').forEach(e=>e.onclick=()=>{const [k,i]=e.dataset.pt.split(':');const c=arr(k)[+i];c.on=!c.on;save();render();});
+  document.querySelectorAll('[data-sup]').forEach(e=>e.onclick=()=>{const c=S.cobra[+e.dataset.sup];c.sup=!c.sup;save();render();});
+  document.querySelectorAll('[data-del]').forEach(e=>e.onclick=()=>{const [k,i]=e.dataset.del.split(':');arr(k).splice(+i,1);save();render();});
+  document.querySelectorAll('[data-seg]').forEach(e=>e.onclick=()=>{S.seguro=e.dataset.seg;const c=S.trip.find(t=>t.id==='carro');if(c){delete c.manual;delete c.v;}save();render();});
   document.querySelectorAll('[data-pm]').forEach(e=>e.onclick=()=>{S.phone=e.dataset.pm;save();render();});
-  document.querySelectorAll('[data-mo]').forEach(e=>e.onclick=()=>{S.months=+e.dataset.mo;save();render();});
-  ['rBuy','rSell','rCad'].forEach(id=>{const e=document.getElementById(id);e.onchange=()=>{S[id]=+e.value||S[id];S.cadManual=id==='rCad'?true:S.cadManual;save();render();};});
+  const bi=document.getElementById('bufIn');if(bi)bi.onchange=()=>{S.buffer=Math.max(0,+bi.value||0);save();render();};
+  ['rUsd','rCad'].forEach(id=>{const e=document.getElementById(id);e.onchange=()=>{S[id]=+e.value||S[id];S.fxManual=true;save();render();};});
 }
-document.getElementById('resetBtn').onclick=()=>{const keep={ing:S.ing,sal:S.sal,sal2:S.sal2,gdic:S.gdic,dext:S.dext,plan:S.plan};S=Object.assign(JSON.parse(JSON.stringify(DEF)),keep);save();render();};
+const addItem=(key,nId,vId)=>{const n=document.getElementById(nId).value.trim(),v=+document.getElementById(vId).value;if(!n||!(v>0))return;
+  S[key].push({id:'x'+Date.now(),ic:key==='cobra'?'➕':'➖',n,v,on:true,x:true,sup:false});document.getElementById(nId).value='';document.getElementById(vId).value='';save();render();};
+document.getElementById('addOutB').onclick=()=>addItem('extra','addOutN','addOutV');
+document.getElementById('addInB').onclick=()=>addItem('cobra','addInN','addInV');
+document.getElementById('resetBtn').onclick=()=>{S.trip=TRIP.map(t=>({id:t.id,on:true}));S.seguro='inc';S.buffer=10;S.fxManual=false;save();render();fx();};
+document.getElementById('copyLink').onclick=async e=>{const l=personalLink();try{await navigator.clipboard.writeText(l);e.target.textContent='✓ Link copiado: es privado, no lo compartas';}catch(err){prompt('Copiá tu link personal:',l);}};
 render();
-/* live CAD→CRC (skipped if edited by hand) */
-if(!S.cadManual)fetch('https://open.er-api.com/v6/latest/CAD').then(r=>r.json()).then(d=>{if(d&&d.rates&&d.rates.CRC){S.rCad=Math.round(d.rates.CRC*100)/100;save();render();
-  document.getElementById('fxHint').textContent='BCCR 5 oct 2026: compra ₡455,71 · venta ₡462,08 · CAD en vivo hoy: ₡'+S.rCad;}}).catch(()=>{});
+/* tipo de cambio en vivo (USD y CAD → colones), salvo que lo hayas editado a mano */
+function fx(){if(S.fxManual)return;fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.json()).then(d=>{if(d&&d.rates&&d.rates.CRC&&d.rates.CAD){
+  S.rUsd=Math.round(d.rates.CRC*100)/100;S.rCad=Math.round(d.rates.CRC/d.rates.CAD*100)/100;save();render();
+  let when='';try{when=new Date(d.time_last_update_utc).toLocaleDateString('es-CR',{day:'numeric',month:'short'});}catch(e){}
+  document.getElementById('fxHint').textContent=`Tipo real del mercado${when?' · '+when:''}: 1 USD = ₡${S.rUsd} · 1 CAD = ₡${S.rCad}. No es el ₡480 al que vendés tus dólares.`;}}).catch(()=>{});}
+fx();
 </script>
 <script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
 </body>

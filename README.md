@@ -1,10 +1,10 @@
 # Jime & Moi — Toronto + Niagara 🍁
 
-Planner del viaje de invierno **24 Dic 2026 – 2 Ene 2027**: base en Toronto con días de huskies + snow tubing y Niagara Falls. **Vuelos comprados** (Porter PD790 SJO→YYZ 23–24 dic · Air Transat TS112 YYZ→SJO 2 ene). La raíz `/` redirige a `toronto.html`.
+Planner del viaje de invierno **24 Dic 2026 – 2 Ene 2027**: base en Toronto con 4 días de auto (27–31 dic): Wonderland, trineo en Centennial Park, Niagara Falls y un día de shopping. **Vuelos comprados** (Porter PD790 SJO→YYZ 23–24 dic · Air Transat TS112 YYZ→SJO 2 ene). La raíz `/` redirige a `toronto.html`.
 
 `calgary.html` (ruta Calgary, Plan B) está **escondido**: no aparece en el menú. `/` sirve `toronto.html` (rewrite, sin redirect).
 
-- **`ahorro.html` — Ahorro** · plan de ahorro hasta el viaje. Los ingresos NO están en el código: se cargan con un link personal (`#ing=…&sal=…`) y viven en localStorage del dispositivo.
+- **`ahorro.html` — Ahorro** · cobrables vs pagables del 15 nov al 15 dic, con el viaje adentro: ¿alcanza o hay que generar más? Los ingresos y gastos personales NO están en el código: se cargan con un link personal (`#p=…`) y viven en localStorage del dispositivo.
 
 Sitio estático, sin build ni dependencias de servidor. Secciones:
 
