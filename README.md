@@ -10,6 +10,7 @@ Sitio estático, sin build ni dependencias de servidor. Secciones:
 
 - **`toronto.html` — Mapa principal** · itinerario de 10 días, presupuesto y checklist de lo que falta reservar (`toronto-routes.js`, `toronto-photos.js`).
 - **`calgary.html` — Plan B (Rockies, escondido)** · itinerario de 7 días (base doble: Calgary + Canmore), rutas que siguen calles reales (geometría OSRM horneada en `routes.js`), marcadores y galerías de fotos reales (`photos.js`) por cada punto.
+- **`viaje.html` — Presentación** · el viaje como presentación: portada con la línea de los 10 días, un slide por día con paradas que cambian la foto, qué incluye y cuenta regresiva. Flechas, swipe o `viaje.html#5` para ir a un slide. Usa `toronto-data.js`.
 - **`inventario.html` — Inventario** · lista de empaque de invierno; marcar empacado, agregar ítems, marcar "comprado allá". Se guarda en el navegador (localStorage).
 - **`costos.html` — Costos** · presupuesto en CAD con conversión en vivo a USD y colones. Se guarda en localStorage.
 

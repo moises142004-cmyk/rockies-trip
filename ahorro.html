@@ -115,6 +115,7 @@
     <a class="on" href="ahorro.html"><span class="ic">🐷</span>Ahorro</a>
     <a href="inventario.html"><span class="ic">🎒</span>Inventario</a>
     <a href="costos.html"><span class="ic">💰</span>Costos</a>
+    <a href="viaje.html"><span class="ic">🎞️</span>Presentación</a>
   </nav>
 </header>
 
@@ -189,8 +190,8 @@
     </div>
   </div>
 
-  <div class="foot" style="margin-top:26px;text-align:center"><button class="btn ghost" id="resetBtn">↺ Volver a los números base del viaje</button></div>
-  <div class="private"><span id="savedPip" style="color:var(--good)">● Guardado en este dispositivo</span><br>🔒 Tus ingresos y gastos personales no están en el código ni en la nube: se cargan con tu link personal y quedan solo en este dispositivo.<br>Cerrar la pestaña no borra nada; solo se pierde si borrás los datos del sitio o usás incógnito.<br><button class="btn ghost" id="copyLink">🔗 Copiar mi link personal (para abrirlo en otro teléfono)</button></div>
+  <div class="foot" style="margin-top:26px;text-align:center"><button class="btn ghost" id="resetBtn">↺ Volver a los números base</button></div>
+  <div class="private"><span id="savedPip" style="color:var(--good)">● Guardado en este dispositivo</span><br>Lo que edités se guarda en este dispositivo. Cerrar la pestaña no borra nada.</div>
 </div>
 
 <nav class="tabbar">
@@ -198,12 +199,12 @@
   <a class="on" href="ahorro.html"><span class="ic">🐷</span><span>Ahorro</span></a>
   <a href="inventario.html"><span class="ic">🎒</span><span>Inventario</span></a>
   <a href="costos.html"><span class="ic">💰</span><span>Costos</span></a>
+  <a href="viaje.html"><span class="ic">🎞️</span><span>Show</span></a>
 </nav>
 
 <script>
-/* Ingresos y gastos personales NO viven en este archivo (el repo es público).
-   Llegan por el link personal (#p=…) y se guardan solo en el localStorage de este dispositivo.
-   Acá solo están los costos del viaje, que ya son públicos en el itinerario. */
+/* Números base: ingresos y gastos del 15 nov al 15 dic + costos del viaje.
+   Lo que edités se guarda en el localStorage de este dispositivo. */
 const KEY='rockies:plata:v1';
 const HST=0.13; /* Ontario */
 const PHONES={none:{n:'Sin iPhone',cad:0},p256:{n:'18 Pro · 256 GB',cad:1749},p512:{n:'18 Pro · 512 GB',cad:2049}};
@@ -215,11 +216,28 @@ const TRIP=[
   {id:'gas',ic:'⛽',n:'Gasolina + parqueos',cad:125,var:1,w:'24 dic – 2 ene',wk:8,flag:'~500 km de gasolina (~C$45) + parqueos en Niagara, Casa Loma, Yorkville y Kensington (~C$80)'},
   {id:'tours',ic:'🎟️',n:'Actividades',cad:560,var:1,w:'Antes del viaje · online',wk:3,flag:'CityPASS x2 ~C$305 · Wonderland ~C$100 · Butterfly + Clifton Hill ~C$135 · trineo ~C$20'},
   {id:'transp',ic:'🚆',n:'UP Express + TTC',cad:150,var:1,w:'24 dic – 2 ene',wk:8,flag:'Aeropuerto, ir y devolver el auto, y los días sin auto'},
-  {id:'comida',ic:'🍽️',n:'Comida · tu parte',v:200000,var:1,w:'24 dic – 2 ene',wk:8,flag:'El plan para los dos es ~₡380 mil: el resto lo pone Jime'},
+  {id:'comida',ic:'🍽️',n:'Comida · tu parte',v:200000,var:1,w:'24 dic – 2 ene',wk:8,flag:'El plan para los dos es ~₡380 mil: Jime trae ~₡180 mil aparte para su parte'},
   {id:'regalos',ic:'🎁',n:'Regalos',v:100000,var:1,w:'Diciembre',wk:5},
   {id:'idp',ic:'🪪',n:'Permiso internacional de conducir',v:49000,w:'Esta semana',wk:1,flag:'Automóvil Club, Sabana Sur (precio 2025, confirmalo)'}
 ];
-const DEF={cobra:[],vida:[],extra:[],trip:TRIP.map(t=>({id:t.id,on:true})),seguro:'inc',phone:'none',buffer:10,rUsd:452.89,rCad:319.61,fxManual:false};
+const COBRA=[
+  {id:'pdr',ic:'🩺',n:'Página Dr',v:198000},
+  {id:'sal',ic:'💼',n:'Salario',v:780000},
+  {id:'bono',ic:'💰',n:'Bono',v:756000},
+  {id:'ahc',ic:'🐷',n:'Ahorro Canadá',v:250000,note:'Incluye ₡200 mil de Jime + ₡50 mil tuyos'},
+  {id:'papa',ic:'👨',n:'Regalo de Navidad · papá',v:300000,sup:true},
+  {id:'mant',ic:'🧩',n:'Mantenimientos',v:440000},
+  {id:'pag2',ic:'🌐',n:'Página 2',v:100000}
+].map(c=>({...c,on:true,sup:!!c.sup}));
+const VIDA=[
+  {id:'tarjeta',ic:'💳',n:'Tarjeta de crédito',v:390000},
+  {id:'tel',ic:'📱',n:'Teléfono · 2 líneas',v:45000},
+  {id:'carcr',ic:'🚙',n:'Carro (el tuyo en CR)',v:175000},
+  {id:'compu',ic:'💻',n:'Compu',v:400000},
+  {id:'papatel',ic:'📞',n:'Teléfono de tu papá',v:140000},
+  {id:'claude',ic:'🤖',n:'Claude',v:98000}
+].map(c=>({...c,on:true}));
+const DEF={cobra:COBRA,vida:VIDA,extra:[],trip:TRIP.map(t=>({id:t.id,on:true})),seguro:'inc',phone:'none',buffer:10,rUsd:452.89,rCad:319.61,fxManual:false};
 /* ---------- link personal ---------- */
 const b64e=o=>{const b=new TextEncoder().encode(JSON.stringify(o));let s='';b.forEach(c=>s+=String.fromCharCode(c));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
 const b64d=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');const bin=atob(s);return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0))));};
@@ -228,6 +246,9 @@ function load(){
   let s=JSON.parse(JSON.stringify(DEF));
   try{const raw=localStorage.getItem(KEY);if(raw)s=Object.assign(s,JSON.parse(raw));}catch(e){}
   TRIP.forEach(t=>{if(!s.trip.find(x=>x.id===t.id))s.trip.push({id:t.id,on:true});});
+  if(!s.cobra.length)s.cobra=JSON.parse(JSON.stringify(COBRA));
+  if(!s.vida.length)s.vida=JSON.parse(JSON.stringify(VIDA));
+  COBRA.forEach(d=>{const c=s.cobra.find(x=>x.id===d.id);if(c&&d.note)c.note=d.note;});
   const h=new URLSearchParams(location.hash.slice(1));
   if(h.has('p')){try{const p=b64d(h.get('p'));
       if(Array.isArray(p.c))s.cobra=p.c.map(([id,ic,n,v,sup])=>({id,ic,n,v:+v||0,sup:!!sup,on:true}));
@@ -239,11 +260,6 @@ function load(){
 }
 function save(s){let ok=true;try{localStorage.setItem(KEY,JSON.stringify(s||S));}catch(e){ok=false;}
   const el=document.getElementById('savedPip');if(el){el.textContent=ok?'● Guardado en este dispositivo · '+new Date().toLocaleTimeString('es-CR',{hour:'2-digit',minute:'2-digit'}):'⚠ Este navegador no deja guardar (¿modo incógnito?)';el.style.color=ok?'var(--good)':'var(--bad)';}}
-function personalLink(){
-  const p={c:S.cobra.map(c=>[c.id,c.ic,c.n,c.v,c.sup?1:0]),g:S.vida.concat(S.extra).map(c=>[c.id,c.ic,c.n,c.v])};
-  const t={};S.trip.forEach(x=>{if(x.manual)t[x.id]=x.v;});if(Object.keys(t).length)p.t=t;
-  return location.origin+location.pathname+'#p='+b64e(p);
-}
 
 S=load();
 
@@ -279,7 +295,7 @@ function render(){
   if(!hasIn){
     document.getElementById('heroLbl').textContent='Costo del viaje (tu parte)';
     big.className='big';big.innerHTML=`${fmt(r.viaje+r.buf)}<small>≈ CAD ${cad(r.viaje+r.buf)}</small>`;
-    document.getElementById('heroSub').innerHTML=`<span class="empty-hero">Faltan tus ingresos y gastos personales. Abrí tu <b>link personal</b> en este dispositivo para cargarlos.</span>`;
+    document.getElementById('heroSub').innerHTML=`<span class="empty-hero">Agregá lo que te entra en <b>Cobrables</b> para ver si alcanza.</span>`;
   }else{
     hero.classList.toggle('bad',r.res<0);
     document.getElementById('heroLbl').textContent=r.res>=0?'Te sobran':'Te faltan';
@@ -293,7 +309,7 @@ function render(){
   bar.style.background=cov>=1?'linear-gradient(90deg,var(--good),var(--glacier))':cov>=.93?'linear-gradient(90deg,var(--warn),var(--amber))':'linear-gradient(90deg,var(--amber),var(--bad))';
   document.getElementById('meterLeg').innerHTML=`<span>Cubierto</span><span>${hasIn?Math.round(r.inAll/r.out*100)+'% de lo que sale':'—'}</span><span>100%</span>`;
   const v=document.getElementById('verdict');
-  if(!hasIn){v.className='verdict mid';v.textContent='◐ Cargá tu link personal para ver si alcanza';}
+  if(!hasIn){v.className='verdict mid';v.textContent='◐ Agregá tus ingresos para ver si alcanza';}
   else if(rf.res>=0){v.className='verdict ok';v.textContent=`✓ No tenés que generar más: alcanza aunque no llegue lo supuesto (quedan ${fmtK(rf.res)}).`;}
   else if(r.res>=0){v.className='verdict mid';v.textContent=`◐ Alcanza solo si llega lo supuesto (${sup.map(c=>c.n).join(', ')}). Si no llega, generá ${fmt(-rf.res)} más.`;}
   else{v.className='verdict bad';v.textContent=`✕ Generá ${fmt(-r.res)} más o mové algo de la lista.`;}
@@ -302,7 +318,7 @@ function render(){
   const rp=calc({phone:S.phone==='none'?'p256':S.phone}), rn=calc({phone:'none'});
   const card=(t,x,d)=>`<div class="scn"><div class="t">${t}</div><div class="v" style="color:${x>=0?'var(--good)':'var(--bad)'}">${x>=0?'+':''}${fmtK(x)}</div><div class="d">${d(x)}</div></div>`;
   const dd=x=>x>=0?`sobran · ≈ CAD ${cad(x)} para shopping`:`<b>generá ${fmt(-x)} más</b>`;
-  document.getElementById('scenarios').innerHTML=!hasIn?'<div class="scn" style="grid-column:1/-1"><div class="d">Se calcula cuando cargás tu link personal.</div></div>':
+  document.getElementById('scenarios').innerHTML=!hasIn?'<div class="scn" style="grid-column:1/-1"><div class="d">Se calcula cuando agregás tus ingresos.</div></div>':
     card('Con todo lo que esperás',r.res,dd)+
     card(sup.length?'Si no llega lo supuesto':'Sin supuestos',rf.res,x=>sup.length?`sin ${sup.map(c=>c.n).join(', ')} · `+dd(x):dd(x))+
     card(S.phone==='none'?'Con iPhone 18 Pro (256)':'Sin el iPhone',S.phone==='none'?rp.res:rn.res,x=>S.phone==='none'?`C$1.749 + 13% HST ≈ ${fmtK(calc({phone:'p256'}).pCRC)} · `+dd(x):dd(x));
@@ -341,10 +357,10 @@ function render(){
   document.getElementById('viajeRows').innerHTML=S.trip.map(rowT).join('')+
     `<div class="row"><div class="ic">🛟</div><div class="nm">Colchón para imprevistos<small>% sobre comida, actividades, transporte, gasolina y regalos = ${fmt(r.buf)}</small></div><input type="number" inputmode="numeric" id="bufIn" value="${S.buffer}"><span style="font-family:var(--mono);font-size:11px;color:var(--mist)">%</span></div>`+
     (S.phone!=='none'?`<div class="row"><div class="ic">📱</div><div class="nm">iPhone ${PHONES[S.phone].n}<small>Toronto · C$${PHONES[S.phone].cad.toLocaleString('en-US')} + 13% HST</small></div><input type="number" value="${Math.round(r.pCRC)}" disabled><span></span></div>`:'');
-  const rowP=(arr,key)=>(c,i)=>`<div class="row${c.on?'':' off'}"><div class="ic">${c.ic||'•'}</div><div class="nm">${c.n}${key==='cobra'?`<button class="pill${c.sup?' sup':''}" data-sup="${i}">${c.sup?'supuesto':'seguro'}</button>`:''}${c.x?`<small><a data-del="${key}:${i}">borrar</a></small>`:''}</div><input type="number" inputmode="numeric" data-p="${key}:${i}" value="${c.v}"><button class="tg${c.on?' on':''}" data-pt="${key}:${i}">${c.on?'✓':''}</button></div>`;
-  document.getElementById('vidaRows').innerHTML=S.vida.length?S.vida.map(rowP(S.vida,'vida')).join(''):'<div class="note">Se cargan con tu link personal.</div>';
+  const rowP=(arr,key)=>(c,i)=>`<div class="row${c.on?'':' off'}"><div class="ic">${c.ic||'•'}</div><div class="nm">${c.n}${key==='cobra'?`<button class="pill${c.sup?' sup':''}" data-sup="${i}">${c.sup?'supuesto':'seguro'}</button>`:''}${c.note?`<small>${c.note}</small>`:''}${c.x?`<small><a data-del="${key}:${i}">borrar</a></small>`:''}</div><input type="number" inputmode="numeric" data-p="${key}:${i}" value="${c.v}"><button class="tg${c.on?' on':''}" data-pt="${key}:${i}">${c.on?'✓':''}</button></div>`;
+  document.getElementById('vidaRows').innerHTML=S.vida.length?S.vida.map(rowP(S.vida,'vida')).join(''):'<div class="note">Sin gastos todavía.</div>';
   document.getElementById('extraRows').innerHTML=S.extra.map(rowP(S.extra,'extra')).join('');
-  document.getElementById('inRows').innerHTML=S.cobra.length?S.cobra.map(rowP(S.cobra,'cobra')).join(''):'<div class="note">Se cargan con tu link personal.</div>';
+  document.getElementById('inRows').innerHTML=S.cobra.length?S.cobra.map(rowP(S.cobra,'cobra')).join(''):'<div class="note">Sin gastos todavía.</div>';
   document.getElementById('viajeTot').textContent=fmt(r.viaje+r.buf+r.pCRC);
   document.getElementById('vidaTot').textContent=fmt(r.vida);
   document.getElementById('outTot').textContent=fmt(r.out);
@@ -354,7 +370,7 @@ function render(){
   /* comida */
   const food=S.trip.find(t=>t.id==='comida'), fw=document.getElementById('foodWarn');
   if(food&&food.on){const f=crc(food);fw.style.display='';
-    fw.innerHTML=f<342000?`<b>Comida: acá está solo tu parte.</b> El plan de comida para los dos es ~₡380 mil (≈ CAD ${cad(380000)}): Maxime's ~$150, Katsugyu ~$115, Pai ~$105, Kinka ~$115 y Amsterdam ~$110 ya suman ~CAD 600. Con tus ${fmtK(f)}, el resto (~${fmtK(380000-f)}) lo tiene que poner Jime. Si no, subí este número.`
+    fw.innerHTML=f<342000?`<b>Comida: acá está solo tu parte.</b> El plan de comida para los dos es ~₡380 mil (≈ CAD ${cad(380000)}): Maxime's ~$150, Katsugyu ~$115, Pai ~$105, Kinka ~$115 y Amsterdam ~$110 ya suman ~CAD 600. Los ₡200 mil de Jime ya están en Ahorro Canadá, así que ella trae aparte ~${fmtK(380000-f)} para su parte de comida. Si no, subí este número.`
       :`<b>La comida alcanza para los dos.</b> ${fmtK(f)} ≈ CAD ${cad(f)}: las 5 comidas caras suman ~CAD 600 y queda ~CAD ${Math.round((f/S.rCad-600)/10)} por día para lo demás.`;}
   else fw.style.display='none';
 
@@ -385,8 +401,7 @@ const addItem=(key,nId,vId)=>{const n=document.getElementById(nId).value.trim(),
   S[key].push({id:'x'+Date.now(),ic:key==='cobra'?'➕':'➖',n,v,on:true,x:true,sup:false});document.getElementById(nId).value='';document.getElementById(vId).value='';save();render();};
 document.getElementById('addOutB').onclick=()=>addItem('extra','addOutN','addOutV');
 document.getElementById('addInB').onclick=()=>addItem('cobra','addInN','addInV');
-document.getElementById('resetBtn').onclick=()=>{S.trip=TRIP.map(t=>({id:t.id,on:true}));S.seguro='inc';S.buffer=10;S.fxManual=false;save();render();fx();};
-document.getElementById('copyLink').onclick=async e=>{const l=personalLink();try{await navigator.clipboard.writeText(l);e.target.textContent='✓ Link copiado: es privado, no lo compartas';}catch(err){prompt('Copiá tu link personal:',l);}};
+document.getElementById('resetBtn').onclick=()=>{S.trip=TRIP.map(t=>({id:t.id,on:true}));S.cobra=JSON.parse(JSON.stringify(COBRA));S.vida=JSON.parse(JSON.stringify(VIDA));S.extra=[];S.seguro='inc';S.buffer=10;S.fxManual=false;save();render();fx();};
 render();
 /* tipo de cambio en vivo (USD y CAD → colones), salvo que lo hayas editado a mano */
 function fx(){if(S.fxManual)return;fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.json()).then(d=>{if(d&&d.rates&&d.rates.CRC&&d.rates.CAD){

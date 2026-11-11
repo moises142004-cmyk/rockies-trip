@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>El viaje · Jime y Moi en Toronto y Niagara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#EEF2F6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jime & Moi">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<style>
+:root{
+  --snow:#EEF2F6;      /* fondo: nieve fría, no crema */
+  --ink:#0D1B2E;       /* texto y líneas: lago Ontario de noche */
+  --red:#DA291C;       /* el único acento: tranvía rojo de la TTC */
+  --ice:#CFE0EE;       /* línea apagada, paneles */
+  --slate:#5A6B80;     /* texto secundario */
+  --white:#FFFFFF;
+  --f:'Archivo',system-ui,sans-serif;
+  --pad:clamp(20px,4vw,56px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--snow);color:var(--ink);font-family:var(--f);font-variation-settings:'wdth' 100;-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.cond{font-stretch:62%;font-variation-settings:'wdth' 62}
+
+/* ---------- escenario ---------- */
+.deck{position:fixed;inset:0}
+.slide{position:absolute;inset:0;display:none;overflow:hidden}
+.slide.on{display:block;animation:enter .55s cubic-bezier(.2,.7,.2,1) both}
+.slide.on.back{animation-name:enterBack}
+@keyframes enter{from{opacity:0;transform:translateX(3.5%)}to{opacity:1;transform:none}}
+@keyframes enterBack{from{opacity:0;transform:translateX(-3.5%)}to{opacity:1;transform:none}}
+
+.progress{position:fixed;left:0;top:0;height:4px;background:var(--red);z-index:20;transition:width .45s ease}
+.chrome{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px var(--pad) calc(14px + env(safe-area-inset-bottom));pointer-events:none}
+.chrome>*{pointer-events:auto}
+.home{font-weight:600;font-size:14px;text-decoration:none;color:var(--ink)}
+.home:hover{color:var(--red)}
+.nav{display:flex;align-items:center;gap:6px;background:var(--snow);border-radius:999px;padding:4px}
+.nav .count{font-variant-numeric:tabular-nums;font-size:14px;color:var(--slate);min-width:58px;text-align:center}
+.nav button{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);font-size:20px;line-height:1;display:grid;place-items:center;background:var(--snow)}
+.nav button:hover{background:var(--ink);color:var(--snow)}
+.nav button:disabled{opacity:.25;cursor:default;background:var(--snow);color:var(--ink)}
+
+/* ---------- la línea (firma) ---------- */
+.line{position:relative;height:120px}
+.line .rail{position:absolute;left:0;right:0;top:34px;height:8px;background:var(--ink);border-radius:4px}
+.line .car{position:absolute;top:30px;height:16px;background:var(--red);border-radius:8px}
+.line .carlbl{position:absolute;top:2px;font-weight:700;font-size:14px;color:var(--red);white-space:nowrap;transform:translateX(-50%)}
+.stn{position:absolute;top:24px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;width:90px;text-align:center}
+.stn .dot{width:28px;height:28px;border-radius:50%;background:var(--white);border:6px solid var(--ink);transition:transform .2s}
+.stn:hover .dot,.stn:focus-visible .dot{transform:scale(1.18);border-color:var(--red)}
+.stn .d{font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+.stn .t{font-size:12.5px;color:var(--slate);line-height:1.25}
+
+/* ---------- portada ---------- */
+.cover{padding:calc(var(--pad) + 8px) var(--pad) 110px;display:flex!important;flex-direction:column;justify-content:space-between;visibility:hidden}
+.cover.on{visibility:visible}
+.cover .top{display:flex;justify-content:space-between;align-items:baseline;gap:20px;font-size:16px;font-weight:500}
+.cover .top span:last-child{color:var(--slate)}
+.cover h1{font-weight:850;font-stretch:62%;font-variation-settings:'wdth' 62;line-height:.82;letter-spacing:-.01em;font-size:clamp(76px,min(19vw,23vh),300px);margin-top:2vh}
+.cover h1 span{display:block}
+.cover h1 .amp{color:transparent;-webkit-text-stroke:3px var(--ink)}
+.cover .lede{font-size:clamp(17px,1.6vw,21px);line-height:1.45;max-width:46ch;color:var(--ink)}
+.cover .bottom{display:grid;grid-template-columns:minmax(260px,1fr) 2.4fr;gap:clamp(24px,4vw,64px);align-items:end}
+.start{margin-top:18px;display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:var(--snow);font-weight:700;font-size:17px;padding:14px 22px;border-radius:999px}
+.start:hover{background:var(--red)}
+.hint{font-size:13px;color:var(--slate);margin-top:10px}
+canvas.snow{position:absolute;inset:0;pointer-events:none;z-index:0}
+.cover>*{position:relative;z-index:1}
+
+/* ---------- día ---------- */
+.day{display:grid!important;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);visibility:hidden}
+.day.on{visibility:visible}
+.day .txt{padding:calc(var(--pad) + 4px) var(--pad) 96px;overflow-y:auto;display:flex;flex-direction:column}
+.mini{display:flex;align-items:center;gap:0;margin-bottom:clamp(14px,3vh,30px)}
+.mini i{width:12px;height:12px;border-radius:50%;background:var(--snow);border:3px solid var(--ink);flex:none;cursor:pointer}
+.mini i.now{background:var(--red);border-color:var(--red);transform:scale(1.25)}
+.mini b{height:3px;flex:1;max-width:34px;background:var(--ink)}
+.mini b.car{background:var(--red);height:5px}
+.mini span{margin-left:14px;font-size:13px;color:var(--slate);white-space:nowrap}
+.dhead{display:flex;align-items:flex-end;gap:clamp(14px,2vw,28px)}
+.num{font-weight:900;font-stretch:62%;font-variation-settings:'wdth' 62;font-size:clamp(110px,15vw,210px);line-height:.74;letter-spacing:-.03em;color:var(--ink)}
+.when{padding-bottom:6px}
+.when .date{font-size:clamp(18px,1.7vw,22px);font-weight:700}
+.when .tag{font-size:15px;color:var(--slate);margin-top:3px}
+.badge{display:inline-flex;align-items:center;gap:7px;margin-top:10px;background:var(--red);color:var(--white);font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px}
+.day h2{font-weight:800;font-stretch:72%;font-variation-settings:'wdth' 72;font-size:clamp(34px,3.6vw,54px);line-height:.98;letter-spacing:-.01em;margin:clamp(14px,2.4vh,24px) 0 12px;max-width:18ch}
+.blurb{font-size:clamp(15.5px,1.15vw,17.5px);line-height:1.55;max-width:60ch;color:#24344A}
+.stops{position:relative;margin:clamp(16px,2.6vh,26px) 0 18px;list-style:none}
+.stops::before{content:"";position:absolute;left:86px;top:14px;bottom:14px;width:4px;background:var(--ink);border-radius:2px}
+.stop{position:relative;display:grid;grid-template-columns:72px 32px 1fr auto;align-items:center;column-gap:0;width:100%;text-align:left;padding:7px 0;border-radius:10px}
+.stop .tm{font-variant-numeric:tabular-nums;font-size:14px;color:var(--slate);text-align:right;padding-right:6px}
+.stop .sd{justify-self:center;width:20px;height:20px;border-radius:50%;background:var(--white);border:4px solid var(--ink);margin-left:24px;transition:transform .15s}
+.stop .nm{padding-left:22px;font-size:16.5px;font-weight:600;line-height:1.25}
+.stop .pr{font-size:13.5px;color:var(--slate);padding-left:12px;text-align:right;white-space:nowrap}
+.stop:hover .nm{color:var(--red)}
+.stop.on .sd{background:var(--red);border-color:var(--red);transform:scale(1.25)}
+.stop.on .nm{color:var(--red)}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:auto;padding-top:14px;border-top:2px solid var(--ice);font-size:14.5px;color:#24344A}
+.facts b{font-weight:700;color:var(--ink)}
+
+.pic{position:relative;background:var(--ice);overflow:hidden}
+.pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s}
+.pic img.ok{opacity:1}
+.pic .ph{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:flex-start;padding:var(--pad);gap:16px}
+.pic .ph.show{display:flex}
+.pic .ph .em{font-size:clamp(90px,12vw,170px);line-height:1}
+.pic .ph .pn{font-weight:850;font-stretch:62%;font-variation-settings:'wdth' 62;font-size:clamp(44px,5vw,76px);line-height:.92;max-width:12ch}
+.cap{position:absolute;left:0;right:0;bottom:0;padding:70px var(--pad) 92px;background:linear-gradient(transparent,rgba(13,27,46,.86));color:var(--white)}
+.cap.light{background:none;color:var(--ink);padding-top:0}
+.cap .cn{font-weight:800;font-size:clamp(20px,1.8vw,26px);line-height:1.15}
+.cap .cx{font-size:15px;line-height:1.5;margin-top:6px;max-width:56ch;opacity:.92}
+.pdots{position:absolute;right:var(--pad);top:var(--pad);display:flex;gap:6px}
+.pdots button{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.55);border:2px solid var(--white)}
+.pdots button.on{background:var(--white)}
+
+/* ---------- incluye ---------- */
+.inc{padding:calc(var(--pad) + 8px) var(--pad) 100px;overflow-y:auto;visibility:hidden;display:grid!important;grid-template-columns:1.1fr 1fr;gap:clamp(28px,5vw,80px);align-content:start}
+.inc.on{visibility:visible}
+.inc h2,.end h2{font-weight:900;font-stretch:62%;font-variation-settings:'wdth' 62;font-size:clamp(64px,9vw,140px);line-height:.84;letter-spacing:-.01em;margin-bottom:22px}
+.inclist{list-style:none;display:flex;flex-direction:column}
+.inclist li{display:grid;grid-template-columns:40px 1fr;gap:6px;align-items:baseline;font-size:clamp(16px,1.25vw,19px);line-height:1.4;padding:11px 0;border-bottom:2px solid var(--ice)}
+.inclist li span:first-child{font-size:22px}
+.money h3{font-weight:800;font-size:22px;margin:6px 0 16px}
+.brow{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:10px 0}
+.brow .bn{font-size:16px;font-weight:600}
+.brow .bv{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px}
+.brow .bb{grid-column:1/-1;height:10px;background:var(--ice);border-radius:5px;overflow:hidden}
+.brow .bb i{display:block;height:100%;background:var(--ink);border-radius:5px}
+.brow.car .bb i{background:var(--red)}
+.tot{margin-top:18px;padding-top:16px;border-top:3px solid var(--ink)}
+.tot .big{font-weight:900;font-stretch:62%;font-variation-settings:'wdth' 62;font-size:clamp(56px,6vw,92px);line-height:.9}
+.tot .sm{font-size:15px;color:var(--slate);margin-top:6px;line-height:1.5}
+.ahorro{display:inline-block;margin-top:14px;font-weight:700;color:var(--red)}
+
+/* ---------- final ---------- */
+.end{padding:calc(var(--pad) + 8px) var(--pad) 110px;display:flex!important;flex-direction:column;justify-content:center;visibility:hidden}
+.end.on{visibility:visible}
+.cd{display:flex;align-items:flex-end;gap:clamp(18px,3vw,48px);flex-wrap:wrap}
+.cd .n{font-weight:900;font-stretch:62%;font-variation-settings:'wdth' 62;font-size:clamp(150px,26vw,400px);line-height:.78;letter-spacing:-.03em;color:var(--red);font-variant-numeric:tabular-nums}
+.cd .l{font-size:clamp(22px,2.4vw,34px);font-weight:700;line-height:1.15;padding-bottom:1.2vw}
+.cd .l small{display:block;font-weight:400;font-size:.62em;color:var(--slate);margin-top:6px;font-variant-numeric:tabular-nums}
+.end p{font-size:clamp(17px,1.5vw,21px);line-height:1.5;max-width:52ch;margin-top:clamp(20px,4vh,40px)}
+.end .again{margin-top:22px}
+
+/* ---------- móvil ---------- */
+@media (max-width:820px){
+  .cover .bottom{grid-template-columns:1fr}
+  .line.h{display:none}
+  .vline{display:flex!important}
+  .day{grid-template-columns:1fr;grid-template-rows:38vh 1fr}
+  .day .pic{order:-1}
+  .day .txt{padding-top:18px}
+  .cap{padding:40px 20px 16px}
+  .cap .cx{display:none}
+  .stop .nm{padding-left:16px;font-size:15.5px}
+  .inc{grid-template-columns:1fr}
+  .chrome{background:var(--snow);border-top:2px solid var(--ice);padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .stop{grid-template-columns:66px 30px 1fr}
+  .stop .tm{font-size:12.5px;white-space:nowrap}
+  .stop .pr{grid-column:3;text-align:left;padding-left:16px;font-size:12.5px;white-space:normal}
+  .stops::before{left:78px}
+  .stop .sd{margin-left:22px}
+}
+.vline{display:none;flex-direction:column;gap:0;margin-top:8px}
+.vline button{display:grid;grid-template-columns:52px 22px 1fr;align-items:center;text-align:left;padding:5px 0;position:relative}
+.vline button::before{content:"";position:absolute;left:61px;top:0;bottom:0;width:4px;background:var(--ink)}
+.vline button.car::before{background:var(--red);width:6px;left:60px}
+.vline button:first-child::before{top:50%}.vline button:last-child::before{bottom:50%}
+.vline .vd{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.vline .vo{width:16px;height:16px;border-radius:50%;background:var(--white);border:4px solid var(--ink);position:relative;z-index:1;margin-left:3px}
+.vline .vt{padding-left:12px;font-size:14px;color:#24344A}
+@media (prefers-reduced-motion:reduce){
+  .slide.on,.slide.on.back{animation:none}
+  .pic img{transition:none}
+  canvas.snow{display:none}
+}
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main class="deck" id="deck" aria-live="polite"></main>
+<div class="chrome">
+  <a class="home" href="toronto.html">Volver al planner</a>
+  <div class="nav"><button id="prev" aria-label="Anterior">‹</button><span class="count" id="count"></span><button id="next" aria-label="Siguiente">›</button></div>
+</div>
+
+<script src="toronto-photos.js"></script>
+<script src="toronto-data.js"></script>
+<script>
+const PH=window.PHOTOS||{};
+const DIAS={Lun:'Lunes',Mar:'Martes','Mié':'Miércoles',Jue:'Jueves',Vie:'Viernes','Sáb':'Sábado',Dom:'Domingo'};
+const MESES={Dic:'diciembre',Ene:'enero'};
+const longDate=s=>{const [d,n,m]=s.split(' ');return `${DIAS[d]||d} ${n} de ${MESES[m]||m}`;};
+const shortDate=s=>{const [,n,m]=s.split(' ');return `${n} ${m.toLowerCase()}`;};
+const isCar=d=>/Auto|Devoluci/.test(d.trans);
+const CAR_FROM=TRIP.findIndex(isCar), CAR_TO=TRIP.length-1-[...TRIP].reverse().findIndex(isCar);
+/* foto principal de cada día */
+const HERO=['nps','torontozoo','eatoncentre','wonderland','centennial','niagara','casaloma','nyefireworks','cntower','stlawrence'];
+const SHORT=['Llegada y Nochebuena','Navidad en el zoo','Boxing Day','Wonderland','Trineo y Boxing Week','Niagara Falls','Casa Loma y wagyu','Año Nuevo','CN Tower y acuario','Último thrift y vuelo'];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- slides ---------- */
+const slides=[];
+slides.push({cls:'cover',label:'Portada',html:`
+  <canvas class="snow" id="snow"></canvas>
+  <div class="top"><span>Jime y Moi</span><span>24 de diciembre de 2026 al 2 de enero de 2027</span></div>
+  <h1><span>Toronto</span><span class="amp">y Niagara</span></h1>
+  <div class="bottom">
+    <div>
+      <p class="lede">Diez días de invierno con base en Toronto: el zoo en Navidad, rebajas de Boxing Day, cuatro días de auto para Wonderland, el trineo y las cataratas, y Año Nuevo frente al lago.</p>
+      <button class="start" data-go="1">Ver el viaje día por día</button>
+      <div class="hint">También con las flechas del teclado o deslizando.</div>
+    </div>
+    <div>
+      <div class="line h" id="coverLine"></div>
+      <div class="vline" id="coverV"></div>
+    </div>
+  </div>`});
+TRIP.forEach((d,i)=>slides.push({cls:'day',label:`Día ${d.n}`,day:i}));
+slides.push({cls:'inc',label:'Qué incluye'});
+slides.push({cls:'end',label:'Cuenta regresiva'});
+
+const deck=document.getElementById('deck');
+deck.innerHTML=slides.map((s,i)=>`<section class="slide ${s.cls}" id="s${i}" aria-label="${s.label}">${s.html||''}</section>`).join('');
+
+/* línea de la portada */
+function coverLine(){
+  const el=document.getElementById('coverLine'),n=TRIP.length,pos=i=>`calc(${(i/(n-1))*100}% * 0.94 + 3%)`;
+  el.innerHTML=`<div class="rail"></div>
+    <div class="car" style="left:${pos(CAR_FROM)};width:calc(${(CAR_TO-CAR_FROM)/(n-1)*100}% * 0.94)"></div>
+    <div class="carlbl" style="left:calc(${((CAR_FROM+CAR_TO)/2)/(n-1)*100}% * 0.94 + 3%)">Con auto, del ${TRIP[CAR_FROM].date.split(' ')[1]} al ${TRIP[CAR_TO].date.split(' ')[1]}</div>`+
+    TRIP.map((d,i)=>`<button class="stn" style="left:${pos(i)}" data-go="${i+1}" aria-label="Día ${d.n}: ${esc(d.title)}"><span class="dot"></span><span class="d">${shortDate(d.date)}</span><span class="t">${SHORT[i]}</span></button>`).join('');
+  document.getElementById('coverV').innerHTML=TRIP.map((d,i)=>`<button class="${i>=CAR_FROM&&i<CAR_TO?'car':''}" data-go="${i+1}"><span class="vd">${shortDate(d.date)}</span><span class="vo"></span><span class="vt">${SHORT[i]}</span></button>`).join('');
+}
+
+/* slides de cada día */
+const dayState={};
+function renderDay(i){
+  const d=TRIP[i],el=document.getElementById('s'+(i+1));
+  let si=d.sites.findIndex(s=>s.pk===HERO[i]); if(si<0)si=d.sites.findIndex(s=>PH[s.pk]); if(si<0)si=0;
+  dayState[i]={stop:si,photo:0};
+  const mini=TRIP.map((x,k)=>`<i class="${k===i?'now':''}" data-go="${k+1}" title="${esc(x.date)}"></i>`+(k<TRIP.length-1?`<b class="${k>=CAR_FROM&&k<CAR_TO?'car':''}"></b>`:'')).join('');
+  el.innerHTML=`
+   <div class="txt">
+     <div class="mini">${mini}<span>${i+1} de ${TRIP.length}</span></div>
+     <div class="dhead"><div class="num">${d.n}</div><div class="when"><div class="date">${longDate(d.date)}</div><div class="tag">${esc(d.tag)}</div>${isCar(d)?`<div class="badge">🚗 ${/Devoluci/.test(d.trans)?'Devolvemos el auto':'Día con auto'}</div>`:''}</div></div>
+     <h2>${esc(d.title)}</h2>
+     <p class="blurb">${esc(d.blurb)}</p>
+     <ol class="stops">${d.sites.map((s,k)=>`<li><button class="stop${k===si?' on':''}" data-stop="${k}"><span class="tm">${esc(s.t)}</span><span class="sd"></span><span class="nm">${s.ic} ${esc(s.name)}</span><span class="pr">${esc(s.p||'')}</span></button></li>`).join('')}</ol>
+     <div class="facts"><span><b>Cómo nos movemos</b> ${esc(d.trans)}</span><span><b>Clima</b> máx ${d.wx.split('/')[0]}, mín ${d.wx.split('/')[1]}</span><span><b>Gasto del día</b> ${esc(d.cost)} CAD los dos</span></div>
+   </div>
+   <div class="pic"><img alt=""><div class="ph"><div class="em"></div><div class="pn"></div></div><div class="pdots"></div><div class="cap"><div class="cn"></div><div class="cx"></div></div></div>`;
+  el.querySelectorAll('.stop').forEach(b=>b.onclick=()=>{dayState[i]={stop:+b.dataset.stop,photo:0};showStop(i);});
+  showStop(i);
+}
+function showStop(i){
+  const el=document.getElementById('s'+(i+1)),st=dayState[i],s=TRIP[i].sites[st.stop];
+  el.querySelectorAll('.stop').forEach((b,k)=>b.classList.toggle('on',k===st.stop));
+  const photos=(PH[s.pk]&&PH[s.pk].photos)||[];
+  const img=el.querySelector('.pic img'),ph=el.querySelector('.ph'),cap=el.querySelector('.cap'),dots=el.querySelector('.pdots');
+  el.querySelector('.cn').textContent=s.name;el.querySelector('.cx').textContent=s.note||'';
+  const fallback=()=>{img.classList.remove('ok');dots.innerHTML='';ph.classList.add('show');cap.classList.add('light');ph.querySelector('.em').textContent=s.ic;ph.querySelector('.pn').textContent=s.name;el.querySelector('.cn').textContent='';};
+  if(!photos.length){fallback();dots.innerHTML='';return;}
+  ph.classList.remove('show');cap.classList.remove('light');
+  const p=photos[st.photo%photos.length];
+  img.classList.remove('ok');img.alt=p.caption||s.name;
+  img.onload=()=>img.classList.add('ok');img.onerror=()=>{if(st.photo<photos.length-1){st.photo++;showStop(i);}else fallback();};
+  img.src=p.url;
+  dots.innerHTML=photos.length>1?photos.map((_,k)=>`<button class="${k===st.photo?'on':''}" data-ph="${k}" aria-label="Foto ${k+1}"></button>`).join(''):'';
+  dots.querySelectorAll('button').forEach(b=>b.onclick=()=>{st.photo=+b.dataset.ph;showStop(i);});
+}
+
+/* qué incluye */
+function renderInc(){
+  const el=document.getElementById('s'+(TRIP.length+1));
+  const tot=COSTS.reduce((a,c)=>a+c[3],0),max=Math.max(...COSTS.map(c=>c[3]));
+  el.innerHTML=`<div>
+      <h2>Qué incluye</h2>
+      <ul class="inclist">
+        <li><span>✈️</span><span>Vuelos comprados: Porter de ida el 23 en la noche y Air Transat de vuelta el 2 de enero.</span></li>
+        <li><span>🛏</span><span>Nueve noches en un Airbnb en Mount Dennis, con cocina, lavadora y el UP Express a 10 minutos.</span></li>
+        <li><span>🚗</span><span>Auto del 27 al 31 de diciembre para Wonderland, el trineo, Niagara y el día de shopping.</span></li>
+        <li><span>🎟️</span><span>CityPASS: CN Tower, acuario, zoo, Casa Loma y el museo de dinosaurios.</span></li>
+        <li><span>🌊</span><span>Niagara: cataratas, mariposas, Clifton Hill y fuegos sobre el agua.</span></li>
+        <li><span>🎢</span><span>Canada's Wonderland vestido de invierno, con millones de luces.</span></li>
+        <li><span>🛷</span><span>Trineo en Centennial Park y el invernadero tropical.</span></li>
+        <li><span>🍽️</span><span>Cinco comidas especiales: Kyoto Katsugyu, Pai, Kinka, Maxime's y Amsterdam Brewhouse.</span></li>
+        <li><span>🛍️</span><span>Boxing Day, Yorkdale, Kith y vintage en Kensington y Queen West.</span></li>
+        <li><span>🎆</span><span>Año Nuevo frente al lago.</span></li>
+      </ul>
+    </div>
+    <div class="money">
+      <h3>Lo que cuesta, para los dos</h3>
+      ${COSTS.map(([ic,n,,v])=>`<div class="brow${/Auto/.test(n)?' car':''}"><span class="bn">${ic} ${esc(n)}</span><span class="bv">$${v.toLocaleString('en-US')}</span><span class="bb"><i style="width:${v/max*100}%"></i></span></div>`).join('')}
+      <div class="tot"><div class="big">$${tot.toLocaleString('en-US')} CAD</div><div class="sm" id="totConv">Sin contar vuelos (ya pagados), shopping ni regalos.</div></div>
+      <a class="ahorro" href="ahorro.html">Ver cómo se paga en Ahorro</a>
+    </div>`;
+  fetch('https://open.er-api.com/v6/latest/CAD').then(r=>r.json()).then(d=>{if(d&&d.rates&&d.rates.USD&&d.rates.CRC)
+    document.getElementById('totConv').textContent=`Unos US$${Math.round(tot*d.rates.USD).toLocaleString('en-US')} o ₡${Math.round(tot*d.rates.CRC).toLocaleString('es-CR')}. Sin contar vuelos (ya pagados), shopping ni regalos.`;}).catch(()=>{});
+}
+
+/* cuenta regresiva: sale SJO mié 23 dic 11:55 PM (UTC−6) */
+const DEPART=new Date('2026-12-23T23:55:00-06:00');
+function renderEnd(){
+  document.getElementById('s'+(TRIP.length+2)).innerHTML=`
+    <div class="cd"><div class="n" id="cdN">0</div><div class="l" id="cdL">días<small id="cdS"></small></div></div>
+    <p>Salimos el miércoles 23 de diciembre a las 11:55 PM desde San José y aterrizamos en Toronto a las 6:10 AM del 24. Volvemos el sábado 2 de enero en la noche.</p>
+    <div><button class="start again" data-go="0">Volver al inicio</button></div>`;
+  tick();setInterval(tick,1000);
+}
+function tick(){
+  const ms=DEPART-new Date(),n=document.getElementById('cdN'),l=document.getElementById('cdL'),s=document.getElementById('cdS');if(!n)return;
+  if(ms<=0){n.textContent='¡Ya!';l.firstChild.textContent='estamos de viaje';s.textContent='';return;}
+  const d=Math.floor(ms/864e5),h=Math.floor(ms/36e5)%24,m=Math.floor(ms/6e4)%60,se=Math.floor(ms/1e3)%60;
+  n.textContent=d;l.firstChild.textContent=d===1?'día para irnos':'días para irnos';
+  s.textContent=`y ${h} h ${String(m).padStart(2,'0')} min ${String(se).padStart(2,'0')} s`;
+}
+
+/* nieve de la portada (el único movimiento automático) */
+function snow(){
+  const c=document.getElementById('snow');if(!c||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const x=c.getContext('2d');let W,H,F=[];
+  const size=()=>{W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio;F=Array.from({length:Math.round(W*H/26000)},()=>({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*2.2+.8)*devicePixelRatio,v:(Math.random()*.6+.25)*devicePixelRatio,w:Math.random()*6.28}));};
+  size();addEventListener('resize',size);
+  (function loop(){if(cur===0){x.clearRect(0,0,W,H);x.fillStyle='rgba(13,27,46,.16)';
+    F.forEach(f=>{f.y+=f.v;f.w+=.01;f.x+=Math.sin(f.w)*.3;if(f.y>H){f.y=-4;f.x=Math.random()*W;}x.beginPath();x.arc(f.x,f.y,f.r,0,6.28);x.fill();});}
+    requestAnimationFrame(loop);})();
+}
+
+/* ---------- navegación ---------- */
+let cur=-1;
+function go(n,fromHash){
+  n=Math.max(0,Math.min(slides.length-1,n));if(n===cur)return;
+  const back=n<cur;
+  document.querySelectorAll('.slide').forEach((s,k)=>{s.classList.toggle('on',k===n);s.classList.toggle('back',k===n&&back);});
+  cur=n;
+  document.getElementById('progress').style.width=(n/(slides.length-1)*100)+'%';
+  document.getElementById('count').textContent=`${n+1} / ${slides.length}`;
+  document.getElementById('prev').disabled=n===0;document.getElementById('next').disabled=n===slides.length-1;
+  document.title=`${slides[n].label} · Jime y Moi en Toronto`;
+  if(!fromHash)history.replaceState(null,'','#'+n);
+}
+document.getElementById('prev').onclick=()=>go(cur-1);
+document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)go(+g.dataset.go);});
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(cur+1);}
+  else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==='Home')go(0);else if(e.key==='End')go(slides.length-1);
+  else if(e.key==='ArrowDown'||e.key==='ArrowUp'){const d=slides[cur].day;if(d==null)return;e.preventDefault();
+    const st=dayState[d],n=TRIP[d].sites.length;st.stop=(st.stop+(e.key==='ArrowDown'?1:n-1))%n;st.photo=0;showStop(d);}
+});
+let tx=null,ty=null;
+deck.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+deck.addEventListener('touchend',e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4)go(cur+(dx<0?1:-1));tx=null;},{passive:true});
+addEventListener('hashchange',()=>go(+location.hash.slice(1)||0,true));
+
+coverLine();TRIP.forEach((_,i)=>renderDay(i));renderInc();renderEnd();
+go(+location.hash.slice(1)||0,true);snow();
+</script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+</body>
+</html>
