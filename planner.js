@@ -7,7 +7,7 @@ const $=id=>document.getElementById(id);
 const eachMarker=fn=>{dayMarkers.forEach(fn);spotMarkers.forEach(fn);};
 function gmaps(lat,lng){return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;}
 /* request the right size: Google photos (=wW-hH) or Wikimedia (?width=) */
-function sizeImg(u,w,h){return u.includes('googleusercontent.com/')?u.replace(/=w\d+-h\d+[^"']*$/,'')+'=w'+w+'-h'+h+'-k-no':u.replace(/width=\d+/,'width='+w);}
+function sizeImg(u,w,h){if(/^img\/[^/]+\.jpg$/.test(u))return w<=420?u.replace('img/','img/t/'):w<=860?u.replace('img/','img/m/'):u;return u.includes('googleusercontent.com/')?u.replace(/=w\d+-h\d+[^"']*$/,'')+'=w'+w+'-h'+h+'-k-no':u.replace(/width=\d+/,'width='+w);}
 function photosFor(pk){return (pk&&PHOTOS[pk]&&PHOTOS[pk].photos)?PHOTOS[pk].photos:[];}
 const totalKm=Object.values(ROUTE_KM).reduce((a,b)=>a+b,0);
 
