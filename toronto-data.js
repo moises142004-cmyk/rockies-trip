@@ -94,7 +94,7 @@ const PAYMENTS=[
  {id:"seguro",ic:"🩺",n:"Seguro médico de viaje",due:"2026-12-10",when:"Antes del 10 dic",how:"Una emergencia en Canadá sale carísima. Si la tarjeta no lo incluye, cotizalo para 23 dic – 3 ene, los dos.",kind:"todo"},
  {id:"citypass",ic:"🎟️",n:"CityPASS x2",cad:305,due:"2026-12-10",when:"Antes del 10 dic",how:"citypass.com en USD (US$96.80 + impuesto c/u). Después reservá en la app la CN Tower (1 ene, 3:30 PM) y el ROM.",kind:"todo"},
  {id:"wonderland",ic:"🎢",n:"Canada's Wonderland WinterFest",cad:100,due:"2026-12-10",when:"Antes del 10 dic",how:"Online, para el dom 27. Antes sale más barato que en la puerta.",kind:"todo"},
- {id:"airbnb",ic:"🛏",n:"Airbnb · 9 noches",crc:488000,due:"2026-12-15",when:"15 dic · se cobra solo",how:"Airbnb lo cobra automático: tené la plata en la tarjeta ese día.",kind:"auto"},
+ {id:"airbnb",ic:"🛏",n:"Airbnb · 9 noches",crc:488340,due:"2026-12-11",when:"11 dic · se cobra solo",how:"Airbnb lo cobra automático a tu Mastercard: tené la plata ese día. Cancelación gratis hasta el 19 dic a las 3 PM (te devuelven todo).",kind:"auto"},
  {id:"datos",ic:"📶",n:"Datos en Canadá (eSIM o roaming)",due:"2026-12-20",when:"Antes de volar",how:"Cotizá una eSIM de ~10 días o el roaming de tu operador. Con el mapa offline guardado gastan mucho menos.",kind:"todo"},
  {id:"maleta",ic:"🧳",n:"2ª maleta para la vuelta · opcional",due:"2026-12-20",when:"Antes de volar",how:"Solo si van a comprar mucho: en la app de Kiwi sale más barata que en el aeropuerto.",kind:"todo"},
  {id:"hertz",ic:"🚗",n:"Auto Hertz · 4 días",cad:834,due:"2026-12-27",when:"27 dic · en el mostrador",how:"Tarifa Inclusiva ~US$588. Se paga al recoger en Pearson con tarjeta de crédito a tu nombre, y además retienen un depósito: tené cupo libre.",kind:"counter"},
@@ -104,7 +104,7 @@ const PAYMENTS=[
 
 /* Presupuesto para 2, en CAD (alineado con la página de Ahorro) */
 const COSTS=[
- ["🛏","Hospedaje · Airbnb 9 noches","₡488.000 · se cobra el 15 dic",1527],
+ ["🛏","Hospedaje · Airbnb 9 noches","₡488.340 · se cobra el 11 dic",1527],
  ["🍽️","Comida","~₡430.000 para los dos · wagyu steak en Maxime's ~$150 + almuerzo Katsugyu ~$115 + Korean BBQ AYCE ~$115 + 3 cenas lindas ~$330 + burgers y sándwiches virales + barato el resto",1359],
  ["🎟️","Actividades","CityPASS x2 ~$305 (zoo, acuario, CN Tower, Casa Loma, ROM) · Wonderland $100 · Niagara $135 · trineo ~$20",560],
  ["🚗","Auto Hertz 4 días · 27 → 31 dic","Tarifa Inclusiva (cubre daños y Jime maneja) ~$834 + gasolina ~$45 + parqueos ~$80. Si tu tarjeta BAC cubre daños, tarifa Estándar: ~$822 en total",959],
