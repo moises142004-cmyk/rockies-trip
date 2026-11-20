@@ -211,7 +211,7 @@ function renderPlan(){
   if(typeof COSTS==='undefined') return;
   const tot=COSTS.reduce((a,c)=>a+c[3],0);
   $('plan').innerHTML=COSTS.map(([i,n,d,v])=>`<div class="prow"><div>${i}</div><div><div class="pn">${n}</div><div class="pd">${d}</div></div><div class="pv">C$${fmt(v)}</div></div>`).join('')+
-    `<div class="prow"><div>Σ</div><div><div class="pn"><b>Total del plan</b></div><div class="pd">≈ US$${fmt(tot*rates.usd)} · ₡${fmt(tot*rates.crc)} · sin iPhone, shopping ni regalos</div></div><div class="pv" style="color:var(--frost)">C$${fmt(tot)}</div></div>`;
+    `<div class="prow"><div>Σ</div><div><div class="pn"><b>Total del plan</b></div><div class="pd">≈ US$${fmt(tot*rates.usd)} · ₡${fmt(tot*rates.crc)} · sin shopping ni regalos</div></div><div class="pv" style="color:var(--frost)">C$${fmt(tot)}</div></div>`;
 }
 $('pays').addEventListener('click',e=>{const b=e.target.closest('[data-pay]');if(!b)return;const id=b.dataset.pay;
   if(paid[id]) delete paid[id]; else paid[id]=new Date().toLocaleDateString('es-CR',{day:'numeric',month:'short'});

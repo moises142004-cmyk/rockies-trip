@@ -35,7 +35,7 @@
 .verdict.bad{color:var(--bad);border-color:rgba(236,140,118,.45);background:rgba(236,140,118,.08)}
 .empty-hero{font-size:14px;color:#C7D3E2;line-height:1.55}
 
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 .scn{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:13px 14px;text-align:left;color:inherit;font:inherit}
 .scn .t{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
 .scn .v{font-family:var(--disp);font-size:26px;font-weight:700;margin:6px 0 2px;letter-spacing:-.02em}
@@ -173,12 +173,6 @@
       <div class="subtot"><span>Total que entra</span><b id="inTot">₡0</b></div>
       <div class="note">Tocá <b>seguro</b> / <b>supuesto</b> para marcar si esa plata es segura o todavía no está confirmada. Lo supuesto se prueba aparte en "¿Tenés que generar más plata?".</div>
 
-      <div class="section-title">iPhone 18 Pro · en Toronto</div>
-      <div class="flow">
-        <div class="seg2" id="phoneModel"></div>
-        <div class="note" id="phoneNote"></div>
-      </div>
-
       <div class="section-title">Tipo de cambio</div>
       <div class="flow">
         <div class="fx">
@@ -206,8 +200,6 @@
 /* Números base: ingresos y gastos del 15 nov al 15 dic + costos del viaje.
    Lo que edités se guarda en el localStorage de este dispositivo. */
 const KEY='rockies:plata:v1';
-const HST=0.13; /* Ontario */
-const PHONES={none:{n:'Sin iPhone',cad:0},p256:{n:'18 Pro · 256 GB',cad:1749},p512:{n:'18 Pro · 512 GB',cad:2049}};
 /* Hertz YYZ, dom 27 dic 10 AM → jue 31 dic 10 AM, edad 20–24, Nissan Versa o similar, total en el mostrador (USD) */
 const CAR={std:{usd:492.06,n:'Mi tarjeta cubre daños · Estándar'},inc:{usd:588.38,n:'Hertz Inclusiva'}};
 const TRIP=[
@@ -237,7 +229,7 @@ const VIDA=[
   {id:'papatel',ic:'📞',n:'Teléfono de tu papá',v:140000},
   {id:'claude',ic:'🤖',n:'Claude',v:98000}
 ].map(c=>({...c,on:true}));
-const DEF={cobra:COBRA,vida:VIDA,extra:[],trip:TRIP.map(t=>({id:t.id,on:true})),seguro:'inc',phone:'none',buffer:10,rUsd:452.89,rCad:319.61,fxManual:false};
+const DEF={cobra:COBRA,vida:VIDA,extra:[],trip:TRIP.map(t=>({id:t.id,on:true})),seguro:'inc',buffer:10,rUsd:452.89,rCad:319.61,fxManual:false};
 /* ---------- link personal ---------- */
 const b64e=o=>{const b=new TextEncoder().encode(JSON.stringify(o));let s='';b.forEach(c=>s+=String.fromCharCode(c));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
 const b64d=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');const bin=atob(s);return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0))));};
@@ -274,7 +266,7 @@ const tdef=id=>TRIP.find(t=>t.id===id);
 function crc(st){const d=tdef(st.id);if(st.manual)return +st.v||0;
   if(d.car)return CAR[S.seguro].usd*S.rUsd; if(d.cad)return d.cad*S.rCad; if(d.usd)return d.usd*S.rUsd; return d.v;}
 function calc(o={}){
-  const phone=o.phone||S.phone, firm=!!o.firm;
+  const firm=!!o.firm;
   const inItems=S.cobra.filter(c=>c.on&&!(firm&&c.sup));
   const inAll=inItems.reduce((a,c)=>a+(+c.v||0),0);
   const trip=S.trip.filter(t=>t.on).map(t=>({...tdef(t.id),...t,amt:crc(t)}));
@@ -282,9 +274,8 @@ function calc(o={}){
   const varTot=trip.filter(t=>t.var).reduce((a,t)=>a+t.amt,0);
   const vida=S.vida.filter(c=>c.on).reduce((a,c)=>a+(+c.v||0),0)+S.extra.filter(c=>c.on).reduce((a,c)=>a+(+c.v||0),0);
   const buf=varTot*S.buffer/100;
-  const pCAD=PHONES[phone].cad*(1+HST), pCRC=pCAD*S.rCad;
-  const out=viaje+vida+buf+pCRC;
-  return {inAll,trip,viaje,vida,buf,pCAD,pCRC,out,res:inAll-out};
+  const out=viaje+vida+buf;
+  return {inAll,trip,viaje,vida,buf,out,res:inAll-out};
 }
 
 /* ---------- render ---------- */
@@ -304,7 +295,7 @@ function render(){
     document.getElementById('heroLbl').textContent=r.res>=0?'Te sobran':'Te faltan';
     big.className='big '+(r.res>=0?'ok':'bad');
     big.innerHTML=`${fmt(Math.abs(r.res))}<small>≈ CAD ${cad(Math.abs(r.res))}</small>`;
-    document.getElementById('heroSub').innerHTML=`Del 15 nov al 15 dic entran <b>${fmt(r.inAll)}</b> y salen <b>${fmt(r.out)}</b>: el viaje ${fmt(r.viaje)}, tu vida ${fmt(r.vida)}, un ${S.buffer}% de colchón ${fmt(r.buf)}${r.pCRC?` y el iPhone ${fmt(r.pCRC)}`:''}. `+
+    document.getElementById('heroSub').innerHTML=`Del 15 nov al 15 dic entran <b>${fmt(r.inAll)}</b> y salen <b>${fmt(r.out)}</b>: el viaje ${fmt(r.viaje)}, tu vida ${fmt(r.vida)}, y un ${S.buffer}% de colchón ${fmt(r.buf)}. `+
       (r.res>=0?`Lo que sobra es para shopping e imprevistos en Toronto.`:`Hay que generar esa plata o mover algo de la lista.`);
   }
   const cov=r.out?Math.min(1,r.inAll/r.out):1;
@@ -318,19 +309,16 @@ function render(){
   else{v.className='verdict bad';v.textContent=`✕ Generá ${fmt(-r.res)} más o mové algo de la lista.`;}
 
   /* escenarios */
-  const rp=calc({phone:S.phone==='none'?'p256':S.phone}), rn=calc({phone:'none'});
   const card=(t,x,d)=>`<div class="scn"><div class="t">${t}</div><div class="v" style="color:${x>=0?'var(--good)':'var(--bad)'}">${x>=0?'+':''}${fmtK(x)}</div><div class="d">${d(x)}</div></div>`;
   const dd=x=>x>=0?`sobran · ≈ CAD ${cad(x)} para shopping`:`<b>generá ${fmt(-x)} más</b>`;
   document.getElementById('scenarios').innerHTML=!hasIn?'<div class="scn" style="grid-column:1/-1"><div class="d">Se calcula cuando agregás tus ingresos.</div></div>':
     card('Con todo lo que esperás',r.res,dd)+
-    card(sup.length?'Si no llega lo supuesto':'Sin supuestos',rf.res,x=>sup.length?`sin ${sup.map(c=>c.n).join(', ')} · `+dd(x):dd(x))+
-    card(S.phone==='none'?'Con iPhone 18 Pro (256)':'Sin el iPhone',S.phone==='none'?rp.res:rn.res,x=>S.phone==='none'?`C$1.749 + 13% HST ≈ ${fmtK(calc({phone:'p256'}).pCRC)} · `+dd(x):dd(x));
+    card(sup.length?'Si no llega lo supuesto':'Sin supuestos',rf.res,x=>sup.length?`sin ${sup.map(c=>c.n).join(', ')} · `+dd(x):dd(x));
 
   /* barras entra / sale */
   const max=Math.max(r.inAll,r.out)||1;
   const inParts=S.cobra.filter(c=>c.on).map((c,i)=>[c.n+(c.sup?' (supuesto)':''),+c.v||0,PAL_IN[i%PAL_IN.length]]);
   const outParts=[...r.trip.map((t,i)=>[t.n,t.amt,PAL_TRIP[i%PAL_TRIP.length]]),['Tu vida',r.vida,'#6F86A6'],['Colchón',r.buf,'#93A4BC']];
-  if(r.pCRC)outParts.push(['iPhone',r.pCRC,'#5FD0D6']);
   const seg=(parts)=>parts.filter(p=>p[1]>0).map(([n,x,c])=>`<span title="${n}: ${fmt(x)}" style="width:${x/max*100}%;background:${c}">${x/max>.09?fmtK(x):''}</span>`).join('');
   const gap=r.inAll-r.out;
   document.getElementById('stackIn').innerHTML=seg(inParts)+(gap<0&&hasIn?`<span class="short" style="width:${-gap/max*100}%">${-gap/max>.09?'faltan':''}</span>`:'');
@@ -344,7 +332,6 @@ function render(){
   if(r.vida)steps.push({wk:2.5,k:'out',w:'15 nov – 15 dic',t:'Tu vida: '+S.vida.concat(S.extra).filter(c=>c.on).map(c=>c.n).join(', '),a:r.vida});
   const byW={};r.trip.forEach(t=>{(byW[t.w]||(byW[t.w]={wk:t.wk,k:'out',w:t.w,names:[],a:0})).names.push(t.n);byW[t.w].a+=t.amt;});
   Object.values(byW).forEach(x=>steps.push({...x,t:x.names.join(', ')}));
-  if(r.pCRC)steps.push({wk:6,k:'out',w:'24 dic · Eaton Centre',t:`iPhone ${PHONES[S.phone].n} (C$${Math.round(r.pCAD).toLocaleString('en-US')} con HST)`,a:r.pCRC});
   if(r.buf)steps.push({wk:9,k:'out',w:'Por si acaso',t:`Colchón del ${S.buffer}% sobre comida, actividades, transporte y regalos`,a:r.buf});
   document.getElementById('timeline').innerHTML=steps.sort((a,b)=>a.wk-b.wk).map(s=>`<div class="st ${s.k}"><div class="dot"></div><div><div class="w">${s.w}</div><div class="what">${s.t}</div></div><div class="amt ${s.k}">${s.k==='in'?'+':'−'}${fmt(s.a)}</div></div>`).join('');
 
@@ -358,13 +345,12 @@ function render(){
   const rowT=(t,i)=>{const d=tdef(t.id),a=crc(t),base=d.car?`US$${CAR[S.seguro].usd}`:d.cad?`C$${d.cad}`:d.usd?`US$${d.usd}`:'';
     return `<div class="row${t.on?'':' off'}"><div class="ic">${d.ic}</div><div class="nm">${d.n}<small>${d.w}${base&&!t.manual?' · '+base:''}${t.manual&&(d.cad||d.usd||d.car)?' · editado · <a data-rt="'+i+'">volver al cálculo</a>':''}${d.flag?` · <span class="flag">${d.flag}</span>`:''}</small></div><input type="number" inputmode="numeric" data-t="${i}" value="${Math.round(a)}"><button class="tg${t.on?' on':''}" data-tt="${i}">${t.on?'✓':''}</button></div>`;};
   document.getElementById('viajeRows').innerHTML=S.trip.map(rowT).join('')+
-    `<div class="row"><div class="ic">🛟</div><div class="nm">Colchón para imprevistos<small>% sobre comida, actividades, transporte, gasolina y regalos = ${fmt(r.buf)}</small></div><input type="number" inputmode="numeric" id="bufIn" value="${S.buffer}"><span style="font-family:var(--mono);font-size:11px;color:var(--mist)">%</span></div>`+
-    (S.phone!=='none'?`<div class="row"><div class="ic">📱</div><div class="nm">iPhone ${PHONES[S.phone].n}<small>Toronto · C$${PHONES[S.phone].cad.toLocaleString('en-US')} + 13% HST</small></div><input type="number" value="${Math.round(r.pCRC)}" disabled><span></span></div>`:'');
+    `<div class="row"><div class="ic">🛟</div><div class="nm">Colchón para imprevistos<small>% sobre comida, actividades, transporte, gasolina y regalos = ${fmt(r.buf)}</small></div><input type="number" inputmode="numeric" id="bufIn" value="${S.buffer}"><span style="font-family:var(--mono);font-size:11px;color:var(--mist)">%</span></div>`;
   const rowP=(arr,key)=>(c,i)=>`<div class="row${c.on?'':' off'}"><div class="ic">${c.ic||'•'}</div><div class="nm">${c.n}${key==='cobra'?`<button class="pill${c.sup?' sup':''}" data-sup="${i}">${c.sup?'supuesto':'seguro'}</button>`:''}${c.note?`<small>${c.note}</small>`:''}${c.x?`<small><a data-del="${key}:${i}">borrar</a></small>`:''}</div><input type="number" inputmode="numeric" data-p="${key}:${i}" value="${c.v}"><button class="tg${c.on?' on':''}" data-pt="${key}:${i}">${c.on?'✓':''}</button></div>`;
   document.getElementById('vidaRows').innerHTML=S.vida.length?S.vida.map(rowP(S.vida,'vida')).join(''):'<div class="note">Sin gastos todavía.</div>';
   document.getElementById('extraRows').innerHTML=S.extra.map(rowP(S.extra,'extra')).join('');
   document.getElementById('inRows').innerHTML=S.cobra.length?S.cobra.map(rowP(S.cobra,'cobra')).join(''):'<div class="note">Sin gastos todavía.</div>';
-  document.getElementById('viajeTot').textContent=fmt(r.viaje+r.buf+r.pCRC);
+  document.getElementById('viajeTot').textContent=fmt(r.viaje+r.buf);
   document.getElementById('vidaTot').textContent=fmt(r.vida);
   document.getElementById('outTot').textContent=fmt(r.out);
   document.getElementById('inTot').textContent=fmt(r.inAll);
@@ -377,11 +363,6 @@ function render(){
       :`<b>La comida alcanza para los dos.</b> ${fmtK(f)} ≈ CAD ${cad(f)}: las 6 comidas caras suman ~CAD 710 y queda ~CAD ${Math.round((f/S.rCad-710)/10)} por día para lo demás.`;}
   else fw.style.display='none';
 
-  /* iPhone */
-  document.getElementById('phoneModel').innerHTML=Object.entries(PHONES).map(([k,p])=>`<button data-pm="${k}" class="${S.phone===k?'on':''}">${p.n}${p.cad?' · C$'+p.cad.toLocaleString('en-US'):''}</button>`).join('');
-  if(S.phone==='none'){const p=calc({phone:'p256'});
-    document.getElementById('phoneNote').innerHTML=!hasIn?'No está en tu lista de gastos.':`No está en tu lista de gastos. ${p.res>=0?`Con el de 256 GB todavía sobrarían ${fmt(p.res)}.`:`Con el de 256 GB (C$1.749 + 13% HST ≈ ${fmt(p.pCRC)}) te faltarían <b>${fmt(-p.res)}</b>.`}`;}
-  else document.getElementById('phoneNote').innerHTML=`Con 13% de HST (Ontario) son <b>C$${Math.round(r.pCAD).toLocaleString('en-US')} ≈ ${fmt(r.pCRC)}</b>. Tu tarjeta puede cobrar comisión por compra en el exterior.`;
   ['rUsd','rCad'].forEach(id=>{const e=document.getElementById(id);if(document.activeElement!==e)e.value=S[id];});
   bind();
 }
@@ -396,7 +377,6 @@ function bind(){
   document.querySelectorAll('[data-sup]').forEach(e=>e.onclick=()=>{const c=S.cobra[+e.dataset.sup];c.sup=!c.sup;save();render();});
   document.querySelectorAll('[data-del]').forEach(e=>e.onclick=()=>{const [k,i]=e.dataset.del.split(':');arr(k).splice(+i,1);save();render();});
   document.querySelectorAll('[data-seg]').forEach(e=>e.onclick=()=>{S.seguro=e.dataset.seg;const c=S.trip.find(t=>t.id==='carro');if(c){delete c.manual;delete c.v;}save();render();});
-  document.querySelectorAll('[data-pm]').forEach(e=>e.onclick=()=>{S.phone=e.dataset.pm;save();render();});
   const bi=document.getElementById('bufIn');if(bi)bi.onchange=()=>{S.buffer=Math.max(0,+bi.value||0);save();render();};
   ['rUsd','rCad'].forEach(id=>{const e=document.getElementById(id);e.onchange=()=>{S[id]=+e.value||S[id];S.fxManual=true;usdSync(S);save();render();};});
 }
