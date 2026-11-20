@@ -216,7 +216,7 @@ const TRIP=[
   {id:'gas',ic:'⛽',n:'Gasolina + parqueos',cad:125,var:1,w:'24 dic – 2 ene',wk:8,flag:'~500 km de gasolina (~C$45) + parqueos en Niagara, Casa Loma, Yorkville y Kensington (~C$80)'},
   {id:'tours',ic:'🎟️',n:'Actividades',cad:560,var:1,w:'Antes del viaje · online',wk:3,flag:'CityPASS x2 ~C$305 · Wonderland ~C$100 · Butterfly + Clifton Hill ~C$135 · trineo ~C$20'},
   {id:'transp',ic:'🚆',n:'UP Express + TTC',cad:150,var:1,w:'24 dic – 2 ene',wk:8,flag:'Aeropuerto, ir y devolver el auto, y los días sin auto'},
-  {id:'comida',ic:'🍽️',n:'Comida · tu parte',v:200000,var:1,w:'24 dic – 2 ene',wk:8,flag:'El plan para los dos es ~₡380 mil: Jime trae ~₡180 mil aparte para su parte'},
+  {id:'comida',ic:'🍽️',n:'Comida · tu parte',v:200000,var:1,w:'24 dic – 2 ene',wk:8,flag:'El plan para los dos es ~₡430 mil (con el Korean BBQ y las burgers virales): Jime trae ~₡230 mil aparte para su parte'},
   {id:'regalos',ic:'🎁',n:'Regalos',v:100000,var:1,w:'Diciembre',wk:5},
   {id:'idp',ic:'🪪',n:'Permiso internacional de conducir',v:49000,w:'Esta semana',wk:1,flag:'Automóvil Club, Sabana Sur (precio 2025, confirmalo)'}
 ];
@@ -373,8 +373,8 @@ function render(){
   /* comida */
   const food=S.trip.find(t=>t.id==='comida'), fw=document.getElementById('foodWarn');
   if(food&&food.on){const f=crc(food);fw.style.display='';
-    fw.innerHTML=f<342000?`<b>Comida: acá está solo tu parte.</b> El plan de comida para los dos es ~₡380 mil (≈ CAD ${cad(380000)}): Maxime's ~$150, Katsugyu ~$115, Pai ~$105, Kinka ~$115 y Amsterdam ~$110 ya suman ~CAD 600. Los ₡200 mil de Jime ya están en Ahorro Canadá, así que ella trae aparte ~${fmtK(380000-f)} para su parte de comida. Si no, subí este número.`
-      :`<b>La comida alcanza para los dos.</b> ${fmtK(f)} ≈ CAD ${cad(f)}: las 5 comidas caras suman ~CAD 600 y queda ~CAD ${Math.round((f/S.rCad-600)/10)} por día para lo demás.`;}
+    fw.innerHTML=f<387000?`<b>Comida: acá está solo tu parte.</b> El plan de comida para los dos es ~₡430 mil (≈ CAD ${cad(430000)}): Maxime's ~$150, Katsugyu ~$115, Jongro (Korean BBQ) ~$115, Pai ~$105, Kinka ~$115 y Amsterdam ~$110 ya suman ~CAD 710. Los ₡200 mil de Jime ya están en Ahorro Canadá, así que ella trae aparte ~${fmtK(430000-f)} para su parte de comida. Si no, subí este número.`
+      :`<b>La comida alcanza para los dos.</b> ${fmtK(f)} ≈ CAD ${cad(f)}: las 6 comidas caras suman ~CAD 710 y queda ~CAD ${Math.round((f/S.rCad-710)/10)} por día para lo demás.`;}
   else fw.style.display='none';
 
   /* iPhone */

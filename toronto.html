@@ -55,6 +55,7 @@
 
 <div class="filters" id="filters">
   <button class="chip on" data-cat="all"><span class="i">✦</span>Todo</button>
+  <button class="chip" data-cat="hot"><span class="i">🔥</span>Viral ahora</button>
   <button class="chip" data-cat="comer"><span class="i">🍽️</span>Comer</button>
   <button class="chip" data-cat="animales"><span class="i">🐺</span>Animales</button>
   <button class="chip" data-cat="actividad"><span class="i">❄️</span>Actividades</button>
@@ -86,7 +87,7 @@
       <div class="stat"><div class="n" id="kmStat">—</div><div class="l">Km ruta</div></div>
       <div class="stat"><div class="n">−5°</div><div class="l">Prom.</div></div>
     </div>
-    <div class="legline">Base fija en <b>Toronto</b> (9 noches) con <b>4 días de auto</b> (27–31 dic): Wonderland, trineo en Centennial Park, <b>Niagara Falls</b> y el día de shopping. Zoo, acuario, CN Tower, Casa Loma, rutas hype y vintage, wagyu steak y Año Nuevo en el lago. Total en <b>💰 Plan y $</b>.</div>
+    <div class="legline">Base fija en <b>Toronto</b> (9 noches) con <b>4 días de auto</b> (27–31 dic): Wonderland, trineo en Centennial Park, <b>Niagara Falls</b> y el día de shopping. Zoo, acuario, CN Tower, Casa Loma, rutas hype y vintage, wagyu steak, Korean BBQ y Año Nuevo en el lago. Lo que está pegando en TikTok e IG, con el filtro <b>🔥 Viral ahora</b>. Qué pagar primero, en <a href="costos.html" style="color:var(--glacier)">💰 Costos</a>.</div>
   </div>
   <div class="scroll" id="scroll">
     <div class="trail" id="trail"></div>
@@ -133,7 +134,8 @@ Tarifa Saver: <b>no se puede cambiar</b>. En Porter hacés el check-in directo c
 <div class="tdo hot"><b>Kinka Izakaya · lun 28, 7:30 PM</b><span>OpenTable.</span></div>
 <div class="tdo hot"><b>Cena de Año Nuevo · Amsterdam Brewhouse (jue 31, 7 PM)</b><span>OpenTable, ya. Plan B: Pai temprano.</span></div>
 <div class="tdo"><b>Auto Hertz · dom 27 10 AM → jue 31 10 AM</b><span>Pearson, pago en el mostrador. El recargo de menores de 25 ya está en el precio. Licencia + permiso internacional + pasaporte + tarjeta de crédito a tu nombre (depósito retenido).</span></div>
-<div class="tdo"><b>Wonderland WinterFest (dom 27)</b><span>Entradas online. Abre de 3 a 9 PM.</span></div>
+<div class="tdo"><b>Wonderland WinterFest (dom 27)</b><span>Abre solo en fechas seleccionadas: confirmá que el 27 opere y comprá online. Abre de 3 a 9 PM.</span></div>
+<div class="tdo"><b>Opcional · Raptors vs Clippers (vie 1 ene, 7:30 PM)</b><span>El único partido en casa del viaje, en Scotiabank Arena (pegado a Union). Ticketmaster; mirá precios ya. No está en el presupuesto.</span></div>
 <div class="tdo"><b>Niagara (mar 29)</b><span>Butterfly Conservatory y Clifton Hill Fun Pass online.</span></div>
 <div class="tdo date"><b>Antes del 15 dic</b><span>Confirmá la plata de tu papá: el plan de 🐷 Ahorro cuenta con ella.</span></div>
 <div class="tdo date"><b>1 ene · Air Transat</b><span>Mandar los datos de pasajeros a Kiwi (24 h antes).</span></div>
@@ -162,7 +164,8 @@ function renderBudget(r){const el=document.getElementById('budget');if(!el)retur
   `<div class="btotal"><b>~$${fmtN(tot)} CAD</b><span>≈ $${fmtN(tot*r.usd)} USD · ₡${fmtN(tot*r.crc)}</span></div>`;}
 const CFG={start:[2026,11,24],tz:'America/Toronto',wxKey:'tor26:wx',
   wxLocs:{tor:[43.65,-79.38],nia:[43.09,-79.07]},wxDay:{0:'tor',1:'tor',2:'tor',3:'tor',4:'tor',5:'nia',6:'tor',7:'tor',8:'tor',9:'tor'},
-  cities:['Toronto','Niagara Falls','Halton Hills'],panel:BAL_HTML,panelTitle:'Plan y presupuesto',nowText:'10 días · Toronto + Niagara',
+  cities:['Toronto','Niagara Falls','Halton Hills'],panel:BAL_HTML,
+  spotGroups:[{k:'burger',label:'🍔 Burgers virales'},{k:'kbbq',label:'🔥 Korean BBQ'},{k:'jbbq',label:'🥩 Japanese BBQ y wagyu'},{k:'steak',label:'🥩 Steaks'},{k:'food',label:'🍰 Comida viral y antojos'},{k:'hype',label:'👟 Hype y streetwear'},{k:'thrift',label:'🧥 Thrift y vintage'},{k:'temporada',label:'🎄 Temporada (solo en diciembre)'},{k:'planes',label:'🎟️ Planes y noche'},{k:'animales',label:'🐾 Animales y Niagara'}],panelTitle:'Plan y presupuesto',nowText:'10 días · Toronto + Niagara',
   center:[43.75,-79.45],zoom:8,stayBtn:'Ver Airbnb',
   onPanel(){renderBudget(RATES);fetch('https://open.er-api.com/v6/latest/CAD').then(r=>r.json()).then(d=>{if(d&&d.rates&&d.rates.USD&&d.rates.CRC)renderBudget({usd:d.rates.USD,crc:d.rates.CRC});}).catch(()=>{});}};
 </script>

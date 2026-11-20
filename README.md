@@ -8,11 +8,11 @@ Planner del viaje de invierno **24 Dic 2026 – 2 Ene 2027**: base en Toronto co
 
 Sitio estático, sin build ni dependencias de servidor. Secciones:
 
-- **`toronto.html` — Mapa principal** · itinerario de 10 días, presupuesto y checklist de lo que falta reservar (`toronto-routes.js`, `toronto-photos.js`).
+- **`toronto.html` — Mapa principal** · itinerario de 10 días, presupuesto y checklist de lo que falta reservar (`toronto-routes.js`, `toronto-photos.js`). Tesoros agrupados por tipo (`grp` en `SPOTS`: burgers, Korean BBQ, Japanese BBQ, steaks, comida viral, hype, thrift, temporada, planes) y filtro **🔥 Viral ahora** (campo `hot`). Botón **Guardar el mapa offline** (zoom de calle de todos los lugares al service worker) y prefetch de tiles al tocar un lugar. Al cambiar paradas de un día, regenerar su ruta OSRM en `toronto-routes.js` (empieza y termina en el Airbnb).
 - **`calgary.html` — Plan B (Rockies, escondido)** · itinerario de 7 días (base doble: Calgary + Canmore), rutas que siguen calles reales (geometría OSRM horneada en `routes.js`), marcadores y galerías de fotos reales (`photos.js`) por cada punto.
 - **`viaje.html` — Presentación** · el viaje como presentación: portada con la línea de los 10 días, un slide por día con paradas que cambian la foto, qué incluye y cuenta regresiva. Flechas, swipe o `viaje.html#5` para ir a un slide. Usa `toronto-data.js`.
 - **`inventario.html` — Inventario** · lista de empaque de invierno; marcar empacado, agregar ítems, marcar "comprado allá". Se guarda en el navegador (localStorage).
-- **`costos.html` — Costos** · presupuesto en CAD con conversión en vivo a USD y colones. Se guarda en localStorage.
+- **`costos.html` — Costos** · **Qué pagar primero** (`PAYMENTS` en `toronto-data.js`, en orden de fecha; "marcar pagado" se comparte en Supabase `trip_settings.paid`), presupuesto del plan (`COSTS`) y gastos anotados (`trip_costs`, compartidos). Los gastos anteriores al 1 nov 2026 son del plan Calgary: se muestran plegados y no suman.
 
 Archivos compartidos: `style.css` (sistema de diseño + nav) y `store.js` (helpers de localStorage).
 

@@ -81,13 +81,17 @@ function buildPanels(){
   if(typeof CFG.onPanel==='function')CFG.onPanel();
   renderTrail();
   const tWrap=$('treasures');
-  CFG.cities.forEach(city=>{
-    const list=SPOTS.filter(s=>s.city===city);if(!list.length)return;
+  /* grouped by type (burgers, KBBQ…) when the page defines CFG.spotGroups; otherwise by city */
+  const blocks=CFG.spotGroups?CFG.spotGroups.map(g=>({title:g.label,list:SPOTS.filter(s=>s.grp===g.k)}))
+                             :CFG.cities.map(city=>({title:city,list:SPOTS.filter(s=>s.city===city)}));
+  blocks.forEach(({title,list})=>{
+    if(!list.length)return;
     const block=document.createElement('div');block.className='tcity';
-    block.innerHTML=`<h3>${city} <span class="cnt">${list.length}</span></h3>`+
+    block.innerHTML=`<h3>${title} <span class="cnt">${list.length}</span></h3>`+
       list.map(sp=>{const ph=photosFor(sp.pk)[0];
         const ic=ph?`<img loading="lazy" decoding="async" src="${sizeImg(ph.url,120,120)}" alt="" onerror="this.parentNode.textContent='${sp.ic}'">`:sp.ic;
-        return `<div class="tspot" data-id="${sp.id}" style="--cc:${FCCOL[sp.cat]}"><div class="tic">${ic}</div><div><div class="tn">${sp.name}</div><div class="tc">${FCLBL[sp.cat]}</div><div class="tnote">${sp.note}</div></div></div>`;}).join('');
+        const meta=[sp.hot?`<span class="thot">🔥 ${sp.hot}</span>`:'',sp.p?`💵 ${sp.p}`:'',CFG.spotGroups&&sp.city!=='Toronto'?sp.city:''].filter(Boolean).join(' · ');
+        return `<div class="tspot" data-id="${sp.id}" style="--cc:${FCCOL[sp.cat]}"><div class="tic">${ic}</div><div><div class="tn">${sp.name}</div><div class="tc">${meta||FCLBL[sp.cat]}</div><div class="tnote">${sp.note}</div></div></div>`;}).join('');
     tWrap.appendChild(block);
   });
   tWrap.querySelectorAll('.tspot').forEach(el=>el.addEventListener('click',()=>{
@@ -163,7 +167,9 @@ function stayPopHtml(o){
 }
 function popHtml(o){
   const photos=photosFor(o.pk);
-  const gal=photos.length?galHtml(photos):`<div class="gal"><div class="ph"><span class="e">${o.ic||'📍'}</span><span class="t">Sin foto todavía</span></div></div>`;
+  /* no photo of our own: the placeholder opens the place in Google Maps, where the real photos and reviews are */
+  const gq=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.name.replace(/^(Almuerzo|Cena|Opcional|Cena splurge|Poutine de medianoche):\s*/,'').split(' · ')[0]+', Toronto')}`;
+  const gal=photos.length?galHtml(photos):`<div class="gal"><a class="ph" href="${gq}" target="_blank" rel="noopener" style="text-decoration:none"><span class="e">${o.ic||'📍'}</span><span class="t">Ver fotos en Google Maps ↗</span></a></div>`;
   const meta=o.metaLine?`<div class="pp-meta">${o.metaLine}</div>`:'';
   return `<div style="--pc:${o.pc}">${gal}<div class="pp-body"><div class="pp-cat">${o.cat}</div><div class="pp-name">${o.name}</div>${meta}<div class="pp-note">${o.note}</div><div class="pp-row"><span class="pp-badge">${o.badge}</span><a class="pp-go" href="${gmaps(o.lat,o.lng)}" target="_blank" rel="noopener">▸ Cómo llegar</a><a class="pp-go" href="${gsv(o.lat,o.lng)}" target="_blank" rel="noopener">👁 Street View</a>${o.ig?`<a class="pp-go" href="${o.ig}" target="_blank" rel="noopener">◎ Insta</a>`:''}</div></div></div>`;
 }
@@ -234,7 +240,7 @@ async function runOffline(urls){
   await Promise.all(Array.from({length:6},next));finish(f);
 }
 function applyVisibility(){
-  eachMarker(m=>{let show=(activeFilter==='all'||m._fc===activeFilter);if(m._kind==='site'&&openDay!==null)show=show&&(m._di===openDay);show?m.addTo(map):map.removeLayer(m);});
+  eachMarker(m=>{let show=(activeFilter==='all'||m._fc===activeFilter||(activeFilter==='hot'&&m._hot));if(m._kind==='site'&&openDay!==null)show=show&&(m._di===openDay);show?m.addTo(map):map.removeLayer(m);});
   Object.entries(dayLines).forEach(([k,arr])=>arr.forEach(l=>{const glow=l.options.className==='route-glow';let op;if(openDay===null)op=glow?.16:.85;else op=(+k===openDay)?(glow?.32:1):(glow?.03:.08);l.setStyle({opacity:op});}));
 }
 function fitAll(animate=true){
@@ -262,8 +268,8 @@ function renderDayLayers(){
     const html=first?`<div class="mk seal-m" style="--c:${c};animation-delay:${delay}s">${day.n}</div>`:`<div class="mk pin" style="--c:${c};animation-delay:${delay}s">${s.ic}</div>`;
     const icon=L.divIcon({html,className:'',iconSize:first?[40,40]:[30,30],iconAnchor:first?[20,20]:[15,15]});
     const m=L.marker([s.lat,s.lng],{icon,riseOnHover:true}).addTo(map);
-    m._fc=s.fc;m._di=di;m._kind='site';m._s=s;
-    m.bindPopup(popHtml({pc:c,cat:FCLBL[s.fc]||s.fc,name:s.name,ic:s.ic,pk:s.pk,metaLine:`◷ ${s.t} &nbsp;·&nbsp; ${day.wx}${s.p?` &nbsp;·&nbsp; 💵 ${s.p}`:''}`,note:s.note,badge:`Día ${day.n} · ${day.date}`,lat:s.lat,lng:s.lng}),{className:'t-pop',maxWidth:272,minWidth:272,autoPanPadding:[40,90]});
+    m._fc=s.fc;m._di=di;m._kind='site';m._s=s;m._hot=!!s.hot;
+    m.bindPopup(popHtml({pc:c,cat:FCLBL[s.fc]||s.fc,name:s.name,ic:s.ic,pk:s.pk,metaLine:`◷ ${s.t} &nbsp;·&nbsp; ${day.wx}${s.p?` &nbsp;·&nbsp; 💵 ${s.p}`:''}${s.hot?`<br>🔥 ${s.hot}`:''}`,note:s.note,badge:`Día ${day.n} · ${day.date}`,lat:s.lat,lng:s.lng}),{className:'t-pop',maxWidth:272,minWidth:272,autoPanPadding:[40,90]});
     dayMarkers.push(m);mi++;
   });});
   applyVisibility();
@@ -282,7 +288,7 @@ function initMap(){
   SPOTS.forEach(sp=>{const c=FCCOL[sp.cat]||'#93A4BC';sp.c=c;
     const icon=L.divIcon({html:`<div class="mk spot" style="--c:${c}">${sp.ic}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
     const m=L.marker([sp.lat,sp.lng],{icon,riseOnHover:true}).addTo(map);
-    m._fc=sp.cat;m._di=null;m._kind='spot';m._sp=sp;
+    m._fc=sp.cat;m._di=null;m._kind='spot';m._sp=sp;m._hot=!!sp.hot;
     m.bindPopup(popHtml({pc:c,cat:FCLBL[sp.cat]||sp.cat,name:sp.name,ic:sp.ic,pk:sp.pk,metaLine:`✦ ${sp.city}${sp.p?` &nbsp;·&nbsp; 💵 ${sp.p}`:''}`,note:sp.note,badge:sp.hot?`🔥 ${sp.hot}`:`Tesoro · ${sp.city}`,lat:sp.lat,lng:sp.lng,ig:sp.ig}),{className:'t-pop',maxWidth:272,minWidth:272,autoPanPadding:[40,90]});
     sp._m=m;spotMarkers.push(m);
   });

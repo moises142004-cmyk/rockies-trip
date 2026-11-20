@@ -12,7 +12,7 @@
    street-level tiles of every stop into their own uncapped cache (OFFLINE), which the tile
    handler checks first.
    Supabase / weather / FX APIs and everything else are never touched. */
-const CACHE = 'rockies-v25';
+const CACHE = 'rockies-v26';
 const TILES = 'rockies-tiles-1';
 const IMGS = 'rockies-img-1';
 const OFFLINE = 'rockies-offline-1';

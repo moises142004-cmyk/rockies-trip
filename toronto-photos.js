@@ -201,5 +201,17 @@ window.PHOTOS = {
   {url:"img/w-barosaurus-royal-ontario-museum-side-jpg.jpg",m:"img/m/w-barosaurus-royal-ontario-museum-side-jpg.jpg",thumb:"img/t/w-barosaurus-royal-ontario-museum-side-jpg.jpg",caption:"La sala de dinosaurios",credit:"Foto: KristyVan · CC BY-SA 3.0"}]},
  "_cover":{photos:[
   {url:"img/c-streetcar-1.jpg",m:"img/m/c-streetcar-1.jpg",thumb:"img/t/c-streetcar-1.jpg",caption:"Tranvía de la TTC en la nieve",credit:"Foto: Can Pac Swire · CC BY-SA 2.0"},
-  {url:"img/c-skyline-1.jpg",m:"img/m/c-skyline-1.jpg",thumb:"img/t/c-skyline-1.jpg",caption:"Toronto desde el lago congelado",credit:"Foto: Javier Ortega Araiza · CC BY 3.0"}]}
+  {url:"img/c-skyline-1.jpg",m:"img/m/c-skyline-1.jpg",thumb:"img/t/c-skyline-1.jpg",caption:"Toronto desde el lago congelado",credit:"Foto: Javier Ortega Araiza · CC BY 3.0"}]},
+ "holidayhills":{photos:[
+  {"url":"https://stacktmarket.com/app/uploads/2025/01/copy-of-stacktx_holidayhills_2024-153-1-scaled.jpg","caption":"Holiday Hills en STACKT","credit":"Foto: STACKT Market"}
+ ]},
+ "bentway":{photos:[
+  {"url":"https://thebentway.ca/wp-content/uploads/2023/04/752.091.jpeg","caption":"La pista de The Bentway","credit":"Foto: The Bentway"}
+ ]},
+ "othership":{photos:[
+  {"url":"https://cdn.prod.website-files.com/67c208983c2848098aa364f1/67d0a166641f4fbaf2c62065_othership-homepage-open-graph.jpg","caption":"Othership","credit":"Foto: Othership"}
+ ]},
+ "greta":{photos:[
+  {"url":"https://gretabar.com/wp-content/uploads/2026/02/DSC04002-edited-scaled.jpg","caption":"GRETA Bar","credit":"Foto: GRETA"}
+ ]}
 };
