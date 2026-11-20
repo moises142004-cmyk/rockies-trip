@@ -4,10 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Toronto + Niagara · Jime & Moi</title>
+<!-- Map servers first: the TLS handshake (~0.25 s each) happens while the page is still parsing -->
+<link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
+<link rel="preconnect" href="https://services.arcgisonline.com" crossorigin>
+<link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- Fonts no longer block the first paint (they were ~0.4 s in front of the map) -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0A0F18">
@@ -117,7 +123,8 @@ const BAL_HTML=`
 <b>Vuelta:</b> Air Transat <b>TS112</b> · YYZ sáb 2 ene 7:20 PM → SJO 11:50 PM.<br>
 Tarifa Saver: <b>no se puede cambiar</b>. En Porter hacés el check-in directo con la aerolínea. Para Air Transat, Kiwi pide los datos de pasajeros 24 h antes.</div></div>
 <div class="cblock"><h4>🧳 Ojo con el equipaje</h4><div class="cnote">El e-ticket muestra <b>1 artículo personal cada uno</b> (mochila de 13×31×43 cm) y <b>1 maleta documentada de 23 kg</b> a nombre de Moises. <b>No incluye carry-on de cabina.</b> Con shopping + iPhone, la maleta de 23 kg es para los dos. Revisá en la app de Kiwi que la maleta aplique también a la vuelta. Si van a comprar mucho, cotizá una segunda maleta para la vuelta antes de viajar: en el aeropuerto sale más cara.</div></div>
-<div class="cblock"><h4>📌 Lo que falta reservar</h4><div class="todo-list">
+<div class="cblock"><h4>📌 Lo que falta reservar</h4><div class="cnote" style="margin-bottom:8px">El orden de pagos, con montos y fechas, está en <a href="costos.html" style="color:var(--glacier)">💰 Costos → Qué pagar primero</a>.</div><div class="todo-list">
+<div class="tdo hot"><b>eTA de Canadá (o visa) · revisalo hoy</b><span>Solo en canada.ca, C$7 c/u. Con pasaporte de Costa Rica vale el eTA si tenés visa de EE.UU. vigente (o visa canadiense en los últimos 10 años); si no, va visa de visitante, que tarda semanas.</span></div>
 <div class="tdo hot"><b>Escribirle a Alex (Airbnb)</b><span>¿Pueden dejar maletas antes de las 3 PM el 24? ¿Late checkout el 2? ¿Hay parqueo para el auto las noches del 27, 28, 29 y 30?</span></div>
 <div class="tdo hot"><b>Permiso internacional de conducir</b><span>Automóvil Club de Costa Rica (Sabana Sur): solicitud online, foto 5×5 a color, ~₡49 mil, ~4 días. Tu licencia está en español.</span></div>
 <div class="tdo hot"><b>Llamar a BAC: ¿la tarjeta cubre daños del auto?</b><span>Si sí: Hertz tarifa Estándar (~$100 menos). Si no: tarifa Inclusiva.</span></div>
@@ -143,6 +150,7 @@ Tarifa Saver: <b>no se puede cambiar</b>. En Porter hacés el check-in directo c
 <b>2. El viral DIY · Kyoto Katsugyu (almuerzo del 24).</b> Gyukatsu que sellás en la piedra, set Tajima ~$45 c/u: ~$115 los dos.<br><br>
 Para no pagar de más: no pidás el tomahawk ($360–450) ni el Kobe por onza de Shinji.</div></div>
 <div class="cblock"><h4>💵 Propina (no viene en la factura como en CR)</h4><div class="cnote">En Canadá la propina <b>no viene incluida</b>, a diferencia del 10% de servicio en Costa Rica. La ley no la obliga, pero en restaurante con mesero se da siempre.<br>• <b>Restaurante con mesero: 15%.</b> 18% si estuvo excelente. Así viene en el presupuesto.<br>• Calculala sobre el <b>subtotal antes del HST</b>. La maquinita la calcula sobre el total y te sugiere 18/20/25%: tocá <b>Custom</b> o <b>%</b> y poné 15.<br>• Revisá la factura: si ya dice <b>Gratuity</b> o <b>Service charge</b>, no des otra vez. Pasa en grupos grandes y a veces en Año Nuevo.<br>• <b>Mostrador, Tim Hortons, food courts, para llevar:</b> 0%. Podés tocar No tip sin pena.<br>• <b>Bar:</b> ~$1–2 por bebida. <b>Uber:</b> opcional, 10% si te ayudó con maletas. <b>Guías de tours:</b> $10–20 si estuvo buenísimo.</div></div>
+<div class="cblock"><h4>📥 Mapa offline</h4><div id="offlineBox"><div class="cnote">Cargando el mapa…</div></div></div>
 <div class="cblock"><h4>🌡️ Clima</h4><div class="tempcards">
   <div class="tcard"><div class="tcity2">Toronto</div><div class="ttemp">−1° / −8°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">Viento del lago: se siente más frío que el número.</div></div>
   <div class="tcard"><div class="tcity2">Niagara Falls</div><div class="ttemp">0° / −6°</div><div class="tlbl">máx / mín típico</div><div class="tnote2">La niebla de la catarata moja y se congela: capas y guantes.</div></div>

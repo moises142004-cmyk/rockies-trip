@@ -6,6 +6,8 @@ let openDay=null, activeFilter='all';
 const $=id=>document.getElementById(id);
 const eachMarker=fn=>{dayMarkers.forEach(fn);spotMarkers.forEach(fn);};
 function gmaps(lat,lng){return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;}
+/* Street View at the spot (opens the Google Maps app on the phone) */
+function gsv(lat,lng){return `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`;}
 /* request the right size: Google photos (=wW-hH) or Wikimedia (?width=) */
 function sizeImg(u,w,h){if(/^img\/[^/]+\.jpg$/.test(u))return w<=420?u.replace('img/','img/t/'):w<=860?u.replace('img/','img/m/'):u;return u.includes('googleusercontent.com/')?u.replace(/=w\d+-h\d+[^"']*$/,'')+'=w'+w+'-h'+h+'-k-no':u.replace(/width=\d+/,'width='+w);}
 function photosFor(pk){return (pk&&PHOTOS[pk]&&PHOTOS[pk].photos)?PHOTOS[pk].photos:[];}
@@ -70,7 +72,7 @@ function renderTrail(){
     if(!MAP_OK)return;
     const target=dayMarkers.find(m=>m._di===di&&m._s===TRIP[di].sites[idx]);if(!target)return;
     if(!map.hasLayer(target)){activeFilter='all';syncChips();applyVisibility();}
-    map.flyTo([target._s.lat,target._s.lng],14,{duration:.7});setTimeout(()=>target.openPopup(),720);
+    flyToSite(target._s.lat,target._s.lng,()=>target.openPopup());
   }));
 }
 function buildPanels(){
@@ -93,7 +95,7 @@ function buildPanels(){
     if(window.innerWidth<=900)$('win').classList.remove('open');
     if(!MAP_OK||!sp._m)return;
     if(!map.hasLayer(sp._m)){activeFilter='all';syncChips();applyVisibility();}
-    map.flyTo([sp.lat,sp.lng],14,{duration:.7});setTimeout(()=>sp._m.openPopup(),720);
+    flyToSite(sp.lat,sp.lng,()=>sp._m.openPopup());
   }));
   document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
@@ -141,8 +143,8 @@ function focusDay(di){
   if(!MAP_OK)return;
   applyVisibility();
   if(openDay===null){fitAll();return;}
-  const wide=window.innerWidth>900;
-  map.flyToBounds(L.latLngBounds(TRIP[di].sites.map(s=>[s.lat,s.lng])),{paddingTopLeft:[wide?372:40,118],paddingBottomRight:[wide?40:40,wide?60:280],maxZoom:13,duration:.8});
+  const wide=window.innerWidth>900,b=L.latLngBounds(TRIP[di].sites.map(s=>[s.lat,s.lng])),o={paddingTopLeft:[wide?372:40,118],paddingBottomRight:[wide?40:40,wide?60:280],maxZoom:13};
+  prefetchBounds(b,o);map.flyToBounds(b,{...o,duration:.8});
 }
 
 /* ===== MAP ===== */
@@ -163,18 +165,74 @@ function popHtml(o){
   const photos=photosFor(o.pk);
   const gal=photos.length?galHtml(photos):`<div class="gal"><div class="ph"><span class="e">${o.ic||'📍'}</span><span class="t">Sin foto todavía</span></div></div>`;
   const meta=o.metaLine?`<div class="pp-meta">${o.metaLine}</div>`:'';
-  return `<div style="--pc:${o.pc}">${gal}<div class="pp-body"><div class="pp-cat">${o.cat}</div><div class="pp-name">${o.name}</div>${meta}<div class="pp-note">${o.note}</div><div class="pp-row"><span class="pp-badge">${o.badge}</span><a class="pp-go" href="${gmaps(o.lat,o.lng)}" target="_blank" rel="noopener">▸ Cómo llegar</a></div></div></div>`;
+  return `<div style="--pc:${o.pc}">${gal}<div class="pp-body"><div class="pp-cat">${o.cat}</div><div class="pp-name">${o.name}</div>${meta}<div class="pp-note">${o.note}</div><div class="pp-row"><span class="pp-badge">${o.badge}</span><a class="pp-go" href="${gmaps(o.lat,o.lng)}" target="_blank" rel="noopener">▸ Cómo llegar</a><a class="pp-go" href="${gsv(o.lat,o.lng)}" target="_blank" rel="noopener">👁 Street View</a>${o.ig?`<a class="pp-go" href="${o.ig}" target="_blank" rel="noopener">◎ Insta</a>`:''}</div></div></div>`;
 }
 let layers;
 function setView(v){
   curView=v;
-  [layers.sat,layers.terr,layers.dark].forEach(l=>map.removeLayer(l));map.removeLayer(layers.satLabels);
+  [layers.sat,layers.terr,layers.dark,layers.darkRef].forEach(l=>map.removeLayer(l));map.removeLayer(layers.satLabels);
   if(v==='sat'){layers.sat.addTo(map);syncLabels();}
   else if(v==='terr')layers.terr.addTo(map);
-  else layers.dark.addTo(map);
+  else{layers.dark.addTo(map);const add=()=>{if(curView==='dark'&&!map.hasLayer(layers.darkRef))layers.darkRef.addTo(map);};
+    layers.dark.isLoading()?(layers.dark.once('load',add),setTimeout(add,1500)):add();}
 }
-/* street/place labels over satellite only when zoomed in (a 2nd tile layer doubles the per-frame cost) */
-function syncLabels(){if(!map||curView!=='sat')return;const want=map.getZoom()>=11;const has=map.hasLayer(layers.satLabels);if(want&&!has)layers.satLabels.addTo(map);else if(!want&&has)map.removeLayer(layers.satLabels);}
+/* street/place labels over satellite only when zoomed in (a 2nd tile layer doubles the per-frame cost).
+   The photo goes first: labels wait until the imagery of this view has landed, so the 6 connections
+   per host that Esri's HTTP/1.1 server allows go to the tiles you actually see. */
+let labelWait=null;
+function syncLabels(){if(!map||curView!=='sat')return;const want=map.getZoom()>=11;const has=map.hasLayer(layers.satLabels);
+  if(want&&!has){if(labelWait)return;const add=()=>{labelWait=null;if(curView==='sat'&&map.getZoom()>=11&&!map.hasLayer(layers.satLabels))layers.satLabels.addTo(map);};
+    if(layers.sat.isLoading&&layers.sat.isLoading()){labelWait=add;layers.sat.once('load',add);setTimeout(()=>{if(labelWait===add)add();},1500);}else add();}
+  else if(!want&&has)map.removeLayer(layers.satLabels);}
+
+/* ===== TILE PREFETCH =====
+   How the big map apps feel instant: they ask for the next view's tiles before you get there.
+   Tapping a stop starts a ~0.7 s fly animation; we request the destination tiles at the tap, so
+   they are already in the browser (and in the service worker cache) when the animation lands. */
+const TILE_PX=256;
+function liveLayers(z){if(curView==='sat')return z>=11?[layers.sat,layers.satLabels]:[layers.sat];if(curView==='terr')return[layers.terr];return[layers.dark,layers.darkRef];}
+function tileUrl(layer,x,y,z){return L.Util.template(layer._url,L.Util.extend({s:layer._getSubdomain({x,y}),x,y,z,r:L.Browser.retina?'@2x':''},layer.options));}
+function tilesFor(center,zoom,size,layerList){
+  const tz=Math.round(zoom),scale=Math.pow(2,tz-zoom),p=map.project(center,tz),half=size.multiplyBy(scale/2);
+  const a=p.subtract(half).divideBy(TILE_PX).floor(),b=p.add(half).divideBy(TILE_PX).floor(),n=Math.pow(2,tz),out=[];
+  for(const ly of layerList){const mz=ly.options.maxNativeZoom!=null?ly.options.maxNativeZoom:ly.options.maxZoom;if(tz>mz)continue;
+    for(let x=a.x;x<=b.x;x++)for(let y=a.y;y<=b.y;y++){if(y<0||y>=n)continue;out.push(tileUrl(ly,((x%n)+n)%n,y,tz));}}
+  return out;}
+const warmed=new Set();
+function warm(urls){urls.forEach(u=>{if(warmed.has(u))return;warmed.add(u);const i=new Image();i.crossOrigin='anonymous';i.decoding='async';i.src=u;});}
+function prefetchView(center,zoom){try{warm(tilesFor(L.latLng(center),zoom,map.getSize(),liveLayers(Math.round(zoom))));}catch(e){}}
+function prefetchBounds(bounds,opts){try{const r=map._getBoundsCenterZoom(bounds,opts);prefetchView(r.center,r.zoom);}catch(e){}}
+function flyToSite(lat,lng,cb){prefetchView([lat,lng],14);map.flyTo([lat,lng],14,{duration:.7});if(cb)setTimeout(cb,720);}
+
+/* ===== MAPA OFFLINE =====
+   Downloads the street-level tiles (zoom 13–16) around every stop, treasure and the Airbnb into
+   the service worker, so in Toronto the map opens instantly and works without data. */
+function offlineUrls(){
+  const pts=[];TRIP.forEach(d=>d.sites.forEach(s=>pts.push([s.lat,s.lng])));SPOTS.forEach(s=>pts.push([s.lat,s.lng]));LODGING.forEach(s=>pts.push([s.lat,s.lng]));
+  const set=new Set(),ring={13:1,14:1,15:1,16:1};
+  pts.forEach(([la,lo])=>{for(const z of [13,14,15,16]){const p=map.project([la,lo],z).divideBy(TILE_PX).floor(),r=ring[z];
+    for(let x=p.x-r;x<=p.x+r;x++)for(let y=p.y-r;y<=p.y+r;y++){set.add(tileUrl(layers.sat,x,y,z));set.add(tileUrl(layers.satLabels,x,y,z));}}});
+  return[...set];}
+function offlineSaveUI(){
+  const box=$('offlineBox');if(!box||!MAP_OK)return;
+  const urls=offlineUrls(),imgs=urls.filter(u=>u.includes('World_Imagery')).length,mb=Math.round(imgs*22/1024);
+  const done=localStorage.getItem(CFG.wxKey+':offline');
+  box.innerHTML=`<div class="cnote">Baja el satélite con calles de los <b>${TRIP.reduce((a,d)=>a+d.sites.length,0)+SPOTS.length} lugares</b> del viaje (zoom de calle). Así en Toronto el mapa abre al toque y funciona sin datos. Son ~${mb} MB: hacelo con Wi-Fi.${done?`<br><b style="color:var(--good)">✓ Guardado el ${done}.</b> Podés repetirlo si agregaste lugares.`:''}</div>
+    <button class="btn" id="offlineBtn" style="margin-top:10px">📥 ${done?'Actualizar':'Guardar'} el mapa offline</button><div class="cnote" id="offlineProg" style="margin-top:8px"></div>`;
+  $('offlineBtn').onclick=()=>runOffline(urls);
+}
+async function runOffline(urls){
+  const btn=$('offlineBtn'),prog=$('offlineProg');btn.disabled=true;btn.textContent='Descargando…';
+  const show=(n,t,f)=>{prog.innerHTML=`${n} / ${t} pedazos del mapa${f?` · ${f} fallaron`:''}`;};
+  const finish=(f)=>{const d=new Date().toLocaleDateString('es-CR',{day:'numeric',month:'short'});try{localStorage.setItem(CFG.wxKey+':offline',d);}catch(e){}
+    btn.disabled=false;btn.textContent='📥 Actualizar el mapa offline';prog.innerHTML=`<b style="color:var(--good)">✓ Listo:</b> ${urls.length-f} pedazos guardados${f?` (${f} fallaron: repetilo con mejor señal)`:''}.`;};
+  const sw=navigator.serviceWorker&&navigator.serviceWorker.controller;
+  if(sw){const ch=new MessageChannel();ch.port1.onmessage=e=>{const m=e.data||{};if(m.type==='progress')show(m.done,m.total,m.failed);if(m.type==='done')finish(m.failed||0);};
+    sw.postMessage({type:'offline-tiles',urls},[ch.port2]);return;}
+  /* sin service worker todavía (primera visita): el navegador los guarda en su caché normal */
+  let i=0,f=0,n=0;const next=async()=>{while(i<urls.length){const u=urls[i++];try{await fetch(u,{mode:'cors'});}catch(e){f++;}show(++n,urls.length,f);}};
+  await Promise.all(Array.from({length:6},next));finish(f);
+}
 function applyVisibility(){
   eachMarker(m=>{let show=(activeFilter==='all'||m._fc===activeFilter);if(m._kind==='site'&&openDay!==null)show=show&&(m._di===openDay);show?m.addTo(map):map.removeLayer(m);});
   Object.entries(dayLines).forEach(([k,arr])=>arr.forEach(l=>{const glow=l.options.className==='route-glow';let op;if(openDay===null)op=glow?.16:.85;else op=(+k===openDay)?(glow?.32:1):(glow?.03:.08);l.setStyle({opacity:op});}));
@@ -216,13 +274,16 @@ function initMap(){
     sat:L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,crossOrigin:true,subdomains:['server','services'],updateWhenZooming:false,keepBuffer:4,attribution:'Imagery © Esri, Maxar'}),
     satLabels:L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,crossOrigin:true,subdomains:['server','services'],updateWhenZooming:false}),
     terr:L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,crossOrigin:true,subdomains:['server','services'],attribution:'© Esri'}),
-    dark:L.layerGroup([L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18,crossOrigin:true,subdomains:['server','services'],attribution:'© Esri'}),L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18,crossOrigin:true,subdomains:['server','services']})])
+    /* "Mapa": Esri dark base + its labels as two layers, so the labels can wait for the base like on
+       satellite. (CARTO's free dark tiles now come back stamped "API KEY REQUIRED" — checked 2026-11-20.) */
+    dark:L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18,crossOrigin:true,subdomains:['server','services'],attribution:'© Esri'}),
+    darkRef:L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:18,crossOrigin:true,subdomains:['server','services']})
   };
   SPOTS.forEach(sp=>{const c=FCCOL[sp.cat]||'#93A4BC';sp.c=c;
     const icon=L.divIcon({html:`<div class="mk spot" style="--c:${c}">${sp.ic}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
     const m=L.marker([sp.lat,sp.lng],{icon,riseOnHover:true}).addTo(map);
     m._fc=sp.cat;m._di=null;m._kind='spot';m._sp=sp;
-    m.bindPopup(popHtml({pc:c,cat:FCLBL[sp.cat]||sp.cat,name:sp.name,ic:sp.ic,pk:sp.pk,metaLine:`✦ ${sp.city}`,note:sp.note,badge:`Tesoro · ${sp.city}`,lat:sp.lat,lng:sp.lng}),{className:'t-pop',maxWidth:272,minWidth:272,autoPanPadding:[40,90]});
+    m.bindPopup(popHtml({pc:c,cat:FCLBL[sp.cat]||sp.cat,name:sp.name,ic:sp.ic,pk:sp.pk,metaLine:`✦ ${sp.city}${sp.p?` &nbsp;·&nbsp; 💵 ${sp.p}`:''}`,note:sp.note,badge:sp.hot?`🔥 ${sp.hot}`:`Tesoro · ${sp.city}`,lat:sp.lat,lng:sp.lng,ig:sp.ig}),{className:'t-pop',maxWidth:272,minWidth:272,autoPanPadding:[40,90]});
     sp._m=m;spotMarkers.push(m);
   });
   LODGING.forEach(lg=>{
@@ -237,6 +298,7 @@ function initMap(){
   map.on('zoomend',syncLabels);
   map.invalidateSize();fitAll(false);
   setView(curView);
+  offlineSaveUI();
 }
 function showMapError(){document.body.classList.add('mapfail');}
 

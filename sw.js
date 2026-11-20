@@ -7,11 +7,17 @@
    went into the main cache as an opaque response (each counts ~7 MB of quota in
    Chrome), was looked up in an ever-growing cache, and was downloaded a second
    time in the background, which made the zoomed-in map crawl.
+   v25: the page now asks for the next view's tiles before the fly animation ends, so a tile can
+   be requested twice at once: identical requests in flight share one download. "Guardar el mapa offline" downloads the
+   street-level tiles of every stop into their own uncapped cache (OFFLINE), which the tile
+   handler checks first.
    Supabase / weather / FX APIs and everything else are never touched. */
-const CACHE = 'rockies-v24';
+const CACHE = 'rockies-v25';
 const TILES = 'rockies-tiles-1';
 const IMGS = 'rockies-img-1';
+const OFFLINE = 'rockies-offline-1';
 const TILE_MAX = 1500;
+const isTileHost = h => h.endsWith('arcgisonline.com');
 const SHELL = [
   'toronto.html', 'ahorro.html', 'inventario.html', 'costos.html', 'viaje.html',
   'style.css', 'planner.css', 'planner.js', 'toronto-routes.js', 'toronto-photos.js', 'toronto-data.js', 'cloud.js', 'manifest.json',
@@ -42,23 +48,60 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => ![CACHE, TILES, IMGS].includes(k)).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => ![CACHE, TILES, IMGS, OFFLINE].includes(k)).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
-/* Cache-first from one named cache; a miss goes to the network and is stored. */
+/* Cache-first from one named cache; a miss goes to the network and is stored.
+   `also` = an extra cache to look in first (the offline map). Same-URL misses in flight share one fetch. */
 let puts = 0;
-async function cacheFirst(req, name, cap) {
+const inflight = new Map();
+async function cacheFirst(req, name, cap, also) {
+  if (also) { const o = await (await caches.open(also)).match(req); if (o) return o; }
   const c = await caches.open(name);
   const hit = await c.match(req);
   if (hit) return hit;
-  const res = await fetch(req);
-  if (cacheable(res) && res.type !== 'opaque') {
-    c.put(req, res.clone()).then(() => { if (cap && ++puts % 100 === 0) trim(name, cap); }).catch(() => {});
+  const key = req.url;
+  let p = inflight.get(key);
+  if (!p) {
+    p = fetch(req).then(res => {
+      if (cacheable(res) && res.type !== 'opaque') {
+        c.put(key, res.clone()).then(() => { if (cap && ++puts % 100 === 0) trim(name, cap); }).catch(() => {});
+      }
+      return res;
+    }).finally(() => setTimeout(() => inflight.delete(key), 0));
+    inflight.set(key, p);
   }
-  return res;
+  return (await p).clone();
 }
+
+/* "Guardar el mapa offline": the page sends the tile URLs; we download them 6 at a time
+   (Esri's limit per host) into OFFLINE and report progress through the MessageChannel port. */
+self.addEventListener('message', e => {
+  const m = e.data || {};
+  if (m.type !== 'offline-tiles' || !Array.isArray(m.urls) || !e.ports[0]) return;
+  const port = e.ports[0], urls = m.urls.filter(u => { try { return isTileHost(new URL(u).hostname); } catch (x) { return false; } });
+  e.waitUntil((async () => {
+    const c = await caches.open(OFFLINE);
+    let i = 0, done = 0, failed = 0;
+    const worker = async () => {
+      while (i < urls.length) {
+        const u = urls[i++];
+        try {
+          if (!(await c.match(u))) {
+            const res = await fetch(u, { mode: 'cors' });
+            if (res.ok) await c.put(u, res); else failed++;
+          }
+        } catch (x) { failed++; }
+        done++;
+        if (done % 20 === 0 || done === urls.length) port.postMessage({ type: 'progress', done, total: urls.length, failed });
+      }
+    };
+    await Promise.all(Array.from({ length: 6 }, worker));
+    port.postMessage({ type: 'done', total: urls.length, failed });
+  })());
+});
 async function trim(name, cap) {
   const c = await caches.open(name), keys = await c.keys();
   for (let i = 0; i < keys.length - cap; i++) await c.delete(keys[i]);
@@ -71,8 +114,8 @@ self.addEventListener('fetch', e => {
   const sameOrigin = url.origin === self.location.origin;
 
   /* Map tiles (requested with CORS so they aren't opaque) */
-  if (url.hostname.endsWith('arcgisonline.com')) {
-    e.respondWith(cacheFirst(req, TILES, TILE_MAX).catch(() => Response.error()));
+  if (isTileHost(url.hostname)) {
+    e.respondWith(cacheFirst(req, TILES, TILE_MAX, OFFLINE).catch(() => Response.error()));
     return;
   }
   /* Trip photos never change under the same name */

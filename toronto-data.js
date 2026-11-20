@@ -48,6 +48,25 @@ const SPOTS=[
 const FCLBL={ruta:"Ruta / traslado",shops:"Shopping",comer:"Gastronomía",hotel:"Hospedaje",vistas:"Vista / paisaje",animales:"Fauna",actividad:"Actividad",finde:"Año Nuevo",hype:"Streetwear / hype",vintage:"Vintage / thrift",viral:"Spot viral",museo:"Museo"};
 const FCCOL={comer:'#F5A623',hype:'#5FD0D6',vintage:'#F08FB8',viral:'#93A7EC',vistas:'#82C08A',animales:'#C58CEC',actividad:'#5FD0D6',finde:'#F5A623',shops:'#E3C56A',hotel:'#93A4BC',ruta:'#93A4BC',museo:'#EC8C76'};
 
+/* Qué pagar y cuándo, en orden. Montos para los dos: cad (dólares canadienses), usd o crc.
+   kind: paid (ya está) · todo (lo pagás vos, antes de la fecha) · auto (se cobra solo) · counter (en el mostrador) · trip (día a día).
+   Lo que marcan como pagado se guarda en la nube (trip_settings.paid) y lo ven los dos. */
+const PAYMENTS=[
+ {id:"vuelos",ic:"✈️",n:"Vuelos · Porter PD790 + Air Transat TS112",due:"2026-11-01",when:"Comprados",how:"Kiwi, tarifa Saver (no se puede cambiar).",kind:"paid"},
+ {id:"eta",ic:"🛂",n:"eTA de Canadá · los dos",cad:14,due:"2026-11-23",when:"YA · este fin de semana",how:"Solo en canada.ca (C$7 c/u, sale en minutos o en pocos días). Con pasaporte de Costa Rica el eTA vale si tenés visa de EE.UU. vigente o tuviste visa canadiense en los últimos 10 años; si no, va visa de visitante (TRV), que tarda semanas. Revisalo hoy con la herramienta oficial \"Find out if you need a visa\". Si ya lo tienen aprobado, marcalo.",kind:"todo",hot:true},
+ {id:"idp",ic:"🪪",n:"Permiso internacional de conducir",crc:49000,due:"2026-11-27",when:"Esta semana",how:"Automóvil Club (Sabana Sur), ~4 días. Sin esto Hertz no te entrega el auto: tu licencia está en español.",kind:"todo",hot:true},
+ {id:"bac",ic:"📞",n:"Llamada a BAC (decide plata)",free:true,due:"2026-11-27",when:"Esta semana",how:"Dos preguntas: ¿la tarjeta cubre daños a auto alquilado en Canadá? (si sí, Hertz Estándar y ahorrás ~US$96) y ¿incluye seguro médico de viaje? Avisá también que vas a usarla en Canadá.",kind:"todo"},
+ {id:"seguro",ic:"🩺",n:"Seguro médico de viaje",due:"2026-12-10",when:"Antes del 10 dic",how:"Una emergencia en Canadá sale carísima. Si la tarjeta no lo incluye, cotizalo para 23 dic – 3 ene, los dos.",kind:"todo"},
+ {id:"citypass",ic:"🎟️",n:"CityPASS x2",cad:305,due:"2026-12-10",when:"Antes del 10 dic",how:"citypass.com en USD (US$96.80 + impuesto c/u). Después reservá en la app la CN Tower (1 ene, 3:30 PM) y el ROM.",kind:"todo"},
+ {id:"wonderland",ic:"🎢",n:"Canada's Wonderland WinterFest",cad:100,due:"2026-12-10",when:"Antes del 10 dic",how:"Online, para el dom 27. Antes sale más barato que en la puerta.",kind:"todo"},
+ {id:"airbnb",ic:"🛏",n:"Airbnb · 9 noches",crc:488000,due:"2026-12-15",when:"15 dic · se cobra solo",how:"Airbnb lo cobra automático: tené la plata en la tarjeta ese día.",kind:"auto"},
+ {id:"datos",ic:"📶",n:"Datos en Canadá (eSIM o roaming)",due:"2026-12-20",when:"Antes de volar",how:"Cotizá una eSIM de ~10 días o el roaming de tu operador. Con el mapa offline guardado gastan mucho menos.",kind:"todo"},
+ {id:"maleta",ic:"🧳",n:"2ª maleta para la vuelta · opcional",due:"2026-12-20",when:"Antes de volar",how:"Solo si van a comprar mucho: en la app de Kiwi sale más barata que en el aeropuerto.",kind:"todo"},
+ {id:"hertz",ic:"🚗",n:"Auto Hertz · 4 días",cad:834,due:"2026-12-27",when:"27 dic · en el mostrador",how:"Tarifa Inclusiva ~US$588. Se paga al recoger en Pearson con tarjeta de crédito a tu nombre, y además retienen un depósito: tené cupo libre.",kind:"counter"},
+ {id:"niagara",ic:"🦋",n:"Butterfly Conservatory + Clifton Hill Fun Pass",cad:135,due:"2026-12-28",when:"Antes del 29 dic",how:"Online o en la puerta: en invierno no se agota.",kind:"todo"},
+ {id:"viaje",ic:"🍽️",n:"En el viaje: comida, UP Express / TTC, gasolina y parqueos",cad:1464,due:"2026-12-24",when:"24 dic – 2 ene",how:"Se paga día a día (comida ~C$1.189, transporte ~C$150, gasolina y parqueos ~C$125). Anotá abajo lo que van gastando.",kind:"trip"}
+];
+
 /* Presupuesto para 2, en CAD (alineado con la página de Ahorro) */
 const COSTS=[
  ["🛏","Hospedaje · Airbnb 9 noches","₡488.000 · se cobra el 15 dic",1527],

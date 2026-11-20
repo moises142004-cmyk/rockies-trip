@@ -57,6 +57,37 @@
 .del:hover{color:var(--bad);background:rgba(236,140,118,.1)}
 .empty{text-align:center;color:var(--mist-dim);font-size:13px;padding:40px 0;font-family:var(--mono)}
 .foot{margin-top:30px;text-align:center}
+/* ── Qué pagar primero ── */
+.paysum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 2px 14px}
+.paysum .k{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:12px 14px}
+.paysum .k .t{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+.paysum .k .v{font-family:var(--disp);font-size:22px;font-weight:700;margin-top:4px;letter-spacing:-.02em}
+.paysum .k .s{font-size:11px;color:var(--mist);margin-top:2px}
+.pays{display:flex;flex-direction:column;gap:8px;margin:0 2px}
+.pay{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;padding:12px 14px;border:1px solid var(--hair);border-radius:14px;background:var(--panel);backdrop-filter:blur(14px);position:relative}
+.pay::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:3px;background:var(--hair)}
+.pay.hot::before{background:var(--bad)} .pay.soon::before{background:var(--amber)} .pay.later::before{background:var(--glacier)} .pay.done::before{background:var(--good)}
+.pay.done{opacity:.55}
+.pay .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--panel-2);border:1px solid var(--hair)}
+.pay .nm{font-family:var(--disp);font-size:14.5px;font-weight:600;color:var(--frost);line-height:1.3}
+.pay .wh{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;margin-top:3px;color:var(--mist)}
+.pay.hot .wh{color:var(--bad)} .pay.soon .wh{color:var(--amber)}
+.pay .how{font-size:12.5px;color:#C7D3E2;line-height:1.5;margin-top:6px}
+.pay .rt{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.pay .am{font-family:var(--disp);font-size:15px;font-weight:600;color:var(--frost);white-space:nowrap;text-align:right}
+.pay .am small{display:block;font-family:var(--mono);font-size:10px;color:var(--mist-dim);font-weight:400}
+.ck{appearance:none;cursor:pointer;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:6px 11px;border:1px solid var(--hair);background:transparent;color:var(--mist);white-space:nowrap}
+.ck.on{background:var(--good);border-color:var(--good);color:#0A1A0E;font-weight:700}
+.tag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist-dim);white-space:nowrap}
+.plan{background:var(--panel);border:1px solid var(--hair);border-radius:16px;padding:6px 14px;margin:0 2px}
+.prow{display:grid;grid-template-columns:26px 1fr auto;gap:10px;padding:10px 0;border-bottom:1px solid var(--hair-2);align-items:start}
+.prow:last-child{border-bottom:0}
+.prow .pn{font-size:13.5px;color:var(--frost)} .prow .pd{font-size:11.5px;color:var(--mist);margin-top:2px;line-height:1.45}
+.prow .pv{font-family:var(--disp);font-weight:600;color:var(--amber);white-space:nowrap}
+.old{margin:14px 2px 0;border:1px dashed var(--hair);border-radius:14px;padding:10px 14px}
+.old .del{display:none}
+.old summary{cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist)}
+@media (max-width:640px){.paysum{grid-template-columns:1fr}.pay{grid-template-columns:30px 1fr}.pay .rt{grid-column:2;flex-direction:row;align-items:center;justify-content:space-between}}
 @media (max-width:640px){
   .totalcard .big{font-size:34px}
   .addbar .f,.addbar .f.concept,.addbar .f.amt{flex-basis:100%;max-width:none}
@@ -79,13 +110,20 @@
 
 <div class="wrap">
   <div class="phead">
-    <div class="eyebrow">El presupuesto</div>
-    <h1>Cuánto <em>cuesta</em></h1>
-    <p>Presupuesto compartido: los dos ven y editan lo mismo, en vivo. En dólares canadienses con conversión a dólares y colones. <span class="synced" id="synced"><span class="pip"></span><span id="syncedTxt">en vivo</span></span></p>
+    <div class="eyebrow">El presupuesto · Toronto + Niagara</div>
+    <h1>Qué pagar <em>primero</em></h1>
+    <p>En orden de fecha. Lo que marquen como pagado lo ven los dos, en vivo. Montos para los dos. <span class="synced" id="synced"><span class="pip"></span><span id="syncedTxt">en vivo</span></span></p>
   </div>
 
+  <div class="paysum" id="paysum"></div>
+  <div class="pays" id="pays"></div>
+
+  <div class="section-title">Presupuesto del plan · para los dos</div>
+  <div class="plan" id="plan"></div>
+
+  <div class="section-title">Lo que ya gastaron</div>
   <div class="totalcard">
-    <div class="lbl">Total del viaje</div>
+    <div class="lbl">Gastos anotados · Toronto</div>
     <div class="big"><span id="tCAD">0</span><span class="cur">CAD</span></div>
     <div class="conv">
       <div class="c"><div class="v glacier" id="tUSD">$0</div><div class="k">≈ dólares</div></div>
@@ -114,11 +152,11 @@
   </div>
 
   <div id="list"><div class="empty">Cargando…</div></div>
-
-  <div class="foot"><button class="btn ghost" id="clearBtn">🗑 Borrar todos los gastos</button></div>
+  <details class="old" id="oldBox" style="display:none"><summary id="oldSum"></summary><div id="oldList" style="margin-top:10px"></div></details>
 </div>
 
 <script src="cloud.js"></script>
+<script src="toronto-data.js"></script>
 <script>
 const CATS = ['Vuelos','Hotel','Auto','Comida','Actividades','Shopping','Otros'];
 const CAT_IC = {'Vuelos':'✈️','Hotel':'🏨','Auto':'🚗','Comida':'🍽️','Actividades':'🎿','Shopping':'🛍️','Otros':'💳'};
@@ -131,6 +169,53 @@ function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','
 let costs = [];
 let rates = { usd:0.71, crc:322 };
 let budget = null;
+let paid = {}, paidEdit = 0;
+/* Lo anotado antes del cambio a Toronto es del plan Calgary (Plan B): se guarda, pero no suma. */
+const PIVOT = '2026-11-01';
+const isOld = c => (c.created_at||'') < PIVOT;
+
+/* ── Qué pagar primero ── */
+const DAY = 86400000;
+function today(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+function payCAD(p){ if(p.cad) return p.cad; if(p.crc) return p.crc/rates.crc; if(p.usd) return p.usd/rates.usd; return null; }
+function isPaid(p){ return p.kind==='paid' || !!paid[p.id]; }
+function urgency(p){
+  if(isPaid(p)) return 'done';
+  const d=(new Date(p.due+'T00:00:00')-today())/DAY;
+  if(p.kind==='trip'||p.kind==='counter') return 'later';
+  return d<=7?'hot':d<=25?'soon':'later';
+}
+function amtHtml(p){
+  const c=payCAD(p); if(c==null) return p.kind==='paid'?'':`<div class="am" style="color:var(--mist)">${p.free?'gratis':'cotizar'}</div>`;
+  const main=p.crc?`₡${fmt(p.crc)}`:p.usd?`US$${fmt(p.usd)}`:`C$${fmt(c)}`;
+  const sub=p.crc?`≈ C$${fmt(c)}`:`≈ ₡${fmt(c*rates.crc)}`;
+  return `<div class="am">${main}<small>${sub}</small></div>`;
+}
+function renderPays(){
+  if(typeof PAYMENTS==='undefined') return;
+  const list=[...PAYMENTS].sort((a,b)=>(isPaid(a)-isPaid(b))||(a.kind==='trip')-(b.kind==='trip')||a.due.localeCompare(b.due));
+  const sum=f=>PAYMENTS.filter(f).reduce((s,p)=>s+(payCAD(p)||0),0);
+  const before=sum(p=>!isPaid(p)&&p.kind!=='trip'&&p.kind!=='counter');
+  const there=sum(p=>!isPaid(p)&&(p.kind==='trip'||p.kind==='counter'));
+  const next=list.find(p=>!isPaid(p)&&p.kind==='todo');
+  const left=Math.max(0,Math.ceil((new Date('2026-12-23T23:55:00')-new Date())/DAY));
+  $('paysum').innerHTML=
+    `<div class="k"><div class="t">Antes de volar</div><div class="v" style="color:var(--amber)">C$${fmt(before)}</div><div class="s">≈ ₡${fmt(before*rates.crc)} · sin contar lo que falta cotizar</div></div>`+
+    `<div class="k"><div class="t">Allá (mostrador + día a día)</div><div class="v" style="color:var(--glacier)">C$${fmt(there)}</div><div class="s">≈ ₡${fmt(there*rates.crc)}</div></div>`+
+    `<div class="k"><div class="t">Lo siguiente · faltan ${left} días para volar</div><div class="v" style="font-size:16px;line-height:1.25">${next?next.ic+' '+next.n:'✓ Todo listo'}</div><div class="s">${next?next.when:''}</div></div>`;
+  $('pays').innerHTML=list.map(p=>{const u=urgency(p),done=isPaid(p);
+    const btn=p.kind==='paid'?`<span class="tag">✓ hecho</span>`:p.kind==='trip'?`<span class="tag">día a día</span>`:`<button class="ck${done?' on':''}" data-pay="${p.id}">${done?'✓ Pagado':'Marcar pagado'}</button>`;
+    return `<div class="pay ${u}"><div class="ic">${p.ic}</div><div><div class="nm">${p.n}</div><div class="wh">${done&&paid[p.id]?'Pagado el '+paid[p.id]:p.when}</div>${done?'':`<div class="how">${p.how}</div>`}</div><div class="rt">${amtHtml(p)}${btn}</div></div>`;}).join('');
+}
+function renderPlan(){
+  if(typeof COSTS==='undefined') return;
+  const tot=COSTS.reduce((a,c)=>a+c[3],0);
+  $('plan').innerHTML=COSTS.map(([i,n,d,v])=>`<div class="prow"><div>${i}</div><div><div class="pn">${n}</div><div class="pd">${d}</div></div><div class="pv">C$${fmt(v)}</div></div>`).join('')+
+    `<div class="prow"><div>Σ</div><div><div class="pn"><b>Total del plan</b></div><div class="pd">≈ US$${fmt(tot*rates.usd)} · ₡${fmt(tot*rates.crc)} · sin iPhone, shopping ni regalos</div></div><div class="pv" style="color:var(--frost)">C$${fmt(tot)}</div></div>`;
+}
+$('pays').addEventListener('click',e=>{const b=e.target.closest('[data-pay]');if(!b)return;const id=b.dataset.pay;
+  if(paid[id]) delete paid[id]; else paid[id]=new Date().toLocaleDateString('es-CR',{day:'numeric',month:'short'});
+  paidEdit=Date.now(); renderPays(); Cloud.saveSettings({paid}).catch(()=>setSync(false));});
 
 function fillCatSelect(){ $('aCat').innerHTML = CATS.map(c=>`<option value="${c}">${CAT_IC[c]} ${c}</option>`).join(''); }
 function setSync(online){ $('synced').classList.toggle('off', !online); $('syncedTxt').textContent = online?'en vivo':'sin conexión'; }
@@ -139,7 +224,7 @@ async function loadAll(){
   const res = await Cloud.listCached('trip_costs','select=*&order=created_at.asc','costs');
   costs = res.rows; setSync(res.online);
   const s = await Cloud.getSettings();
-  if (s){ rates = { usd:+s.rate_usd, crc:+s.rate_crc }; budget = s.budget!=null?+s.budget:null;
+  if (s){ rates = { usd:+s.rate_usd, crc:+s.rate_crc }; budget = s.budget!=null?+s.budget:null; if(Date.now()-paidEdit>6000) paid = s.paid||{};
     if(document.activeElement!==$('rUSD')) $('rUSD').value = rates.usd;
     if(document.activeElement!==$('rCRC')) $('rCRC').value = rates.crc;
     if(document.activeElement!==$('budget')) $('budget').value = budget!=null?budget:'';
@@ -148,6 +233,18 @@ async function loadAll(){
 }
 
 function render(){
+  renderPays(); renderPlan();
+  const all = costs; costs = all.filter(c=>!isOld(c)); const old = all.filter(isOld);
+  try { return renderLog(); } finally {
+    costs = all;
+    const ob=$('oldBox');
+    if(old.length){ ob.style.display=''; const ot=old.reduce((s,c)=>s+(+c.amount),0);
+      $('oldSum').textContent=`📦 Del plan Calgary (Plan B) · ${old.length} gastos · C$${fmt(ot)} · no suman`;
+      $('oldList').innerHTML=`<div class="lines" style="margin-left:0">${old.map(lineHtml).join('')}</div>`; }
+    else ob.style.display='none';
+  }
+}
+function renderLog(){
   const total = costs.reduce((s,c)=>s+(+c.amount),0);
   $('tCAD').textContent = fmt(total);
   $('tUSD').textContent = '$' + fmt(total*rates.usd);
@@ -162,7 +259,7 @@ function render(){
   } else { $('bbar').style.width='0%'; $('bnote').textContent='Sin presupuesto fijado'; }
 
   const list = $('list');
-  if (!costs.length){ list.innerHTML = `<div class="empty">Todavía no anotaste gastos.</div>`; return; }
+  if (!costs.length){ list.innerHTML = `<div class="empty">Todavía no anotaron gastos de Toronto. Lo que paguen (CityPASS, Airbnb, comidas…) anótenlo acá.</div>`; return; }
   const groups = {}; costs.forEach(c=>{ (groups[c.cat] ||= []).push(c); });
   const maxCat = Math.max(...CATS.map(c=>(groups[c]||[]).reduce((s,x)=>s+(+x.amount),0)),1);
   list.innerHTML = CATS.filter(c=>groups[c]).map(cat=>{
@@ -196,10 +293,6 @@ $('list').addEventListener('click',async e=>{ const b=e.target.closest('.del'); 
 $('rUSD').addEventListener('input',()=>{ rates.usd=parseFloat($('rUSD').value)||0; render(); saveRate({rate_usd:rates.usd}); });
 $('rCRC').addEventListener('input',()=>{ rates.crc=parseFloat($('rCRC').value)||0; render(); saveRate({rate_crc:rates.crc}); });
 $('budget').addEventListener('input',()=>{ budget=parseFloat($('budget').value)||null; render(); saveRate({budget}); });
-$('clearBtn').onclick=async()=>{ if(!confirm('¿Borrar todos los gastos? (afecta a los dos)'))return;
-  const ids=costs.map(c=>c.id); costs=[]; render();
-  for(const id of ids){ try{await Cloud.remove('trip_costs',id);}catch(e){setSync(false);} } loadAll();
-};
 
 async function fetchRates(){
   const note=$('rateNote'); note.textContent='Buscando tipo de cambio real…';
